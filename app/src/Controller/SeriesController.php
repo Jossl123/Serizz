@@ -14,11 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class SeriesController extends AbstractController
 {
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request,EntityManagerInterface $entityManager): Response
     {
+        $page = $request->query->get('page', 0);
+        $limit=10;
         $series = $entityManager
             ->getRepository(Series::class)
-            ->findAll();
+            ->findBy(array(), null, $limit, $page*$limit);
 
         return $this->render('series/index.html.twig', [
             'series' => $series,
