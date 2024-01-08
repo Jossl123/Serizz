@@ -18,12 +18,15 @@ class SeriesController extends AbstractController
     {
         $page = $request->query->get('page', 0);
         $limit=10;
-        $series = $entityManager
-            ->getRepository(Series::class)
-            ->findBy(array(), null, $limit, $page*$limit);
+        $seriesRepo = $entityManager
+            ->getRepository(Series::class);
 
+        $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
+        $seriesNb = $seriesRepo->count([]);
         return $this->render('series/index.html.twig', [
             'series' => $series,
+            'pagesNb' => $seriesNb / $limit,
+            'page' => $page
         ]);
     }
 

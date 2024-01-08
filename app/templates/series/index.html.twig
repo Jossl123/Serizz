@@ -4,7 +4,9 @@
 
 {% block body %}
     <h1>Series index</h1>
-
+    {% for i in 0..pagesNb %}
+        <a href="{{ path('app_series_index', {'page': i}) }}">{{ i }}</a>
+    {% endfor %}
     <table class="table">
         <thead>
             <tr>
