@@ -11,6 +11,11 @@
 		<div class="grid grid-rows-2 grid-flow-col">
 			<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5">
 			<div>
+				<div class="bg-[--grey] p-2 m-2 rounded flex justify-around">
+                    <i class="nf nf-fa-check"></i> <!--Needs to be replaced by the actual status-->
+                    <i class="nf nf-fa-check"></i>
+
+                </div>
 				<ul class="max-w-96">
 					<hr class="border-[--grey]">
 					<li>
@@ -23,7 +28,6 @@
 							{% endif %}
 						</p>
 					</li>
-
 					<hr
 					class="border-[--grey]">
 					<!--YouTube trailer : {{ series.youtubeTrailer }}-->
@@ -60,14 +64,18 @@
 
 			<div>
 				<h1 class="text-3xl font-bold p-5">{{ series.title }}</h1>
-				<p class="p-5 max-w-96">{{ series.plot }}</p>
-			</div>
+				<p class="w-1/2">{{ series.plot }}</p>
 
-			<div class="grid grid-rows-2 grid-flow-col">
-				{% for season in series.getSeasons() %}
-					<a href="">Season
-						{{ season.getNumber() }}</a>
-				{% endfor %}
+				<div class="grid grid-rows-2 grid-flow-col">
+
+					{% for season in series.getSeasons() %}
+
+						<a href="">Season
+							{{ season.getNumber() }}</a>
+
+					{% endfor %}
+				</div>
+
 			</div>
 
 		</div>
