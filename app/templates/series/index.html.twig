@@ -4,9 +4,11 @@
 
 {% block body %}
     <h1>Series index</h1>
+    {% if page > 0 %}<a href="{{ path('app_series_index', {'page': page - 1}) }}"><-</a>{% endif %}
     {% for i in 0..pagesNb %}
         <a href="{{ path('app_series_index', {'page': i}) }}">{{ i }}</a>
     {% endfor %}
+    {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1}) }}">-></a>{% endif %}
     <table class="table">
         <thead>
             <tr>
