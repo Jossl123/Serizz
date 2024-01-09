@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Followed series{% endblock %}
+
+{% block body %}
+	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (series|first).id}) } %}
+    
+{% endblock %}
