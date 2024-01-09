@@ -17,27 +17,37 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class SeriesController extends AbstractController
 {
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response
+    public function index(Request $request,EntityManagerInterface $entityManager): Response
     {
         $page = $request->query->get('page', 0);
-        $limit = 10;
+        $search = $request->query->get('init', "");
+        $limit=10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
-
-        $seriesNb = $seriesRepo->count([]);
-        if ($page > $seriesNb/$limit) {
-            $page = (int)($seriesNb/$limit);
-        }
-        if ($page < 0) {
-            $page = 0;
-        }
         $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
+        $seriesNb = $seriesRepo->count([]);
+        
+        if (isset($_GET['init'])){
+            $series = $seriesRepo->findAll();
+            $series_match = array();
+            foreach($series as $serie){
+                dump($serie);
+                if (str_contains(strtoupper($serie->getTitle()),strtoupper($search))){
+                    $series_match[] = $serie;
+                }
+            }
+            $series_match = array_slice($series_match, $page*$limit, $limit);
+            $series = $series_match;
+            $seriesNb = sizeof($series);
+        }
         return $this->render('series/index.html.twig', [
             'series' => $series,
             'pagesNb' => $seriesNb / $limit,
-            'page' => $page
+            'page' => $page,
+            'init' => $search
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
     public function show(Series $series): Response
