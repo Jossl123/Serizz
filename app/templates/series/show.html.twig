@@ -5,17 +5,24 @@
 {% endblock %}
 
 {% block body %}
-
-	<div class="h-full bg-[--black] text-[--white]">
-
-		<div class="grid grid-rows-2 grid-flow-col">
-			<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5">
-			<div>
+	<table>
+		<tr>
+			<td class="p-3">
+				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5 w-full">
 				<div class="bg-[--grey] p-2 m-2 rounded flex justify-around">
-                    <i class="nf nf-fa-check"></i> <!--Needs to be replaced by the actual status-->
-                    <i class="nf nf-fa-check"></i>
-
-                </div>
+					<i class="nf nf-fa-check"></i>
+					<!--Needs to be replaced by the actual status-->
+					<i class="nf nf-fa-check"></i>
+				</div>
+			</td>
+			<td class="p-3">
+				<h1 class="text-3xl font-bold p-2 m-5">{{ series.title }}</h1>
+				<p class="w-1/2">{{ series.plot }}</p>
+				<hr class="border-[--grey] m-2">
+			</td>
+		</tr>
+		<tr>
+			<td class="p-3">
 				<ul class="max-w-96">
 					<hr class="border-[--grey]">
 					<li>
@@ -28,10 +35,7 @@
 							{% endif %}
 						</p>
 					</li>
-					<hr
-					class="border-[--grey]">
-					<!--YouTube trailer : {{ series.youtubeTrailer }}-->
-
+					<hr class="border-[--grey]">
 					<li>
 						<h2 class="font-bold text-[--grey]">Awards</h2>
 						<p class="text-[--white]">
@@ -60,27 +64,16 @@
 					</li>
 					<hr class="border-[--grey]">
 				</ul>
-			</div>
-
-			<div>
-				<h1 class="text-3xl font-bold p-5">{{ series.title }}</h1>
-				<p class="w-1/2">{{ series.plot }}</p>
-
-				<div class="grid grid-rows-2 grid-flow-col">
-
-					{% for season in series.getSeasons() %}
-
-						<a href="">Season
-							{{ season.getNumber() }}</a>
-
-					{% endfor %}
-				</div>
-
-			</div>
-
-		</div>
-
-		<a href="{{ path('app_series_index') }}" class="text-center text-3xl font-bold p-5 block">back to list</a>
-
-	</div>
+			</td>
+			<td class="flex justify-around flex-wrap gap-1 p-3">
+				{% for season in series.getSeasons() %}
+					<a href="" class="bg-[--grey] text-white p-2 rounded">Season
+						{{ season.getNumber() }}</a>
+				{% endfor %}
+			</td>
+		</tr>
+	</table>
+	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
+		<i class="nf nf-md-keyboard_backspace"></i>
+		Back to list</a>
 {% endblock %}
