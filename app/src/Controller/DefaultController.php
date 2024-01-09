@@ -17,7 +17,7 @@ class DefaultController extends AbstractController
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
-        $series = $seriesRepo->findBy(array(), null, 4, 0);
+        $series = $seriesRepo->findBy(array(), null, 4, 2);
         return $this->render('default/index.html.twig', [
             "hall_of_fame" => $series,
             "recently_seen" => $series

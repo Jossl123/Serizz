@@ -5,13 +5,12 @@
 {% block body %}
 	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (series|first).id}) } %}
     <div class="flex gap-2 justify-center p-2">
-    {% if pagesNb > 1 or init=='' %}
-    {% if page > 0 %}<a href="{{ path('app_series_index', {'page': page - 1}) }}"><-</a>{% endif %}
-    {% for i in 0..pagesNb %}
-        <a href="{{ path('app_series_index', {'page': i, 'init' : init}) }}">{{ i }}</a>
-    {% endfor %}
-    {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1, 'init' : init}) }}">-></a>{% endif %}
-    {% endif %}
+        {% if page > 0 %}<a href="{{ path('app_series_index', {'page': page - 1}) }}"><-</a>{% endif %}
+        {% for i in 0..pagesNb %}
+            
+            <a href="{{ path('app_series_index', {'page': i}) }}" class="px-1 w-6 flex justify-center items-center {% if i == page %} rounded bg-cyan-600  {% endif %}">{{ i + 1}}</a>
+        {% endfor %}
+        {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1}) }}">-></a>{% endif %}
     </div>
     <form action="" method="get">
         <label for="name">
