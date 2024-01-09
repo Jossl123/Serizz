@@ -3,22 +3,6 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-
-    <script>
-        window.onload = function() {
-            //document.querySelector('input[name="registration_form[email]"]').focus();
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-
-            const section = document.getElementById('sec');
-            const sectionWidth = section.offsetWidth;
-            const sectionHeight = section.offsetHeight;
-
-            section.style.marginLeft = (windowWidth - sectionWidth) / 2 + 'px';
-            section.style.marginTop = (windowHeight - sectionHeight) / 2 + 'px';
-        }
-    </script>
-
     <style>
         body{
             background-color: #030516;
@@ -47,6 +31,10 @@
             -webkit-box-shadow: 0 0 5px 4px rgba(36,43,102,1);
             -moz-box-shadow: 0 0 5px 4px rgba(36,43,102,1);
             box-shadow: 0 0 5px 4px rgba(36,43,102,1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         input {
