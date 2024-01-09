@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Episode;
 use App\Entity\Series;
 use App\Form\SeriesType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,13 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class SeriesController extends AbstractController
 {
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
-    public function index(Request $request,EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $page = $request->query->get('page', 0);
-        $limit=10;
+        $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
+        $series = $seriesRepo->findBy(array(), null, $limit, $page * $limit);
         $seriesNb = $seriesRepo->count([]);
         if ($page > $seriesNb/$limit) {
             $page = (int)($seriesNb/$limit);
@@ -44,6 +46,30 @@ class SeriesController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}?update={update}', name: 'app_series_update', methods: ['GET'])]
+    #[isGranted("ROLE_USER")]
+    public function episode_update(EntityManagerInterface $entityManager, Series $series): Response
+    {
+        $episode = $entityManager->getRepository(Episode::class)->find($_GET['update']);
+
+        var_dump($episode);
+
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+
+        if (in_array($user->getEpisode(), $episode)) {
+            $user->removeEpisode($episode);
+            $entityManager->flush();
+        } else {
+            $user->addEpisode($episode);
+            $entityManager->flush();
+        }
+
+        return $this->render('series/show.html.twig', [
+            'series' => $series,
+        ]);
+    }
+
     #[Route('/poster/{id}', name: 'app_series_poster', methods: ['GET'])]
     public function show_poster(Series $series): Response
     {
@@ -51,4 +77,6 @@ class SeriesController extends AbstractController
         $response->setContent(stream_get_contents($series->getPoster()));
         return $response;
     }
+
+    
 }
