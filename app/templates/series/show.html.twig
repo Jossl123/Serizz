@@ -24,64 +24,67 @@
 						<a href="" class="bg-[--grey] text-white p-2 rounded">Season
 							{{ season.getNumber() }}</a>
 						{% for episode in season.getEpisodes() %}
-							<div><a href={{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}><i class="nf nf-fa-check"></i></a>
-								{{ episode.getNumber() }}
-								-
-								{{ episode.getTitle() }}
-							</div>
-						{% endfor %}
+							<div>
+								{% if is_granted('ROLE_USER') %}
+									<a href={{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()} ) }}>
+										{% if app.user.getEpisode().contains(episode) %}
+											<i class="nf nf-fa-check"></i>
+										</a>
+									{% else %}
+										<i class="nf nf-md-eye"></i>
+									</a>
+								{% endif %}
+							{% endif %}
+							{{ episode.getNumber() }}
+							-
+							{{ episode.getTitle() }}
+						</div>
 					{% endfor %}
-				</form>
+				{% endfor %}
 			</td>
 		</tr>
-		<tr>
-			<td class="m-3">
-				<ul class="max-w-96">
-					<hr class="border-[--grey]">
-					<li>
-						<h2 class="font-bold text-[--grey]">Director</h2>
-						<p class="text-[--white]">
-							{% if series.director != "" %}
-								{{ series.director }}
-							{% else %}
-								unknown
-							{% endif %}
-						</p>
-					</li>
-					<hr class="border-[--grey]">
-					<li>
-						<h2 class="font-bold text-[--grey]">Awards</h2>
-						<p class="text-[--white]">
-							{% if series.awards != "" %}
-								{{ series.awards }}
-							{% else %}
-								none
-							{% endif %}
-						</p>
-					</li>
-					<hr class="border-[--grey]">
-					<li>
-						<h2 class="font-bold text-[--grey]">Series start</h2>
-						<p class="text-[--white]">
-							{{ series.yearStart }}</p>
-					</li>
-					<li>
-						<h2 class="font-bold text-[--grey]">Series end</h2>
-						<p class="text-[--white]">
-							{% if series.yearEnd != null %}
-								{{ series.yearEnd }}
-							{% else %}
-								still running
-							{% endif %}
-						</p>
-					</li>
-					<hr class="border-[--grey]">
-				</ul>
-			</td>
-		</tr>
-	</table>
-	
-	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
-		<i class="nf nf-md-keyboard_backspace"></i>
-		Back to list</a>
-{% endblock %}
+	</form>
+</td></tr><tr>
+<td class="m-3">
+	<ul class="max-w-96">
+		<hr class="border-[--grey]">
+		<li>
+			<h2 class="font-bold text-[--grey]">Director</h2>
+			<p class="text-[--white]">
+				{% if series.director != "" %}
+					{{ series.director }}
+				{% else %}
+					unknown
+				{% endif %}
+			</p>
+		</li>
+		<hr class="border-[--grey]">
+		<li>
+			<h2 class="font-bold text-[--grey]">Awards</h2>
+			<p class="text-[--white]">
+				{% if series.awards != "" %}
+					{{ series.awards }}
+				{% else %}
+					none
+				{% endif %}
+			</p>
+		</li>
+		<hr class="border-[--grey]">
+		<li>
+			<h2 class="font-bold text-[--grey]">Series start</h2>
+			<p class="text-[--white]">
+				{{ series.yearStart }}</p>
+		</li>
+		<li>
+			<h2 class="font-bold text-[--grey]">Series end</h2>
+			<p class="text-[--white]">
+				{% if series.yearEnd != null %}
+					{{ series.yearEnd }}
+				{% else %}
+					still running
+				{% endif %}
+			</p>
+		</li>
+		<hr class="border-[--grey]">
+	</ul>
+</td></tr></table><a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block"><i class="nf nf-md-keyboard_backspace"></i>Back to list</a>{% endblock %}

@@ -32,8 +32,9 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
-    public function show(Series $series): Response
+    public function show(Series $series, EntityManagerInterface $entityManager): Response
     {
+        
         return $this->render('series/show.html.twig', [
             'series' => $series,
         ]);
@@ -59,6 +60,7 @@ class SeriesController extends AbstractController
 
         return $this->render('series/show.html.twig', [
             'series' => $series,
+            ''
         ]);
     }
 
