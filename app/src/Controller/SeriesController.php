@@ -24,8 +24,6 @@ class SeriesController extends AbstractController
         $limit=10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
-        $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
-        $seriesNb = $seriesRepo->count([]);
         
         if (isset($_GET['init'])){
             $series = $seriesRepo->findAll();
@@ -35,9 +33,28 @@ class SeriesController extends AbstractController
                     $series_match[] = $serie;
                 }
             }
+    
             $seriesNb = sizeof($series_match);
+
+            if ($page > $seriesNb/$limit) {
+                $page = (int)($seriesNb/$limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
+    
             $series_match = array_slice($series_match, $page*$limit, $limit);
             $series = $series_match;
+        } else {
+            $seriesNb = $seriesRepo->count([]);
+            if ($page > $seriesNb/$limit) {
+                $page = (int)($seriesNb/$limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
+
+            $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
         }
         return $this->render('series/index.html.twig', [
             'series' => $series,
