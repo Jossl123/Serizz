@@ -5,50 +5,31 @@
 {% block body %}
 	{% include('./header.html.twig')  %}
 
-    <h1>Series index</h1>
     {% if page > 0 %}<a href="{{ path('app_series_index', {'page': page - 1}) }}"><-</a>{% endif %}
     {% for i in 0..pagesNb %}
         <a href="{{ path('app_series_index', {'page': i}) }}">{{ i }}</a>
     {% endfor %}
     {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1}) }}">-></a>{% endif %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Plot</th>
-                <th>Imdb</th>
-                <th>Poster</th>
-                <th>Director</th>
-                <th>YoutubeTrailer</th>
-                <th>Awards</th>
-                <th>YearStart</th>
-                <th>YearEnd</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for series in series %}
-            <tr>
-                <td>{{ series.id }}</td>
-                <td>{{ series.title }}</td>
-                <td>{{ series.plot }}</td>
-                <td>{{ series.imdb }}</td>
-                <td>{{ series.poster }}</td>
-                <td>{{ series.director }}</td>
-                <td>{{ series.youtubeTrailer }}</td>
-                <td>{{ series.awards }}</td>
-                <td>{{ series.yearStart }}</td>
-                <td>{{ series.yearEnd }}</td>
-                <td>
-                    <a href="{{ path('app_series_show', {'id': series.id}) }}">show</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="11">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% for series in series %}
+        <div class="flex">
+            <p>{{ series.poster }}</p>
+            <div>
+                <p>{{ series.title }}</p>
+                <p>{{ series.plot }}</p>
+                <p>{{ series.imdb }}</p>
+                <p>{{ series.director }}</p>
+                <p>{{ series.youtubeTrailer }}</p>
+                <p>{{ series.awards }}</p>
+                <p>{{ series.yearStart }}</p>
+                <p>{{ series.yearEnd }}</p>
+            </div>
+            <p>
+                <a href="{{ path('app_series_show', {'id': series.id}) }}">show</a>
+            </p>
+        </div>
+    {% else %}
+        <div>
+            <p >no records found</p>
+        </div>
+    {% endfor %}
 {% endblock %}
