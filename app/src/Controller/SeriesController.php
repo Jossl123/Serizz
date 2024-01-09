@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/series')]
 class SeriesController extends AbstractController
@@ -48,7 +49,7 @@ class SeriesController extends AbstractController
 
     #[Route('/{id}/update', name: 'app_series_update', methods: ['GET'])]
     #[IsGranted("ROLE_USER")]
-    public function episode_update(Request $request, EntityManagerInterface $entityManager, Series $series): Response
+    public function episode_update(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
@@ -64,9 +65,7 @@ class SeriesController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->render('series/show.html.twig', [
-            'series' => $series,
-        ]);
+        return new JsonResponse(array('success' => "true")); 
     }
 
 
