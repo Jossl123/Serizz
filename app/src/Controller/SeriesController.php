@@ -18,12 +18,21 @@ class SeriesController extends AbstractController
     {
         $page = $request->query->get('page', 0);
         $limit=10;
-        $series = $entityManager
-            ->getRepository(Series::class)
-            ->findBy(array(), null, $limit, $page*$limit);
+        $seriesRepo = $entityManager
+            ->getRepository(Series::class);
 
+        $seriesNb = $seriesRepo->count([]);
+        if ($page > $seriesNb/$limit) {
+            $page = (int)($seriesNb/$limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
+        $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
         return $this->render('series/index.html.twig', [
             'series' => $series,
+            'pagesNb' => $seriesNb / $limit,
+            'page' => $page
         ]);
     }
 
@@ -33,5 +42,13 @@ class SeriesController extends AbstractController
         return $this->render('series/show.html.twig', [
             'series' => $series,
         ]);
+    }
+
+    #[Route('/poster/{id}', name: 'app_series_poster', methods: ['GET'])]
+    public function show_poster(Series $series): Response
+    {
+        $response = new Response();
+        $response->setContent(stream_get_contents($series->getPoster()));
+        return $response;
     }
 }
