@@ -3,22 +3,30 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-	{% include('./header.html.twig')  %}
-    
+  	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (hall_of_fame|first).id}) } %}
+
+    <h1>Hello  {% if app.user %} {{app.user.name}} {% endif %} ! </h1>
     <div>
         <div>
             <p>{{ "now"|date("j F") }} Hall of Fame</p>
-            <ul class="flex gap-6 place-content-around">
+            <ul class="flex gap-6 place-content-around flex-shrink-0">
                 {% for serie in hall_of_fame %}
                     <li class="flex gap-0 flex items-center">
-                        <p class="text-9xl font-extrabold" style="font-size:30rem">{{loop.index}}</p>
-                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-16 h-96 translate-y-8">
+                        <p class="text-9xl font-extrabold" style="font-size:25rem">{{loop.index}}</p>
+                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-16 h-80 translate-y-8">
                     </li>
                 {% endfor %}
             </ul>
         </div>
-        
+        <div>
+            <p class="text-xl">You've recently seen them <a class="bg-[--white] rounded text-white cursor-pointer">(see more)</a></p>
+            <ul class="flex gap-6 ">
+                {% for serie in recently_seen %}
+                    <li class="flex gap-0 flex ">
+                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover h-64 ">
+                    </li>
+                {% endfor %}
+        </div>
     </div>
 
-    <h1>Hello  {% if app.user %} {{app.user.name}} {% endif %} ! </h1>
 {% endblock %}
