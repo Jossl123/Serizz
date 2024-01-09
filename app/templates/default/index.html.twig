@@ -3,7 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    {% if app.user %} 
+    {% if not app.user %} 
         {% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
     {% else %}
         {% include('./header.html.twig') with {'poster_picture_id': (hall_of_fame|first).id, 'username': app.user.name} %}
