@@ -12,9 +12,19 @@
 			<div class="m-3 w-64">
 				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
-					<i class="nf nf-fa-check"></i>
-					<!--Needs to be replaced by the actual status-->
-					<i class="nf nf-fa-check"></i>
+					{% if app.user %}
+						<a href="{{ path('app_series_update_followed', {'id': series.id}) }}">
+							{% if app.user.getSeries().contains(series) %}
+								<i class="nf nf-seti-checkbox_checked"></i>
+							{% else %}
+								<i class="nf nf-seti-checkbox_unchecked"></i>
+							{% endif %}
+						</a>
+						<!--Needs to be replaced by the actual status-->
+						<i class="nf nf-fa-check"></i>
+					{% else %}
+						<a href={{ path('app_login') }}>Login to follow</a>
+					{% endif %}
 				</div>
 			</div>
 			<div class="m-3">
@@ -69,75 +79,62 @@
 				{# <hr class="border-[--grey] m-2"> #}
 				<div method="get" class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
 					<div class="flex gap-1">
-					{% for season in series.getSeasons() %}
-						<button id="season-{{ loop.index }}" onclick="show_season({{loop.index}})" class="text-white p-2 rounded">Season
-							{{ season.getNumber() }}</button>
-					{% endfor %}
+						{% for season in series.getSeasons() %}
+							<button id="season-{{ loop.index }}" onclick="show_season({{loop.index}})" class="text-white p-2 rounded">Season
+								{{ season.getNumber() }}</button>
+						{% endfor %}
 					</div>
 					{% for season in series.getSeasons() %}
-						<div  id="ep-season-{{ loop.index }}">
-						{% for episode in season.getEpisodes() %}
-							<div>
-								{% if is_granted('ROLE_USER') %}
-									<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
-										{% if app.user.getEpisode().contains(episode) %}
-											<i class="nf nf-fa-check"></i>
+						<div id="ep-season-{{ loop.index }}">
+							{% for episode in season.getEpisodes() %}
+								<div>
+									{% if is_granted('ROLE_USER') %}
+										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
+											{% if app.user.getEpisode().contains(episode) %}
+												<i class="nf nf-fa-check"></i>
+											</button>
+										{% else %}
+											<i class="nf nf-md-eye"></i>
 										</button>
-									{% else %}
-										<i class="nf nf-md-eye"></i>
-									</button>
+									{% endif %}
 								{% endif %}
-							{% endif %}
 								{{ episode.getNumber() }}
 								-
 								{{ episode.getTitle() }}
 							</div>
 						{% endfor %}
-						</div>
-					{% endfor %}
-				</div>
+					</div>
+				{% endfor %}
 			</div>
 		</div>
-		{% set url = series.youtubeTrailer | split('='	)[1] %}
-		<iframe 
-			style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 95%);"			
-			{# style="-webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%),linear-gradient(0deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%);" #}
-			class="absolute top-0 right-0 w-1/2 h-1/2 -z-10"
-			width="560" 
-			id="trailer" 
-			height="315"   
-			allow="autoplay" 
-			src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
 	</div>
+	{% set url = series.youtubeTrailer | split('='	)[1] %}
+	<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 95%);" {# style="-webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%),linear-gradient(0deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%);" #} class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+</div>
 
-	
-	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
-		<i class="nf nf-md-keyboard_backspace"></i>
-		Back to list</a>
 
-	<style>
-		.current {
-			background-color: var(--grey);
-		}
-	</style>
-	<script>
-		function show_season(season) {
-			{% for season in series.getSeasons() %}
-				document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
-				document.getElementById("season-{{ loop.index }}").classList.remove("current");
-			{% endfor %}
-			document.getElementById("ep-season-" + season).style.display = "block";
-			document.getElementById("season-" + season).classList.add("current");
-		}
-		show_season(1)
+<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
+	<i class="nf nf-md-keyboard_backspace"></i>
+	Back to list</a>
 
-		function mark_as_seen(url_to_fetch){
-			fetch(url_to_fetch)
-				.then(response => response.json())
-				.then(result => {
-					console.log(result)   
-				})
-				.catch(error => console.log('error', error));
-		}
-	</script>
-{% endblock %}
+<style>
+	.current {
+		background-color: var(--grey);
+	}
+</style>
+<script>
+	function show_season(season){
+{% for season in series.getSeasons() %}
+document.getElementById("ep-season- {{ loop.index }}").style.display = "none";
+document.getElementById("season- {{ loop.index }}").classList.remove("current");{% endfor %}
+document.getElementById("ep-season-" + season).style.display = "block";
+document.getElementById("season-" + season).classList.add("current");
+}
+show_season(1)
+
+function mark_as_seen(url_to_fetch) {
+fetch(url_to_fetch).then(response => response.json()).then(result => {
+console.log(result)
+}).catch(error => console.log('error', error));
+}
+</script>{% endblock %}

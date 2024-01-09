@@ -103,4 +103,34 @@ class SeriesController extends AbstractController
         $response->setContent(stream_get_contents($series->getPoster()));
         return $response;
     }
+
+    #[Route('/followed', name: 'app_series_followed', methods: ['GET'])]
+    public function show_followed(Series $series): Response
+    {   
+        return $this->render('series/followed.html.twig', [
+            'series' => $series,
+        ]);
+    }
+
+    #[Route('/update_follow', name: 'app_series_update_followed', methods: ['GET'])]
+    public function update_followed(Request $request, EntityManagerInterface $entityManager, Series $series): Response
+    {   
+        $to_update = $request->query->get('update_followed', 0);
+        $series = $entityManager->getRepository(Series::class)->findOneBy(['id' => $to_update]);
+
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+
+        if ($user->getSeries()->contains($series)) {
+            $user->removeEpisode($series);
+            $entityManager->flush();
+        } else {
+            $user->addEpisode($series);
+            $entityManager->flush();
+        }
+        return $this->render('series/followed.html.twig', [
+            'series' => $series,
+        ]);
+    }
+
 }
