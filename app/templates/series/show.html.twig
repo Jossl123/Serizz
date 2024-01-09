@@ -81,13 +81,12 @@
 								{% if is_granted('ROLE_USER') %}
 									<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
 										{% if app.user.getEpisode().contains(episode) %}
-											<i class="nf nf-fa-check"></i>
-										</button>
-									{% else %}
-										<i class="nf nf-md-eye"></i>
+											<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
+										{% else %}
+											<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
+										{% endif %}
 									</button>
 								{% endif %}
-							{% endif %}
 								{{ episode.getNumber() }}
 								-
 								{{ episode.getTitle() }}
@@ -132,10 +131,20 @@
 		show_season(1)
 
 		function mark_as_seen(url_to_fetch){
+			var ep_id = url_to_fetch.split("=")[1]
+			console.log(ep_id)
 			fetch(url_to_fetch)
 				.then(response => response.json())
 				.then(result => {
 					console.log(result)   
+					var ep = document.getElementById(`ep-${ep_id}`)
+					if (ep.classList.contains("nf-md-eye_off")) {
+						ep.classList.remove("nf-md-eye_off")
+						ep.classList.add("nf-fa-check")
+					}else{
+						ep.classList.remove("nf-fa-check")
+						ep.classList.add("nf-md-eye_off")
+					}
 				})
 				.catch(error => console.log('error', error));
 		}
