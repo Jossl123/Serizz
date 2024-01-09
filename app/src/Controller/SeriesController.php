@@ -31,18 +31,17 @@ class SeriesController extends AbstractController
             $series = $seriesRepo->findAll();
             $series_match = array();
             foreach($series as $serie){
-                dump($serie);
                 if (str_contains(strtoupper($serie->getTitle()),strtoupper($search))){
                     $series_match[] = $serie;
                 }
             }
+            $seriesNb = sizeof($series_match);
             $series_match = array_slice($series_match, $page*$limit, $limit);
             $series = $series_match;
-            $seriesNb = sizeof($series);
         }
         return $this->render('series/index.html.twig', [
             'series' => $series,
-            'pagesNb' => $seriesNb / $limit,
+            'pagesNb' => (int)($seriesNb / $limit),
             'page' => $page,
             'init' => $search
         ]);
