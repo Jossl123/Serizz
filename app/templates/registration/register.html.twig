@@ -4,8 +4,15 @@
 
 {% block body %}
     <style>
+        body:not(.user-is-tabbing) button:focus,
+        body:not(.user-is-tabbing) input:focus,
+        body:not(.user-is-tabbing) select:focus,
+        body:not(.user-is-tabbing) textarea:focus {
+            outline: none;
+        }
+
         body{
-            background-color: #030516;
+            background-color: #151433;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 1rem;
             font-weight: 400;
@@ -20,30 +27,35 @@
         }
 
         section {
-            background-color: rgba(39, 11, 81, 0.5);
+            background-color: rgba(28, 28, 56, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             width: 100%;
-            max-width: 20vw;
+            max-width: 18vw;
             padding: 1vw;
-            border-radius: 0.25rem;
+            border-radius: 0.5rem;
             position: absolute;
             top: 50%;
             left: 50%;
+            -webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,1);
+            -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,1);
+            box-shadow: 3px 3px 5px 0px rgba(0,0,0,1);
             transform: translate(-50%, -50%);
         }
 
         input {
-            display: block;
-            margin-bottom: 10px;
-            background-color: #fff;
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-            padding: 0.375rem 0.75rem;
-            font-size: 2rem;
-            line-height: 1.5;
+            border: none;
+            border-bottom: solid rgb(143, 143, 143) 1px;
+
+            margin-bottom: 30px;
+
+            background: none;
+            color: rgba(255, 255, 255, 0.555);
+
+            height: 35px;
+            width: 300px;
         }
 
         label {
