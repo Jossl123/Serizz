@@ -136,7 +136,6 @@
 			fetch(url_to_fetch)
 				.then(response => response.json())
 				.then(result => {
-					console.log(result)   
 					var ep = document.getElementById(`ep-${ep_id}`)
 					if (ep.classList.contains("nf-md-eye_off")) {
 						ep.classList.remove("nf-md-eye_off")
