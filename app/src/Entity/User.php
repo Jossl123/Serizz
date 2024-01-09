@@ -9,6 +9,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Table(name: "user", uniqueConstraints: [
     new ORM\UniqueConstraint(name: "UNIQ_8D93D649E7927C74", columns: ["email"]),
@@ -206,7 +209,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+<<<<<<< HEAD
     public function getUserIdentifier(): string { return $this->getEmail(); }
     public function getRoles(): array { return ['ROLE_USER']; }
     public function eraseCredentials() { }
+=======
+
+    public function getUserIdentifier(): string { return $this->getEmail(); }
+    public function getRoles(): array { return ['ROLE_USER']; }
+    public function eraseCredentials(): void { }
+>>>>>>> user-accounts
 }
