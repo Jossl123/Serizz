@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block body %}
+
+	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': series.id}) } %}
+
 	<table>
 		<tr>
 			<td class="m-3 w-1/5">

@@ -3,6 +3,8 @@
 {% block title %}Series index{% endblock %}
 
 {% block body %}
+	{% include('./header.html.twig')  %}
+
     <h1>Series index</h1>
     {% if page > 0 %}<a href="{{ path('app_series_index', {'page': page - 1}) }}"><-</a>{% endif %}
     {% for i in 0..pagesNb %}
