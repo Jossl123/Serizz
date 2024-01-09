@@ -37,4 +37,12 @@ class SeriesController extends AbstractController
             'series' => $series,
         ]);
     }
+
+    #[Route('/poster/{id}', name: 'app_series_poster', methods: ['GET'])]
+    public function show_poster(Series $series): Response
+    {
+        $response = new Response();
+        $response->setContent(stream_get_contents($series->getPoster()));
+        return $response;
+    }
 }

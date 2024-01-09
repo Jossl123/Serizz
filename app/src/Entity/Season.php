@@ -18,9 +18,9 @@ class Season
     #[ORM\Column(name: "number", type: "integer", nullable: false)]
     private $number;
 
-    #[ORM\ManyToOne(targetEntity: "Series")]
-    #[ORM\JoinColumn(name: "series_id", referencedColumnName: "id")]
-    private $series;
+    #[ORM\ManyToOne(inversedBy: 'seasons')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Series $series = null;
 
     public function getId(): ?int
     {

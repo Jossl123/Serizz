@@ -1,55 +1,86 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Series{% endblock %}
+{% block title %}
+	{{ series.title }}
+{% endblock %}
 
 {% block body %}
-    <h1>Series</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ series.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ series.title }}</td>
-            </tr>
-            <tr>
-                <th>Plot</th>
-                <td>{{ series.plot }}</td>
-            </tr>
-            <tr>
-                <th>Imdb</th>
-                <td>{{ series.imdb }}</td>
-            </tr>
-            <tr>
-                <th>Poster</th>
-                <td>{{ series.poster }}</td>
-            </tr>
-            <tr>
-                <th>Director</th>
-                <td>{{ series.director }}</td>
-            </tr>
-            <tr>
-                <th>YoutubeTrailer</th>
-                <td>{{ series.youtubeTrailer }}</td>
-            </tr>
-            <tr>
-                <th>Awards</th>
-                <td>{{ series.awards }}</td>
-            </tr>
-            <tr>
-                <th>YearStart</th>
-                <td>{{ series.yearStart }}</td>
-            </tr>
-            <tr>
-                <th>YearEnd</th>
-                <td>{{ series.yearEnd }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<div class="h-full bg-[--black] text-[--white]">
 
-    <a href="{{ path('app_series_index') }}">back to list</a>
+		<div class="grid grid-rows-2 grid-flow-col">
+			<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5">
+			<div>
+				<div class="bg-[--grey] p-2 m-2 rounded flex justify-around">
+                    <i class="nf nf-fa-check"></i> <!--Needs to be replaced by the actual status-->
+                    <i class="nf nf-fa-check"></i>
 
+                </div>
+				<ul class="max-w-96">
+					<hr class="border-[--grey]">
+					<li>
+						<h2 class="font-bold text-[--grey]">Director</h2>
+						<p class="text-[--white]">
+							{% if series.director != "" %}
+								{{ series.director }}
+							{% else %}
+								unknown
+							{% endif %}
+						</p>
+					</li>
+					<hr
+					class="border-[--grey]">
+					<!--YouTube trailer : {{ series.youtubeTrailer }}-->
+
+					<li>
+						<h2 class="font-bold text-[--grey]">Awards</h2>
+						<p class="text-[--white]">
+							{% if series.awards != "" %}
+								{{ series.awards }}
+							{% else %}
+								none
+							{% endif %}
+						</p>
+					</li>
+					<hr class="border-[--grey]">
+					<li>
+						<h2 class="font-bold text-[--grey]">Series start</h2>
+						<p class="text-[--white]">
+							{{ series.yearStart }}</p>
+					</li>
+					<li>
+						<h2 class="font-bold text-[--grey]">Series end</h2>
+						<p class="text-[--white]">
+							{% if series.yearEnd != null %}
+								{{ series.yearEnd }}
+							{% else %}
+								still running
+							{% endif %}
+						</p>
+					</li>
+					<hr class="border-[--grey]">
+				</ul>
+			</div>
+
+			<div>
+				<h1 class="text-3xl font-bold p-5">{{ series.title }}</h1>
+				<p class="w-1/2">{{ series.plot }}</p>
+
+				<div class="grid grid-rows-2 grid-flow-col">
+
+					{% for season in series.getSeasons() %}
+
+						<a href="">Season
+							{{ season.getNumber() }}</a>
+
+					{% endfor %}
+				</div>
+
+			</div>
+
+		</div>
+
+		<a href="{{ path('app_series_index') }}" class="text-center text-3xl font-bold p-5 block">back to list</a>
+
+	</div>
 {% endblock %}
