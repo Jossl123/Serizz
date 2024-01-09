@@ -21,8 +21,14 @@ class SeriesController extends AbstractController
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
-        $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
         $seriesNb = $seriesRepo->count([]);
+        if ($page > $seriesNb/$limit) {
+            $page = (int)($seriesNb/$limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
+        $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
         return $this->render('series/index.html.twig', [
             'series' => $series,
             'pagesNb' => $seriesNb / $limit,
