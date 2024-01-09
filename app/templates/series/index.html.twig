@@ -12,7 +12,7 @@
     {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1}) }}">-></a>{% endif %}
     {% for series in series %}
         <div class="flex">
-            <p>{{ series.poster }}</p>
+			<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5">
             <div>
                 <p>{{ series.title }}</p>
                 <p>{{ series.plot }}</p>
