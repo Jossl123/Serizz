@@ -7,7 +7,7 @@
 {% block body %}
 	<table>
 		<tr>
-			<td class="p-3">
+			<td class="m-3 w-1/5">
 				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5 w-full">
 				<div class="bg-[--grey] p-2 m-2 rounded flex justify-around">
 					<i class="nf nf-fa-check"></i>
@@ -15,14 +15,20 @@
 					<i class="nf nf-fa-check"></i>
 				</div>
 			</td>
-			<td class="p-3">
+			<td class="m-3 flex flex-col">
 				<h1 class="text-3xl font-bold p-2 m-5">{{ series.title }}</h1>
 				<p class="w-1/2">{{ series.plot }}</p>
 				<hr class="border-[--grey] m-2">
+				<div class="flex justify-around flex-wrap gap-1 m-3">
+					{% for season in series.getSeasons() %}
+						<a href="" class="bg-[--grey] text-white p-2 rounded">Season
+							{{ season.getNumber() }}</a>
+					{% endfor %}
+				</div>
 			</td>
 		</tr>
 		<tr>
-			<td class="p-3">
+			<td class="m-3">
 				<ul class="max-w-96">
 					<hr class="border-[--grey]">
 					<li>
@@ -64,12 +70,6 @@
 					</li>
 					<hr class="border-[--grey]">
 				</ul>
-			</td>
-			<td class="flex justify-around flex-wrap gap-1 p-3">
-				{% for season in series.getSeasons() %}
-					<a href="" class="bg-[--grey] text-white p-2 rounded">Season
-						{{ season.getNumber() }}</a>
-				{% endfor %}
 			</td>
 		</tr>
 	</table>
