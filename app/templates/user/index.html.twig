@@ -3,45 +3,58 @@
 {% block title %}User index{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+    <div class="text-xl h-screen flex items-center flex-col">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Password</th>
-                <th>RegisterDate</th>
-                <th>Admin</th>
-                <th>UserId</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ user.admin }}</td>
-                <td>{{ user.userId }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                    {% if app.user.admin != 0 %}<a href="{{ path('app_user_embody', {'id': user.id}) }}">embody</a>{% endif %}
-                </td>
-                
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <script src="https://cdn.tailwindcss.com"></script>
 
-    <a href="{{ path('app_user_new') }}">Create new</a>
+        <div class="relative inline-block my-2.5">
+            <span class="text-2xl md:text-3xl font-bold">
+                User Index
+            </span>
+            <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-orange-400 to-yellow-600 rounded-full"></span>
+        </div>
+
+        <table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr class="">
+                    <th class="px-6 py-3"> Id </th>
+                    <th class="px-6 py-3"> Name </th>
+                    <th class="px-6 py-3"> Email </th>
+                    <th class="px-6 py-3"> Password </th>
+                    <th class="px-6 py-3"> RegisterDate </th>
+                    <th class="px-6 py-3"> Admin </th>
+                    <th class="px-6 py-3"> UserId </th>
+                    <th class="px-6 py-3"> actions </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.id }}</td>
+                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.name }}</td>
+                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.email }}</td>
+                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.password }}</td>
+                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.admin }}</td>
+                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.userId }}</td>
+                    <td class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
+                        <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
+                        {% if app.user.admin != 0 %}<a href="{{ path('app_user_embody', {'id': user.id}) }}"> EMBODY </a>{% endif %}
+                    </td>
+
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_user_new') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+            Create new
+        </a>
+
+    </div>
 {% endblock %}
