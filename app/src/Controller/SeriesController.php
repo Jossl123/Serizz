@@ -39,18 +39,17 @@ class SeriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}?update={update}', name: 'app_series_update', methods: ['GET'])]
-    #[isGranted("ROLE_USER")]
-    public function episode_update(EntityManagerInterface $entityManager, Series $series): Response
+    #[Route('/{id}/update', name: 'app_series_update', methods: ['GET'])]
+    #[IsGranted("ROLE_USER")]
+    public function episode_update(Request $request, EntityManagerInterface $entityManager, Series $series): Response
     {
-        $episode = $entityManager->getRepository(Episode::class)->find($_GET['update']);
-
-        var_dump($episode);
+        $to_update = $request->query->get('update', 0);
+        $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
 
         /** @var \App\Entity\User */
         $user = $this->getUser();
 
-        if (in_array($user->getEpisode(), $episode)) {
+        if ($user->getEpisode()->contains($episode)) {
             $user->removeEpisode($episode);
             $entityManager->flush();
         } else {
@@ -63,6 +62,7 @@ class SeriesController extends AbstractController
         ]);
     }
 
+
     #[Route('/poster/{id}', name: 'app_series_poster', methods: ['GET'])]
     public function show_poster(Series $series): Response
     {
@@ -70,6 +70,4 @@ class SeriesController extends AbstractController
         $response->setContent(stream_get_contents($series->getPoster()));
         return $response;
     }
-
-    
 }

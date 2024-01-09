@@ -24,7 +24,7 @@
 						<a href="" class="bg-[--grey] text-white p-2 rounded">Season
 							{{ season.getNumber() }}</a>
 						{% for episode in season.getEpisodes() %}
-							<div><a href={{ path('app_series_update', {'id': series.id, 'update': episode.id}) }}><i class="nf nf-fa-check"></i></a>
+							<div><a href={{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}><i class="nf nf-fa-check"></i></a>
 								{{ episode.getNumber() }}
 								-
 								{{ episode.getTitle() }}
