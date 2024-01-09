@@ -1,7 +1,7 @@
 <header class="flex p-3 relative place-content-between px-64 gap-8 text-white">
     <div class="-z-10 absolute top-0 overflow-hidden right-0 w-full h-full">
-		{% if poster_picture is defined %}
-			<img src="{{poster_picture}}" alt="Series poster" class="blur-xl rotate-90 origin-top-right translate-y-2/4 w-full">
+		{% if poster_picture_id is defined %}
+			<img src="{{ path('app_series_poster', {'id': poster_picture_id}) }}" alt="Series poster" class="blur-xl rotate-90 origin-top-right translate-y-2/4 w-full">
 		{% else %}
 			<img src="{{ asset('images/default.jpg') }}" alt="Series poster" class="blur-xl rotate-90 origin-top-right translate-y-2/4 w-full">
 		{% endif %}

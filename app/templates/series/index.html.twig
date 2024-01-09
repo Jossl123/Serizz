@@ -3,7 +3,11 @@
 {% block title %}Series index{% endblock %}
 
 {% block body %}
-	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (series|first).id}) } %}
+    {% if series|length > 0 %}
+        {% include('./header.html.twig') with {'poster_picture_id': (series|first).id} %}
+    {% else %}
+        {% include('./header.html.twig') %}
+    {% endif %}
     <div class="flex gap-2 justify-center p-2">
         {% if page > 0 %}<a href="{{ path('app_series_index', {'page': page - 1}) }}"><-</a>{% endif %}
         {% for i in 0..pagesNb %}

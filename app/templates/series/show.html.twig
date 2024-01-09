@@ -6,7 +6,7 @@
 
 {% block body %}
 
-	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': series.id}) } %}
+	{% include('./header.html.twig') with {'poster_picture_id': series.id} %}
 	<div class="flex p-12 relative">
 		<div class="flex flex-col">
 			<div class="m-3 w-64">
