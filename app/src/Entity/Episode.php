@@ -33,12 +33,12 @@ class Episode
     #[ORM\Column(name: "number", type: "integer", nullable: false)]
     private $number;
 
-    #[ORM\ManyToOne(targetEntity: "Season")]
-    #[ORM\JoinColumn(name: "season_id", referencedColumnName: "id")]
-    private $season;
-
     #[ORM\ManyToMany(targetEntity: "User", mappedBy: "episode")]
     private $user = array();
+
+    #[ORM\ManyToOne(inversedBy: 'episodes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Season $season = null;
 
     /**
      * Constructor
