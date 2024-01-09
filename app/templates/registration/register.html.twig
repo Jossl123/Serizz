@@ -82,6 +82,17 @@
             padding: 0.375rem 0.75rem;
             text-align: center;
         }
+
+        button:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+        input::placeholder {
+            color: #6c757d;
+            opacity: 1;
+            font-size: 1.5rem;
+        }
     </style>
 
     <section id="sec">
@@ -92,15 +103,27 @@
 
         {{ form_start(registrationForm) }}
 
-        {{ form_row(registrationForm.name) }}
-
-        {{ form_row(registrationForm.email) }}
-
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
+        {{ form_row(registrationForm.name, {
+            'attr': {
+                'placeholder': 'Your name'
+            }
         }) }}
 
-        <button type="submit" class="btn">Register</button>
+        {{ form_row(registrationForm.email, {
+            'attr': {
+                'placeholder': 'name@example.com'
+            }
+        }) }}
+
+        {{ form_row(registrationForm.plainPassword, {
+            label: 'Password',
+            'attr': {
+                'placeholder': '**********'
+            }
+        }) }}
+
+        <button type="submit" class="btn"> Register </button>
+
         {{ form_end(registrationForm) }}
 
     </section>
