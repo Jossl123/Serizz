@@ -11,10 +11,12 @@
     {% endfor %}
     {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1}) }}">-></a>{% endif %}
     {% for series in series %}
-        <div class="flex">
-			<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="p-5">
-            <div>
-                <p>{{ series.title }}</p>
+        <div class="flex p-2">
+            <a href="{{ path('app_series_show', {'id': series.id}) }}" class="w-64">
+                <img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
+            </a>
+            <div class="p-2">
+                <h1>{{ series.title }}</h1>
                 <p>{{ series.plot }}</p>
                 <p>{{ series.imdb }}</p>
                 <p>{{ series.director }}</p>
@@ -23,9 +25,6 @@
                 <p>{{ series.yearStart }}</p>
                 <p>{{ series.yearEnd }}</p>
             </div>
-            <p>
-                <a href="{{ path('app_series_show', {'id': series.id}) }}">show</a>
-            </p>
         </div>
     {% else %}
         <div>
