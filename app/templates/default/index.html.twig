@@ -11,7 +11,13 @@
 <div class="example-wrapper">
     <h1>Hello !</h1>
 
+    {% if(app.user) %}
+        <h2> Welcome {{ app.user.name }} ! </h2>
+    {% endif %}
 
+    <a href="{{ path('app_login') }}"> Login </a> <br>
+    <a href="{{ path('app_register') }}"> Register </a> <br>
+    <a href="{{ path('app_logout') }}"> Logout </a>
     
 </div>
 {% endblock %}
