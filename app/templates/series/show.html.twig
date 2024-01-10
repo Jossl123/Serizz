@@ -149,10 +149,10 @@
 
 		function mark_as_seen(url_to_fetch){
 			var ep_id = url_to_fetch.split("=")[1]
-			console.log(ep_id)
 			fetch(url_to_fetch)
 				.then(response => response.json())
 				.then(result => {
+					if (!result.success)return
 					var ep = document.getElementById(`ep-${ep_id}`)
 					if (ep.classList.contains("nf-md-eye_off")) {
 						ep.classList.remove("nf-md-eye_off")
