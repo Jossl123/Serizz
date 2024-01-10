@@ -4,12 +4,12 @@
 {% endblock %}
 
 {% block body %}
-
 	{% if (series|first) != null %}
 		{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (series|first).id}) } %}
 	{% else %}
 		{% include('./header.html.twig') %}
 	{% endif %}
+	<div class="px-64">
 	<h1 class="text-3xl font-bold p-2 m-5">Your followed series</h1>
 	{% if (series|first) != null %}
 		<div class="flex flex-wrap px-32">
@@ -23,5 +23,5 @@
 	{% else %}
 		<h2 class="text-xl font-bold p-2 m-3">You do not follow any series</h2>
 	{% endif %}
-
+	</div>
 {% endblock %}

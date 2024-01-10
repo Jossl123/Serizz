@@ -60,7 +60,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         inverseJoinColumns: [new ORM\JoinColumn(name: "episode_id", referencedColumnName: "id")]
     )]
     private $episode = array();
-    private $isEmbodying = -1;
     /**
      * Constructor
      */
@@ -72,7 +71,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getId(): ?int
     {
-        if ($this->isEmbodying != -1)return $this->isEmbodying;
         return $this->id;
     }
 
@@ -211,11 +209,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string { return $this->getEmail(); }
 
     public function getRoles(): array {
-        if ($this->isEmbodying != -1) return ['ROLE_USER', "ROLE_EMBODY"]; 
         if ($this->admin==1) return ['ROLE_ADMIN','ROLE_USER'];
         if ($this->admin==2) return ['ROLE_SUPER_ADMIN','ROLE_USER'];
         return ['ROLE_USER']; 
     }
 
     public function eraseCredentials() { }
+
+    public function getAdmin(): ?int
+    {
+        return $this->admin;
+    }
 }
