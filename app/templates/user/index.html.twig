@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    {% include('./header.html.twig') %}
+
+    <div class="text-xl h-screen flex items-center flex-col">
+
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <div class="relative inline-block my-2.5">
+            <span class="text-2xl md:text-3xl font-bold">
+                User Index
+            </span>
+            <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+        </div>
+
+        <table class="text-sm text-left rtl:text-right  ">
+            <thead class="text-xs  uppercase bg-gray-50 bg-gray-700 ">
+                <tr class="">
+                    <th class="px-6 py-3"> Id </th>
+                    <th class="px-6 py-3"> Name </th>
+                    <th class="px-6 py-3"> Email </th>
+                    <th class="px-6 py-3"> Password </th>
+                    <th class="px-6 py-3"> RegisterDate </th>
+                    <th class="px-6 py-3"> Admin </th>
+                    <th class="px-6 py-3"> UserId </th>
+                    <th class="px-6 py-3"> actions </th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900 border-b bg-gray-800 border-gray-700">
+                    <td class="px-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.id }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.name }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.email }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.password }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.userId }}</td>
+                    <td class="font-medium text-blue-600 text-blue-500 hover:underline">
+                        <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
+                        <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
+                        {% if app.user.admin != 0 %}<a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>{% endif %}
+                    </td>
+
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_user_new') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium  rounded-lg  hover: hover:bg-gray-100  bg-gray-800 hover:bg-gray-700 hover:text-white">
+            Create new
+        </a>
+
+    </div>
+{% endblock %}

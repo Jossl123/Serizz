@@ -4,28 +4,41 @@
 {% endblock %}
 
 {% block body %}
-  	{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (hall_of_fame|first).id}) } %}
-
-    <h1>Hello  {% if app.user %} {{app.user.name}} {% endif %} ! </h1>
-    <div>
+    {% if not app.user %} 
+        {% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
+    {% else %}
+        {% include('./header.html.twig') with {'poster_picture_id': (hall_of_fame|first).id, 'username': app.user.name} %}
+    {% endif %}
+    <div class="py-10 px-64">
         <div>
-            <p>{{ "now"|date("j F") }} Hall of Fame</p>
-            <ul class="flex gap-6 place-content-around flex-shrink-0">
+            {{ "now"|date("j F") }} 
+        </div>
+        <div>
+            <p class="text-white bold text-4xl font-bold"> Hall of Fame</p>
+            <ul class="flex gap-6 place-content-around flex-shrink-0 pb-20">
                 {% for serie in hall_of_fame %}
-                    <li class="flex gap-0 flex items-center">
-                        <p class="text-9xl font-extrabold" style="font-size:25rem">{{loop.index}}</p>
-                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-16 h-80 translate-y-8">
-                    </li>
+                    <a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex items-center">
+                        <p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
+                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 h-80 translate-y-8">
+                    </a>
                 {% endfor %}
             </ul>
         </div>
+        <hr class="py-2 ">
         <div>
-            <p class="text-xl">You've recently seen them <a class="bg-[--white] rounded text-white cursor-pointer">(see more)</a></p>
+            <div class="flex place-content-between">
+                <p class="text-xl">You've recently followed them </p>
+                <a class="rounded text-white cursor-pointer p-2" href="{{ path('app_series_show_followed') }}" >See more</a>
+            </div>
+            
             <ul class="flex gap-6 ">
-                {% for serie in recently_seen %}
-                    <li class="flex gap-0 flex ">
-                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover h-64 ">
-                    </li>
+                {% for serie in recently_seen|slice(0, 5)  %}
+                    <div class="flex gap-0 flex relative group overflow-hidden">
+                        <a href="{{ path('app_series_show', {'id': serie.id}) }}" >
+                            <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover h-64">
+                        </a>
+                        {% include('./follow.html.twig') with {'series': serie} %}
+                    </div>
                 {% endfor %}
         </div>
     </div>

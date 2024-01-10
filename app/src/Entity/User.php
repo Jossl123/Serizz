@@ -35,8 +35,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: "register_date", type: "datetime", nullable: true)]
     private $registerDate;
 
-    #[ORM\Column(name: "admin", type: "boolean", nullable: false)]
-    private $admin = '0';
+    #[ORM\Column(name: "admin", type: "integer", nullable: false)]
+    private $admin = 0;
 
     #[ORM\Column(name: "user_id", type: "string", length: 128, nullable: true)]
     private $userId;
@@ -60,12 +60,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         inverseJoinColumns: [new ORM\JoinColumn(name: "episode_id", referencedColumnName: "id")]
     )]
     private $episode = array();
-
     /**
      * Constructor
      */
     public function __construct()
     {
+        $this->registerDate = new \DateTime();
         $this->series = new \Doctrine\Common\Collections\ArrayCollection();
         $this->episode = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -123,12 +123,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isAdmin(): ?bool
+    public function isAdmin(): ?int
     {
         return $this->admin;
     }
 
-    public function setAdmin(bool $admin): self
+    public function setAdmin(int $admin): self
     {
         $this->admin = $admin;
 
@@ -208,6 +208,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getUserIdentifier(): string { return $this->getEmail(); }
-    public function getRoles(): array { return ['ROLE_USER']; }
+
+    public function getRoles(): array {
+        if ($this->admin==1) return ['ROLE_ADMIN','ROLE_USER'];
+        if ($this->admin==2) return ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_USER'];
+        return ['ROLE_USER']; 
+    }
+
     public function eraseCredentials() { }
+
+    public function getAdmin(): ?int
+    {
+        return $this->admin;
+    }
 }

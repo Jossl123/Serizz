@@ -1,124 +1,131 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in!
+{% endblock %}
 
 {% block body %}
-    <style>
-        body:not(.user-is-tabbing) button:focus,
-        body:not(.user-is-tabbing) input:focus,
-        body:not(.user-is-tabbing) select:focus,
-        body:not(.user-is-tabbing) textarea:focus {
-            outline: none;
-        }
+	{% include('./header.html.twig') %}
 
-        body{
-            background-color: #151433;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #fff;
-        }
+	<style>
+		body:not(.user-is-tabbing) button:focus,
+		body:not(.user-is-tabbing) input:focus,
+		body:not(.user-is-tabbing) select:focus,
+		body:not(.user-is-tabbing) textarea:focus {
+			outline: none;
+		}
 
-        h1{
-            font-size: 2rem;
-            font-weight: 400;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
+		section body {
+			background-color: #151433;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 1rem;
+			font-weight: 400;
+			line-height: 1.5;
+			color: #fff;
+		}
 
-        section {
-            text-align: center;
-            background-color: rgba(28, 28, 56, 0.7);
-            width: 100%;
-            max-width: 18vw;
-            padding: 1vw;
-            border-radius: 0.5rem;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            -webkit-box-shadow: 3px 3px 5px 0 rgba(0,0,0,1);
-            -moz-box-shadow: 3px 3px 5px 0 rgba(0,0,0,1);
-            box-shadow: 3px 3px 5px 0 rgba(0,0,0,1);
-        }
+		section h1 {
+			font-size: 2rem;
+			font-weight: 400;
+			line-height: 1.2;
+			margin-bottom: 1rem;
+		}
 
-        form {
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-        }
+		section {
+			text-align: center;
+			background-color: rgba(28, 28, 56, 0.7);
+			width: 100%;
+			max-width: 18vw;
+			padding: 1vw;
+			border-radius: 0.5rem;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			-webkit-box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 1);
+			-moz-box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 1);
+			box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 1);
+		}
 
-        input {
-            border: none;
-            border-bottom: solid rgb(143, 143, 143) 1px;
-            margin-bottom: 30px;
-            background: none;
-            color: rgba(255, 255, 255, 0.555);
-            height: 35px;
-            width: 300px;
-        }
+		section form {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+		}
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-        }
+		section input {
+			border: none;
+			border-bottom: solid rgb(143, 143, 143) 1px;
+			margin-bottom: 30px;
+			background: none;
+			color: rgba(255, 255, 255, 0.555);
+			height: 35px;
+			width: 300px;
+		}
 
-        button {
-            margin-top: 1vh;
-            background-color: #007bff;
-            border-radius: 0.25rem;
-            border: 1px solid #007bff;
-            color: #fff;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.5;
-            padding: 0.375rem 0.75rem;
-            text-align: center;
-        }
+		section label {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-size: 1rem;
+			font-weight: 400;
+			line-height: 1.5;
+		}
 
-        button:hover {
-            background-color: #0069d9;
-            border-color: #0062cc;
-        }
+		section button {
+			margin-top: 1vh;
+			background-color: #007bff;
+			border-radius: 0.25rem;
+			border: 1px solid #007bff;
+			color: #fff;
+			cursor: pointer;
+			font-size: 1rem;
+			font-weight: 400;
+			line-height: 1.5;
+			padding: 0.375rem 0.75rem;
+			text-align: center;
+		}
 
-        input::placeholder {
-            color: #6c757d;
-            opacity: 1;
-            font-size: 1.5rem;
-        }
-    </style>
+		section button:hover {
+			background-color: #0069d9;
+			border-color: #0062cc;
+		}
 
-    <section>
-        <h1> Sign In </h1>
+		section input::placeholder {
+			color: #6c757d;
+			opacity: 1;
+			font-size: 1.5rem;
+		}
+	</style>
 
-        <form method="post">
-            {% if error %}
-                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
+	<section>
+		<h1>
+			Sign In
+		</h1>
 
-            {% if app.user %}
-                <div class="mb-3">
-                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-                </div>
-            {% endif %}
+		<form method="post">
+			{% if error %}
+				<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+			{% endif %}
+
+			{% if app.user %}
+				<div class="mb-3">
+					You are logged in as
+					{{ app.user.userIdentifier }},
+					<a href="{{ path('app_logout') }}">Logout</a>
+				</div>
+			{% endif %}
 
 
-            <label for="inputEmail">Email</label>
-            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" autocomplete="email" placeholder="name@example.com" required>
-            <label for="inputPassword">Password</label>
-            <input type="password" name="password" id="inputPassword" autocomplete="current-password" placeholder="**********" required>
+			<label for="inputEmail">Email</label>
+			<input type="email" value="{{ last_username }}" name="email" id="inputEmail" autocomplete="email" placeholder="name@example.com" required>
+			<label for="inputPassword">Password</label>
+			<input type="password" name="password" id="inputPassword" autocomplete="current-password" placeholder="**********" required>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <button type="submit">
-                Sign in
-            </button>
-        </form>
-    </section>
+			<button type="submit">
+				Sign in
+			</button>
+		</form>
+	</section>
 
 {% endblock %}

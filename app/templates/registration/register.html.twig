@@ -3,6 +3,8 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+    {% include('./header.html.twig') %}
+
     <style>
         body:not(.user-is-tabbing) button:focus,
         body:not(.user-is-tabbing) input:focus,
@@ -72,7 +74,7 @@
             align-items: center;
         }
 
-        button {
+        section button {
             margin-top: 1vh;
             background-color: #007bff;
             border-radius: 0.25rem;
@@ -86,7 +88,7 @@
             text-align: center;
         }
 
-        button:hover {
+        section button:hover {
             background-color: #0069d9;
             border-color: #0062cc;
         }
@@ -95,6 +97,19 @@
             color: #6c757d;
             opacity: 1;
             font-size: 1.5rem;
+        }
+
+        section select {
+            border: none;
+            border-bottom: solid rgb(143, 143, 143) 1px;
+
+            margin-bottom: 30px;
+
+            background: none;
+            color: rgba(255, 255, 255, 0.555);
+
+            height: 35px;
+            width: 300px;
         }
     </style>
 
@@ -117,6 +132,8 @@
                 'placeholder': 'name@example.com'
             }
         }) }}
+
+        {{ form_row(registrationForm.country) }}
 
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password',

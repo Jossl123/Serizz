@@ -74,4 +74,8 @@ class Country
 
         return $this;
     }
+
+    public function __toString():String {
+        return $this->name;
+    }
 }

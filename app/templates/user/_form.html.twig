@@ -1,0 +1,78 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+
+<style>
+    body:not(.user-is-tabbing) button:focus,
+    body:not(.user-is-tabbing) input:focus,
+    body:not(.user-is-tabbing) select:focus,
+    body:not(.user-is-tabbing) textarea:focus {
+        outline: none;
+    }
+
+    body{
+        background-color: #151433;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #fff;
+    }
+
+    input {
+        border: none;
+        border-bottom: solid rgb(143, 143, 143) 1px;
+
+        margin-bottom: 30px;
+
+        background: none;
+        color: rgba(255, 255, 255, 0.555);
+
+        height: 35px;
+        width: 300px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    select {
+        border: none;
+        border-bottom: solid rgb(143, 143, 143) 1px;
+
+        margin-bottom: 30px;
+
+        background: none;
+        color: rgba(255, 255, 255, 0.555);
+
+        height: 35px;
+        width: 300px;
+    }
+
+</style>
+
+    <div class="flex flex-row">
+
+        <a href="{{ path('app_user_index') }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+            Back to list
+        </a>
+
+
+        <button class="mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+            {{ button_label|default('Save') }}
+        </button>
+
+        {{ include('user/_delete_form.html.twig') }}
+    </div>
+
+
+{{ form_end(form) }}
