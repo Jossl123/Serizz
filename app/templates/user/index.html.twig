@@ -16,8 +16,8 @@
             <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
         </div>
 
-        <table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table class="text-sm text-left rtl:text-right  ">
+            <thead class="text-xs  uppercase bg-gray-50 bg-gray-700 ">
                 <tr class="">
                     <th class="px-6 py-3"> Id </th>
                     <th class="px-6 py-3"> Name </th>
@@ -31,15 +31,15 @@
             </thead>
             <tbody>
             {% for user in users %}
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.id }}</td>
-                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.name }}</td>
-                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.email }}</td>
-                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.password }}</td>
-                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
-                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.admin }}</td>
-                    <td class="x-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.userId }}</td>
-                    <td class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900 border-b bg-gray-800 border-gray-700">
+                    <td class="px-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.id }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.name }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.email }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.password }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
+                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.userId }}</td>
+                    <td class="font-medium text-blue-600 text-blue-500 hover:underline">
                         <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
                         <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
                         {% if app.user.admin != 0 %}<a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>{% endif %}
@@ -54,7 +54,7 @@
             </tbody>
         </table>
 
-        <a href="{{ path('app_user_new') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+        <a href="{{ path('app_user_new') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium  rounded-lg  hover: hover:bg-gray-100  bg-gray-800 hover:bg-gray-700 hover:text-white">
             Create new
         </a>
 
