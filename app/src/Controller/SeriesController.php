@@ -137,9 +137,7 @@ class SeriesController extends AbstractController
             $user->addSeries($series);
             $entityManager->flush();
         }
-        return $this->render('series/show.html.twig', [
-            'series' => $series,
-        ]);
+        return new JsonResponse(array('success' => "true")); 
     }
 
 }

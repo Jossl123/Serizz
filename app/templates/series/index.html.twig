@@ -12,10 +12,12 @@
 	<div class="flex ">
 		<div class="bg-[--dark-blue] py-20">
 			<form action="" method="get">
-                <div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center" >
-                    <input type="text" class="bg-transparent" name="init"/>
-                    <input type="submit" value=""/><i class="nf nf-fa-search text-white"></i></input>
-                </div>
+				<div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
+					<input type="text" class="bg-transparent" name="init"/>
+					<input type="submit" value="">
+						<i class="nf nf-fa-search text-white"></i>
+					</input>
+				</div>
 			</form>
 		</div>
 		<div class="px-10 w-full">
@@ -34,10 +36,19 @@
 			</div>
 			<div class="grid grid-cols-5 grid-rows-2">
 				{% for series in series %}
-					<div class="flex flex-col">
-						<a href="{{ path('app_series_show', {'id': series.id}) }}" class="h-64 w-32">
-							<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-auto h-full object-cover max-w-48 ">
-						</a>
+					<div class="flex flex-col py-5">
+						<div class="relative w-fit h-64 group overflow-hidden rounded">
+							<a href="{{ path('app_series_show', {'id': series.id}) }}">
+								<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+							</a>
+							<button onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')" class="absolute left-0 w-auto top-0 w-full p-2 -translate-y-full group-hover:translate-y-0 transition-all ease-in-out duration-200">
+								{% if app.user.getSeries().contains(series) %}
+									<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark rounded-full bg-[--grey] p-2"></i>
+								{% else %}
+									<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark_o rounded-full bg-[--grey] p-2"></i>
+								{% endif %}
+							</button>
+						</div>
 						<div class="p-2 ">
 							<h1 class="text-white font-bold ">{{ series.title }}</h1>
 							{# <p>{{ series.plot }}</p>  #}
@@ -52,4 +63,5 @@
 			</div>
 		</div>
 	</div>
+	<script src="{{asset("follow.js")}}"></script>
 {% endblock %}

@@ -13,13 +13,13 @@
 				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
 					{% if app.user %}
-					<a href="{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}">
-						{% if app.user.getSeries().contains(series) %}
-							<i class="nf nf-fa-bookmark"></i>
-						{% else %}
-							<i class="nf nf-fa-bookmark_o"></i>
-						{% endif %}
-					</a>
+						<button onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')">
+							{% if app.user.getSeries().contains(series) %}
+								<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark"></i>
+							{% else %}
+								<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark_o"></i>
+							{% endif %}
+						</button>
 						<!--Needs to be replaced by the actual status-->
 						<i class="nf nf-fa-check"></i>
 					{% else %}
@@ -81,8 +81,8 @@
 		<div>
 			<div class="m-3 flex flex-col">
 
-				<h1 class="text-3xl font-bold p-2 m-5">{{ series.title }}</h1>
-				<p class="w-1/2">{{ series.plot }}</p>
+				<h1 class="text-3xl font-bold  text-white">{{ series.title }}</h1>
+				<p class="w-1/2 px-2 py-5 text-base"><span>&emsp;</span><span>&emsp;</span>{{ series.plot | raw}}</p>
 				{# <hr class="border-[--grey] m-2"> #}
 				<div method="get" class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
 					<div class="flex gap-1">
@@ -136,6 +136,7 @@
 			background-color: var(--grey);
 		}
 	</style>
+	<script src="{{asset("follow.js")}}"></script>
 	<script>
 		function show_season(season) {
 			{% for season in series.getSeasons() %}
@@ -164,5 +165,6 @@
 				})
 				.catch(error => console.log('error', error));
 		}
+
 	</script>
 {% endblock %}
