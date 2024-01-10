@@ -104,3 +104,4 @@ class SeriesController extends AbstractController
         return $response;
     }
 }
+
