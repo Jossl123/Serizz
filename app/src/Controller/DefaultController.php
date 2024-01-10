@@ -25,7 +25,7 @@ class DefaultController extends AbstractController
             return $this->render('default/showcase.html.twig', [
                 "hall_of_fame" => $series,
                 "user_nb" => $usersRepo->count([]),
-                "watched_episodes" => $usersRepo->count([]) * 10,//TODO
+                "watched_episodes" => $usersRepo->count([]) * 13,//TODO
             ]);
         }
 
