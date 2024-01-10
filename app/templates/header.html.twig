@@ -9,7 +9,7 @@
 	<a href="{{ path('app_default') }}" class="flex items-center z-10 font-bold text-5xl text-white">Home</a>
     <a href="{{ path('app_series_index') }}" class="flex items-center z-10 text-white ml-8 mt-5 text-2xl">Series</a>
 	{% if app.user %}
-		<a href="{{ path('app_series_followed') }}" class="flex items-center z-10 text-white ml-8 mt-5 text-2xl">Followed</a>
+		<a href="{{ path('app_series_show_followed') }}" class="flex items-center z-10 text-white ml-8 mt-5 text-2xl">Followed</a>
 	{% endif %}
 	<div class="z-10 flex items-center gap-2 ml-auto">
 

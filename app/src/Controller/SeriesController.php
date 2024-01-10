@@ -64,11 +64,21 @@ class SeriesController extends AbstractController
         ]);
     }
 
+    #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
+    public function show_followed(): Response
+    {   
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+        $series = $user->getSeries();
+
+        return $this->render('series/followed.html.twig', [
+            'series' => $series,
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
     public function show(Series $series, EntityManagerInterface $entityManager): Response
     {
-        
         return $this->render('series/show.html.twig', [
             'series' => $series,
         ]);
@@ -104,13 +114,6 @@ class SeriesController extends AbstractController
         return $response;
     }
 
-    #[Route('/followed', name: 'app_series_followed', methods: ['GET'])]
-    public function show_followed(Series $series): Response
-    {   
-        return $this->render('series/followed.html.twig', [
-            'series' => $series,
-        ]);
-    }
 
     #[Route('/{id}/update_follow', name: 'app_series_update_followed', methods: ['GET'])]
     public function series_update(Request $request, EntityManagerInterface $entityManager, Series $series): Response
