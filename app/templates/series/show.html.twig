@@ -12,9 +12,19 @@
 			<div class="m-3 w-64">
 				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
-					<i class="nf nf-fa-check"></i>
-					<!--Needs to be replaced by the actual status-->
-					<i class="nf nf-fa-check"></i>
+					{% if app.user %}
+					<a href="{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}">
+						{% if app.user.getSeries().contains(series) %}
+							<i class="nf nf-fa-bookmark"></i>
+						{% else %}
+							<i class="nf nf-fa-bookmark_o"></i>
+						{% endif %}
+					</a>
+						<!--Needs to be replaced by the actual status-->
+						<i class="nf nf-fa-check"></i>
+					{% else %}
+						<p>Login to follow</p>
+					{% endif %}
 				</div>
 			</div>
 			<div class="m-3">
