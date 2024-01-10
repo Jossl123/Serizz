@@ -16,12 +16,14 @@
         {% endfor %}
         {% if page < pagesNb-1 %}<a href="{{ path('app_series_index', {'page': page + 1}) }}">-></a>{% endif %}
     </div>
+    {#
     <form action="" method="get">
         <label for="name">
             <br> <input type="text" name="init" />
         </label>
         <input type="submit" value="Search"/>
     </form>
+    #}
     <div class="flex flex-wrap px-32">
     {% for series in series %}
         <a href="{{ path('app_series_show', {'id': series.id}) }}" class="w-1/5 p-4">
