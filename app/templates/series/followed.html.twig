@@ -13,12 +13,11 @@
 		{% if page > 0 %}
 			<a href="{{ path('app_series_show_followed', {'page': page - 1}) }}"><-</a>
 		{% endif %}
-
-		{% for i in 0..pagesNb %}
+		{% for i in 0..pagesNb-1 %}
 			<a href="{{ path('app_series_show_followed', {'page': i}) }}" class="px-1 w-6 flex justify-center items-center {% if i == page %} rounded bg-cyan-600  {% endif %}">{{ i + 1}}</a>
 		{% endfor %}
 		
-		{% if page < pagesNb %}
+		{% if page < pagesNb-1 %}
 			<a href="{{ path('app_series_show_followed', {'page': page + 1}) }}">-></a>
 		{% endif %}
 	</div>

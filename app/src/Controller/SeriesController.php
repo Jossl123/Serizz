@@ -37,7 +37,7 @@ class SeriesController extends AbstractController
             $seriesNb = sizeof($series_match);
 
             if ($page > $seriesNb / $limit) {
-                $page = (int)($seriesNb / $limit);
+                $page =ceil($seriesNb / $limit);
             }
             if ($page < 0) {
                 $page = 0;
@@ -48,7 +48,7 @@ class SeriesController extends AbstractController
         } else {
             $seriesNb = $seriesRepo->count([]);
             if ($page > $seriesNb / $limit) {
-                $page = (int)($seriesNb / $limit);
+                $page = ceil($seriesNb / $limit);
             }
             if ($page < 0) {
                 $page = 0;
@@ -75,7 +75,8 @@ class SeriesController extends AbstractController
 
         $seriesNb = $series->count([]);
         if ($page > $seriesNb / $limit) {
-            $page = (int)($seriesNb / $limit);
+            $page = ceil($seriesNb / $limit);
+
         }
         if ($page < 0) {
             $page = 0;
@@ -85,7 +86,7 @@ class SeriesController extends AbstractController
 
         return $this->render('series/followed.html.twig', [
             'series' => $series,
-            'pagesNb' => (int)($seriesNb / $limit),
+            'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
         ]);
     }
