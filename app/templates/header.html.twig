@@ -33,6 +33,7 @@
                     {% elseif is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_user_index') }}">Users</a>
                     {% endif %}
+					<br>
 					<a href="{{ path('app_logout') }}"> Logout </a>
 				{% else %}
 					<a href="{{ path('app_register') }}" class="text-white">Register</a>
