@@ -3,45 +3,67 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <div class="text-xl h-screen flex items-center flex-col">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ user.name }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>RegisterDate</th>
-                <td>{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Admin</th>
-                <td>{{ user.admin    }}</td>
-            </tr>
-            <tr>
-                <th>UserId</th>
-                <td>{{ user.userId }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="relative inline-block my-2.5">
+            <span class="text-2xl md:text-3xl font-bold">
+                You are viewing {{ user.name }} informations.
+            </span>
+            <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+        </div>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+        <table class="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <tbody>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Id</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.id }}</td>
+                </tr>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Name</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.name }}</td>
+                </tr>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Email</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.email }}</td>
+                </tr>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Password</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.password }}</td>
+                </tr>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">RegisterDate</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Admin</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.admin    }}</td>
+                </tr>
+                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-sky-900 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">UserId</th>
+                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ user.userId }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-    {% if app.user.admin != 0 %}<a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>{% endif %}
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+        <div class="flex flex-row">
 
-    {{ include('user/_delete_form.html.twig') }}
+            <a href="{{ path('app_user_index') }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+                Back to user list
+            </a>
+
+            {% if app.user.admin != 0 %}
+                <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Embody
+                </a>
+            {% endif %}
+
+            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+                Edit
+            </a>
+
+            {{ include('user/_delete_form.html.twig') }}
+
+        </div>
+    </div>
+
 {% endblock %}
