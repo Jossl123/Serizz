@@ -17,8 +17,9 @@
 				<a href="{{ path('app_series_show', {'id': series.id}) }}" class="w-1/5 p-4">
 					<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
 				</a>
+			{% endfor %}
 			</div>
-		{% endfor %}
+		
 	{% else %}
 		<h2 class="text-xl font-bold p-2 m-3">You do not follow any series</h2>
 	{% endif %}
