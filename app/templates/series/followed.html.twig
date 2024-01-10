@@ -5,7 +5,7 @@
 
 {% block body %}
 	{% if (series|first) != null %}
-		{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (series|first).id}) } %}
+		{% include('./header.html.twig') with {'poster_picture_id': (series|first).id}  %}
 	{% else %}
 		{% include('./header.html.twig') %}
 	{% endif %}
