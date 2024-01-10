@@ -30,10 +30,11 @@
 				{% if app.user %}
                     {% if is_granted('IS_IMPERSONATOR') %}
                         <a href="{{ impersonation_exit_path(path('app_user_index') ) }}">Exit impersonation</a>
+						<br>
                     {% elseif is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_user_index') }}">Users</a>
+						<br>
                     {% endif %}
-					<br>
 					<a href="{{ path('app_logout') }}"> Logout </a>
 				{% else %}
 					<a href="{{ path('app_register') }}" class="text-white">Register</a>
