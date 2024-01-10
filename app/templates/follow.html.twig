@@ -1,0 +1,8 @@
+<button onclick="follow('{{ path('app_series_update_followed', {'id': series.getId(), 'update': series.getId()}) }}')" class="absolute left-0 w-auto top-0 w-full p-2 -translate-y-full group-hover:translate-y-0 transition-all ease-in-out duration-200">
+	{% if app.user.getSeries().contains(series) %}
+		<i id="season-follow-{{series.getId()}}" class="nf nf-fa-bookmark rounded-full bg-[--grey] p-2"></i>
+	{% else %}
+		<i id="season-follow-{{series.getId()}}" class="nf nf-fa-bookmark_o rounded-full bg-[--grey] p-2"></i>
+	{% endif %}
+</button>
+<script src="{{asset("follow.js")}}"></script>

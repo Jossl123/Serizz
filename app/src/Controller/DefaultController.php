@@ -28,10 +28,13 @@ class DefaultController extends AbstractController
                 "watched_episodes" => $usersRepo->count([]) * 13,//TODO
             ]);
         }
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+        $followed_series = $user->getSeries();
 
         return $this->render('default/index.html.twig', [
             "hall_of_fame" => $series,
-            "recently_seen" => $series
+            "recently_seen" => $followed_series
         ]);
     }
 
