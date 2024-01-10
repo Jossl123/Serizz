@@ -48,6 +48,9 @@
 			</div>
 		</div>
 	</div>
+	{% if app.user %}
+	<div class="absolute right-2 text-white top-4">Logged in as {{app.user.name}}</div>
+	{% endif %}
 </header>
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
