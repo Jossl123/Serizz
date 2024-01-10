@@ -17,44 +17,44 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class SeriesController extends AbstractController
 {
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
-    public function index(Request $request,EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $page = $request->query->get('page', 0);
         $search = $request->query->get('init', "");
-        $limit=10;
+        $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
-        
-        if (isset($_GET['init'])){
+
+        if (isset($_GET['init'])) {
             $series = $seriesRepo->findAll();
             $series_match = array();
-            foreach($series as $serie){
-                if (str_contains(strtoupper($serie->getTitle()),strtoupper($search))){
+            foreach ($series as $serie) {
+                if (str_contains(strtoupper($serie->getTitle()), strtoupper($search))) {
                     $series_match[] = $serie;
                 }
             }
-    
+
             $seriesNb = sizeof($series_match);
 
-            if ($page > $seriesNb/$limit) {
-                $page = (int)($seriesNb/$limit);
+            if ($page > $seriesNb / $limit) {
+                $page = (int)($seriesNb / $limit);
             }
             if ($page < 0) {
                 $page = 0;
             }
-    
-            $series_match = array_slice($series_match, $page*$limit, $limit);
+
+            $series_match = array_slice($series_match, $page * $limit, $limit);
             $series = $series_match;
         } else {
             $seriesNb = $seriesRepo->count([]);
-            if ($page > $seriesNb/$limit) {
-                $page = (int)($seriesNb/$limit);
+            if ($page > $seriesNb / $limit) {
+                $page = (int)($seriesNb / $limit);
             }
             if ($page < 0) {
                 $page = 0;
             }
 
-            $series = $seriesRepo->findBy(array(), null, $limit, $page*$limit);
+            $series = $seriesRepo->findBy(array(), null, $limit, $page * $limit);
         }
         return $this->render('series/index.html.twig', [
             'series' => $series,
@@ -65,23 +65,37 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
-    public function show_followed(): Response
-    {   
+    public function show_followed(Request $request): Response
+    {
         /** @var \App\Entity\User */
         $user = $this->getUser();
         $series = $user->getSeries();
+        $page = $request->query->get('page', 0);
+        $limit = 10;
+
+        $seriesNb = $series->count([]);
+        if ($page > $seriesNb / $limit) {
+            $page = (int)($seriesNb / $limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
+
+        $series = $series->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
             'series' => $series,
+            'pagesNb' => (int)($seriesNb / $limit),
+            'page' => $page,
         ]);
     }
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
-    public function show(int $id,EntityManagerInterface $entityManager): Response
+    public function show(int $id, EntityManagerInterface $entityManager): Response
     {
         $serie = $entityManager->getRepository(Series::class)->find($id);
 
-        if (isset($serie)){
+        if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
             ]);
@@ -108,7 +122,7 @@ class SeriesController extends AbstractController
             $entityManager->flush();
         }
 
-        return new JsonResponse(array('success' => "true")); 
+        return new JsonResponse(array('success' => "true"));
     }
 
 
@@ -123,7 +137,7 @@ class SeriesController extends AbstractController
 
     #[Route('/{id}/update_follow', name: 'app_series_update_followed', methods: ['GET'])]
     public function series_update(Request $request, EntityManagerInterface $entityManager, Series $series): Response
-    {   
+    {
         $to_update = $request->query->get('update', 0);
         $series = $entityManager->getRepository(Series::class)->findOneBy(['id' => $to_update]);
 
@@ -139,6 +153,4 @@ class SeriesController extends AbstractController
         }
         return new JsonResponse(array('success' => "true")); 
     }
-
 }
-
