@@ -3,6 +3,8 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+    {% include('./header.html.twig') %}
+
     <style>
         body:not(.user-is-tabbing) button:focus,
         body:not(.user-is-tabbing) input:focus,
@@ -72,7 +74,7 @@
             align-items: center;
         }
 
-        button {
+        section button {
             margin-top: 1vh;
             background-color: #007bff;
             border-radius: 0.25rem;
@@ -86,7 +88,7 @@
             text-align: center;
         }
 
-        button:hover {
+        section button:hover {
             background-color: #0069d9;
             border-color: #0062cc;
         }

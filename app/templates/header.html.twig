@@ -14,7 +14,7 @@
 		{#-rotate-[8deg]#}
 		<img src="{{ asset('images/logo.png') }}" alt="Home" class="absolute brightness-150 top-0 left-0 z-10 cursor-pointer">
 	</a>
-	<a href="{{ path('app_series_index') }}" class="flex items-center z-10 font-bold text-2xl {% if current_path != 'app_series_index' %}text-[--white]{% endif %} ">Series</a>
+	<a href="{{ path('app_series_index') }}" class="flex items-center z-10 font-bold text-2xl drop-shadow-md {% if current_path != 'app_series_index' %}text-[--white]{% endif %} ">Series</a>
 	{% if app.user %}
 		<a href="{{ path('app_series_show_followed') }}" class="flex items-center z-10 font-bold text-xl  {% if current_path != 'app_series_show_followed' %}text-[--white]{% endif %} ">Followed</a>
 	{% endif %}
