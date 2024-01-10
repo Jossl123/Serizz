@@ -4,13 +4,18 @@ function follow(url_to_fetch){
         .then(response => response.json())
         .then(result => {
             if (!result.success)return
-            var ep = document.getElementById(`season-follow-${season_id}`)
-            if (ep.classList.contains("nf-fa-bookmark")) {
-                ep.classList.remove("nf-fa-bookmark")
-                ep.classList.add("nf-fa-bookmark_o")
+            var season = document.getElementById(`season-follow-${season_id}`)
+            var parent = season.parentElement
+            if (season.classList.contains("nf-fa-bookmark")) {
+                parent.classList.add("group-hover:translate-y-0")
+                parent.classList.remove("translate-y-0")
+                season.classList.remove("nf-fa-bookmark")
+                season.classList.add("nf-fa-bookmark_o")
             }else{
-                ep.classList.remove("nf-fa-bookmark_o")
-                ep.classList.add("nf-fa-bookmark")
+                parent.classList.remove("group-hover:translate-y-0")
+                parent.classList.add("translate-y-0")
+                season.classList.remove("nf-fa-bookmark_o")
+                season.classList.add("nf-fa-bookmark")
             }
         })
         .catch(error => console.log('error', error));
