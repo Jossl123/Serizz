@@ -27,7 +27,7 @@
 		{% if (series|first) != null %}
 			<div class="flex flex-wrap px-32">
 				{% for serie in series %}
-                    <div class="flex gap-0 flex relative group overflow-hidden w-1/5 m	-4">
+                    <div class="flex gap-0 flex relative group overflow-hidden w-1/5 m-4">
 						<a href="{{ path('app_series_show', {'id': serie.id}) }}" >
 							<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
 						</a>
