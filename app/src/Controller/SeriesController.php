@@ -66,12 +66,17 @@ class SeriesController extends AbstractController
 
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
-    public function show(Series $series, EntityManagerInterface $entityManager): Response
+    public function show(int $id,EntityManagerInterface $entityManager): Response
     {
-        
-        return $this->render('series/show.html.twig', [
-            'series' => $series,
-        ]);
+        $serie = $entityManager->getRepository(Series::class)->find($id);
+
+        if (isset($serie)){
+            return $this->render('series/show.html.twig', [
+                'series' => $serie,
+            ]);
+        } else {
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        }
     }
 
     #[Route('/{id}/update', name: 'app_series_update', methods: ['GET'])]
