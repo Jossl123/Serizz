@@ -4,7 +4,16 @@
 
 {% block body %}
     {% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
-    <div class="py-10 px-64">
+    <div class="py-10 px-64 ">
+        <div class="text-white flex flex-col items-center text-4xl font-bold gap-16 pb-10">
+            <p class>Serizz, the best place for your series list</p>
+            <div class="flex gap-32">
+                <p>{{user_nb}} users</p>
+                <p>{{watched_episodes}} watched episodes</p>
+            </div>
+        </div>
+
+
         <div>
             {{ "now"|date("j F") }} 
         </div>
