@@ -1,13 +1,13 @@
-<header class="flex p-3 relative place-content-between relative px-64 gap-8 text-white">
-    <div class="-z-10 absolute top-0 overflow-hidden  right-0 w-full h-full">
+<header class="flex p-3 relative place-content-between  gap-8 text-white ">
+    <div class="-z-10 absolute top-0 overflow-hidden right-0 w-full h-full">
 		{% if poster_picture_id is defined %}
 			<img src="{{ path('app_series_poster', {'id': poster_picture_id}) }}" alt="Series poster" class="blur-xl rotate-90 origin-top-right translate-y-2/4 w-full">
 		{% else %}
 			<img src="{{ asset('images/default.jpg') }}" alt="Series poster" class="blur-xl rotate-90 origin-top-right translate-y-2/4 w-full">
 		{% endif %}
 	</div>
-	<a href="{{ path('app_default') }}" class="w-28 h-10 absolute left-3 top-1 flex items-center z-10 ">{#-rotate-[8deg]#}
-        <img src="{{ asset('images/logo.png') }}" alt="Home" class="absolute top-0 left-0 z-10 cursor-pointer">
+	<a href="{{ path('app_default') }}" class="w-28 h-10 relative flex items-center z-10 pt-8 hover:animate-bounce">
+        <img src="{{ asset('images/logo.png') }}" alt="Home" class="absolute z-10 pt-12 ml-5 cursor-pointer">
     </a>
 	<a href="{{ path('app_series_index') }}" class="flex items-center z-10 font-bold text-xl ">Series</a>
 	{% if app.user %}
@@ -42,3 +42,4 @@
 </header>
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
