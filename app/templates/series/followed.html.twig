@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Followed series
+{% endblock %}
+
+{% block body %}
+
+	{% if (series|first) != null %}
+		{% include('./header.html.twig') with {'poster_picture': path('app_series_poster', {'id': (series|first).id}) } %}
+	{% else %}
+		{% include('./header.html.twig') %}
+	{% endif %}
+	<h1 class="text-3xl font-bold p-2 m-5">Your followed series</h1>
+	{% if (series|first) != null %}
+		<div class="flex flex-wrap px-32">
+			{% for series in series %}
+				<a href="{{ path('app_series_show', {'id': series.id}) }}" class="w-1/5 p-4">
+					<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
+				</a>
+			</div>
+		{% endfor %}
+	{% else %}
+		<h2 class="text-xl font-bold p-2 m-3">You do not follow any series</h2>
+	{% endif %}
+
+{% endblock %}

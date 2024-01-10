@@ -64,6 +64,17 @@ class SeriesController extends AbstractController
         ]);
     }
 
+    #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
+    public function show_followed(): Response
+    {   
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+        $series = $user->getSeries();
+
+        return $this->render('series/followed.html.twig', [
+            'series' => $series,
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
     public function show(int $id,EntityManagerInterface $entityManager): Response
@@ -108,5 +119,28 @@ class SeriesController extends AbstractController
         $response->setContent(stream_get_contents($series->getPoster()));
         return $response;
     }
+
+
+    #[Route('/{id}/update_follow', name: 'app_series_update_followed', methods: ['GET'])]
+    public function series_update(Request $request, EntityManagerInterface $entityManager, Series $series): Response
+    {   
+        $to_update = $request->query->get('update', 0);
+        $series = $entityManager->getRepository(Series::class)->findOneBy(['id' => $to_update]);
+
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+
+        if ($user->getSeries()->contains($series)) {
+            $user->removeSeries($series);
+            $entityManager->flush();
+        } else {
+            $user->addSeries($series);
+            $entityManager->flush();
+        }
+        return $this->render('series/show.html.twig', [
+            'series' => $series,
+        ]);
+    }
+
 }
 
