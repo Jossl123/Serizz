@@ -1,39 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home
+{% endblock %}
 
 {% block body %}
-    {% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
-    <img id="background" src="{{ asset("/images/showcase_background.jpg") }}" alt="Series poster" class="absolute w-full blur-sm -z-10s ">
-    <div class="py-10 px-64 ">
-        <div class="text-white flex flex-col items-center text-6xl font-bold gap-16 pb-10 pt-32">
-            <p class>Serizz, the best place for your series list</p>
-            <div class="flex gap-32 text-3xl text-[--white]">
-                <p>{{user_nb}} users</p>
-                <p>{{watched_episodes}} watched episodes</p>
-            </div>
-        </div>
+	{% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
+	<img id="background" src="{{ asset("/images/showcase_background.jpg") }}" alt="Series poster" class="absolute w-full blur-sm -z-10s ">
+	<div class="py-10 px-64 ">
+		<div class="text-white flex flex-col items-center text-6xl font-bold gap-16 pb-10 pt-16">
+			<p class>Serizz, the best place for your series list</p>
+			<div class="flex gap-32 text-3xl text-[--white]">
+				<p>{{user_nb}}
+					users</p>
+				<p>{{watched_episodes}}
+					watched episodes</p>
+			</div>
+			<div class="flex justify-center gap-16">
+				<div class="justify-center">
+					<p class="text-center text-3xl">Visualiser</p>
+                    <p class="text-center text-xl">Tenez vous au courant des dernières sorties du moment, ou encore des séries les plus populaires sur la toile !</p>
+				</div>
+				<div class="justify-center">
+					<p class="text-center text-3xl">S'abonner</p>
+                    <p class="text-center text-xl">Suivez vos séries favorites, soyez notifié lors de nouvelles sorties, retrouvez rapidemend tout ceci dans votre espace personnel !</p>
+				</div>
+				<div>
+					<p class="text-center text-3xl">Suivre</p>
+                    <p class="text-center text-xl">Avec notre site internet, soyez toujours au courant d'où vous en êtes, marquez les épisodes visionnés, et ne perdez jamais le fil !</p>
+				</div>
+			</div>
+
+		</div>
 
 
-        <div>
-            {{ "now"|date("j F") }} 
-        </div>
-        <div>
-            <p class="text-white bold text-4xl font-bold"> Hall of Fame</p>
-            <ul class="flex gap-6 place-content-around flex-shrink-0 pb-20">
-                {% for serie in hall_of_fame %}
-                    <a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex items-center">
-                        <p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
-                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 h-80 translate-y-8">
-                    </a>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    <style>
-    #background{
-    transform: perspective(100vw) rotateX(30deg) rotateY(8deg) rotateZ(339deg) scale(1.5) translate(20%, -20%);
-    z-index: -30;
-    -webkit-mask-image: linear-gradient(0deg, transparent 0%, transparent 50%,black 100% );
-    }</style>
+		<div>
+			{{ "now"|date("j F") }}
+		</div>
+		<div>
+			<p class="text-white bold text-4xl font-bold">
+				Hall of Fame</p>
+			<ul class="flex gap-6 place-content-around flex-shrink-0 pb-20">
+				{% for serie in hall_of_fame %}
+					<a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex items-center">
+						<p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
+						<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 h-80 translate-y-8">
+					</a>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<style>
+		#background {
+			transform: perspective(100vw) rotateX(30deg) rotateY(8deg) rotateZ(339deg) scale(1.5) translate(20%, -20%);
+			z-index: -30;
+			-webkit-mask-image: linear-gradient(0deg, transparent 0%, transparent 50%,black 100%);
+		}
+	</style>
 {% endblock %}
