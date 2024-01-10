@@ -41,13 +41,7 @@
 							<a href="{{ path('app_series_show', {'id': series.id}) }}">
 								<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
 							</a>
-							<button onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')" class="absolute left-0 w-auto top-0 w-full p-2 -translate-y-full group-hover:translate-y-0 transition-all ease-in-out duration-200">
-								{% if app.user.getSeries().contains(series) %}
-									<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark rounded-full bg-[--grey] p-2"></i>
-								{% else %}
-									<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark_o rounded-full bg-[--grey] p-2"></i>
-								{% endif %}
-							</button>
+							{% include('./follow.html.twig') with {'serie': series} %}
 						</div>
 						<div class="p-2 ">
 							<h1 class="text-white font-bold ">{{ series.title }}</h1>
@@ -63,5 +57,4 @@
 			</div>
 		</div>
 	</div>
-	<script src="{{asset("follow.js")}}"></script>
 {% endblock %}

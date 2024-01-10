@@ -26,15 +26,18 @@
         <hr class="py-2 ">
         <div>
             <div class="flex place-content-between">
-                <p class="text-xl">You've recently seen them </p>
-                <a class="rounded text-white cursor-pointer p-2">See more</a>
+                <p class="text-xl">You've recently followed them </p>
+                <a class="rounded text-white cursor-pointer p-2" href="{{ path('app_series_show_followed') }}" >See more</a>
             </div>
             
             <ul class="flex gap-6 ">
-                {% for serie in recently_seen %}
-                    <a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex ">
-                        <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover h-64">
-                    </a>
+                {% for serie in recently_seen|slice(0, 5)  %}
+                    <div class="flex gap-0 flex relative group overflow-hidden">
+                        <a href="{{ path('app_series_show', {'id': serie.id}) }}" >
+                            <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover h-64">
+                        </a>
+                        {% include('./follow.html.twig') with {'series': serie} %}
+                    </div>
                 {% endfor %}
         </div>
     </div>
