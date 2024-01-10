@@ -18,23 +18,10 @@ class UserType extends AbstractType
         $builder
             ->add('name')
             ->add('email')
-            ->add('password')
-            ->add('registerDate')
             ->add('admin')
-            ->add('userId')
             ->add('country', EntityType::class, [
                 'class' => Country::class,
-'choice_label' => 'id',
-            ])
-            ->add('series', EntityType::class, [
-                'class' => Series::class,
-'choice_label' => 'id',
-'multiple' => true,
-            ])
-            ->add('episode', EntityType::class, [
-                'class' => Episode::class,
-'choice_label' => 'id',
-'multiple' => true,
+                'choice_label' => 'name',
             ])
         ;
     }

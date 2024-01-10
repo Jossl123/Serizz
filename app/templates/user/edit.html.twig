@@ -3,11 +3,38 @@
 {% block title %}Edit User{% endblock %}
 
 {% block body %}
-    <h1>Edit User</h1>
+    <style>
+        section {
+            background-color: rgba(28, 28, 56, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            max-width: 18vw;
+            padding: 1vw;
+            border-radius: 0.5rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-box-shadow: 3px 3px 5px 0 rgba(0,0,0,1);
+            -moz-box-shadow: 3px 3px 5px 0 rgba(0,0,0,1);
+            box-shadow: 3px 3px 5px 0 rgba(0,0,0,1);
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <div class="text-xl h-screen flex items-center flex-col">
 
-    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+        <div class="relative top-1/4 inline-block my-2.5">
+            <span class="text-2xl md:text-3xl font-bold">
+                You are editing {{ user.name }}.
+            </span>
+            <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+        </div>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+        <section>
+            {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+        </section>
 
-    {{ include('user/_delete_form.html.twig') }}
+    </div>
 {% endblock %}
