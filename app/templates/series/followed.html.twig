@@ -13,10 +13,13 @@
 		<h1 class="text-3xl font-bold p-2 m-5">Your followed series</h1>
 		{% if (series|first) != null %}
 			<div class="flex flex-wrap px-32">
-				{% for series in series %}
-					<a href="{{ path('app_series_show', {'id': series.id}) }}" class="w-1/5 p-4">
-						<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
-					</a>
+				{% for serie in series %}
+                    <div class="flex gap-0 flex relative group overflow-hidden w-1/5 m	-4">
+						<a href="{{ path('app_series_show', {'id': serie.id}) }}" >
+							<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
+						</a>
+                        {% include('./follow.html.twig') with {'serie': serie} %}
+                    </div>
 				{% endfor %}
 			</div>
 		{% else %}
