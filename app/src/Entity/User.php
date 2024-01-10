@@ -210,7 +210,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array {
         if ($this->admin==1) return ['ROLE_ADMIN','ROLE_USER'];
-        if ($this->admin==2) return ['ROLE_SUPER_ADMIN','ROLE_USER'];
+        if ($this->admin==2) return ['ROLE_SUPER_ADMIN', 'ROLE_ADMIN', 'ROLE_USER'];
         return ['ROLE_USER']; 
     }
 
