@@ -31,6 +31,16 @@
 				<ul class="max-w-96">
 					<hr class="border-[--grey]">
 					<li>
+						<p class="text-[--white]">
+							{% if series.imdb != "" %}
+								<a href="https://www.imdb.com/title/{{ series.imdb }}">See more</a>
+							{% else %}
+								none
+							{% endif %}
+						</p>
+					</li>
+					<hr class="border-[--grey]">
+					<li>
 						<h2 class="font-bold text-[--grey]">Genre</h2>
 							{% for genre in series.genre %}
 								<button class="text-[--white] bg-[--grey] rounded m-1 ">{{ genre.name }}</button>
