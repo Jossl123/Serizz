@@ -25,12 +25,10 @@ class SeriesController extends AbstractController
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
-        if (isset($_GET['init']) or isset($_GET['syn']) 
-            or isset($_GET['genrs']) or isset($_GET['yearS']) 
-            or isset($_GET['yearE'])) {
             $search->select('s')
-                ->from('Series','s')
-                ->where($search->expr()->like('s.title', $search->expr()->literal('%:init%')))
+            ->from('Series','s');
+        if (isset($_GET['init'])) {
+                $search->where($search->expr()->like('s.title', $search->expr()->literal('%:init%')))
                 ->setParameter('init', $_GET['init'])
                 ->getMaxResults();
             
