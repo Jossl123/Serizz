@@ -18,6 +18,7 @@
 	{% if app.user %}
 		<a href="{{ path('app_series_show_followed') }}" class="flex items-center z-10 font-bold text-2xl  {% if current_path != 'app_series_show_followed' %}text-[--white]{% endif %} ">Followed</a>
 	{% endif %}
+	<a href="{{ path('app_user_index') }}" class="flex items-center z-10 font-bold text-2xl  {% if current_path != 'app_series_show_followed' %}text-[--white]{% endif %} ">User index</a>
 	<div class="z-10 flex items-center gap-2 ml-auto">
 
 		<div x-data="{ open: false }" class="relative ml-4">
