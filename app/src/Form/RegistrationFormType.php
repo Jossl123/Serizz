@@ -42,7 +42,8 @@ class RegistrationFormType extends AbstractType
                 'width' => 200,
                 'height' => 50,
                 'length' => 6,
-            ));;
+            ));
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

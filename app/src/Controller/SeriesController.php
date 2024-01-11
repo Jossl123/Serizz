@@ -36,15 +36,23 @@ class SeriesController extends AbstractController
 
             $seriesNb = sizeof($series_match);
 
-            if ($page > $seriesNb / $limit) $page = ceil($seriesNb / $limit);
-            if ($page < 0)$page = 0;
+            if ($page > $seriesNb / $limit) {
+                $page = ceil($seriesNb / $limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
 
             $series_match = array_slice($series_match, $page * $limit, $limit);
             $series = $series_match;
         } else {
             $seriesNb = $seriesRepo->count([]);
-            if ($page > $seriesNb / $limit)  $page = ceil($seriesNb / $limit);
-            if ($page < 0) $page = 0;       
+            if ($page > $seriesNb / $limit) {
+                $page = ceil($seriesNb / $limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
 
             $series = $seriesRepo->findBy(array(), null, $limit, $page * $limit);
         }
@@ -66,8 +74,12 @@ class SeriesController extends AbstractController
         $limit = 10;
 
         $seriesNb = $series->count([]);
-        if ($page > $seriesNb / $limit)$page = ceil($seriesNb / $limit);
-        if ($page < 0)$page = 0;
+        if ($page > $seriesNb / $limit) {
+            $page = ceil($seriesNb / $limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
 
         $series = $series->slice($page * $limit, $limit);
 
@@ -139,6 +151,6 @@ class SeriesController extends AbstractController
             $user->addSeries($series);
             $entityManager->flush();
         }
-        return new JsonResponse(array('success' => "true")); 
+        return new JsonResponse(array('success' => "true"));
     }
 }
