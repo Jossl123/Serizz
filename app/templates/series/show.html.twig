@@ -9,8 +9,11 @@
 	{% include('./header.html.twig') with {'poster_picture_id': series.id} %}
 	<div class="flex p-12 relative">
 		<div class="flex flex-col">
-			<div class="m-3 w-64">
+			<div class="m-3 w-64 ">
+			<div class="relative">
 				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
+				<hr class="h-1 bg-lime-500 border-lime-500 w-[35%] absolute bottom-0">
+				</div>
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
 					{% if app.user %}
 						<button onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')">
