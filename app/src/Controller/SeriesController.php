@@ -20,21 +20,22 @@ class SeriesController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $page = $request->query->get('page', 0);
-        $search = $request->query->get('init', "");
+        $search = $entityManager->createQueryBuilder();
         $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
-        if (isset($_GET['init'])) {
-            $series = $seriesRepo->findAll();
-            $series_match = array();
-            foreach ($series as $serie) {
-                if (str_contains(strtoupper($serie->getTitle()), strtoupper($search))) {
-                    $series_match[] = $serie;
-                }
-            }
-
-            $seriesNb = sizeof($series_match);
+        if (isset($_GET['init']) or isset($_GET['syn']) 
+            or isset($_GET['genrs']) or isset($_GET['yearS']) 
+            or isset($_GET['yearE'])) {
+            $search->select('s')
+                ->from('Series','s')
+                ->where($search->expr()->like('s.title', $search->expr()->literal('%:init%')))
+                ->setParameter('init', $_GET['init'])
+                ->getMaxResults();
+            
+            $series_match = $search;
+            $seriesNb = sizeof((array)$series_match);
 
             if ($page > $seriesNb / $limit) {
                 $page = ceil($seriesNb / $limit);
@@ -43,8 +44,8 @@ class SeriesController extends AbstractController
                 $page = 0;
             }
 
-            $series_match = array_slice($series_match, $page * $limit, $limit);
-            $series = $series_match;
+            $series_match = array_slice((array)$series_match, $page * $limit, $limit);
+            $series = (array)$series_match;
         } else {
             $seriesNb = $seriesRepo->count([]);
             if ($page > $seriesNb / $limit) {
