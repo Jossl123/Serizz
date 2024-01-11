@@ -97,7 +97,7 @@ class SeriesController extends AbstractController
         $user = $this->getUser();
         $serie = $entityManager->getRepository(Series::class)->find($id);
         $percentages_seasons = array();
-        $percentages_serie = 0;
+        $percentage_serie = 0;
         $episode_nb = 0;
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
@@ -106,17 +106,18 @@ class SeriesController extends AbstractController
             foreach ($season->getEpisodes() as $ep_id => $episode){
                 $seen+=$episode->getUser()->contains($user);
             }
-            $percentages_serie+=$seen;
-            if ($season_episode_nb == 0)$percentages_seasons=1;
-            else $percentages_seasons[$key] = $seen/$season_episode_nb;
+            $percentage_serie+=$seen;
+            if ($season_episode_nb == 0)$percentages_seasons=100;
+            else $percentages_seasons[$key] = (int)($seen/$season_episode_nb*100);
         }
-        if ($episode_nb == 0) $percentages_serie = 1;
-        else $percentages_serie = $percentages_serie/$episode_nb;
+        if ($episode_nb == 0) $percentage_serie = 100;
+        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        dump($percentages_seasons);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
                 'percentages_seasons' => $percentages_seasons,
-                'percentages_serie' => $percentages_serie,
+                'percentage_serie' => $percentage_serie,
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
