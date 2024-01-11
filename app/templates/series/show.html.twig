@@ -12,8 +12,7 @@
 			<div class="m-3 w-64 ">
 				<div class="relative">
 					<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
-
-					{% include ('./percentage.html.twig') with {'percent': percentage_serie} %}
+					{% include ('./percentage.html.twig') with {'percent': percentage_serie, 'name': "progress_bar_serie"} %}
 				</div>
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
 					{% if app.user %}
@@ -102,21 +101,24 @@
 					{{ series.plot | raw}}</p>
 				{# <hr class="border-[--grey] m-2"> #}
 				<div method="get" class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
-					<div class="flex gap-1">
+					<div class="flex gap-1" id="seasons">
 						{% for season in series.getSeasons() %}
 							<div id="season-{{ loop.index }}" class="relative rounded overflow-hidden">
 								<button  onclick="show_season({{loop.index}})" class="text-white p-2 ">Season
 									{{ season.getNumber() }}</button>
-								{% include ('./percentage.html.twig') with {'percent': percentages_seasons[loop.index-1]} %}
+
+								{% set progressBarId = "progress_bar_season_" ~ (loop.index) %}
+								{% include ('./percentage.html.twig') with {'percent': percentages_seasons[loop.index-1], "name": progressBarId } %}
 							</div>
 						{% endfor %}
 					</div>
 					{% for season in series.getSeasons() %}
+						{% set season_id = loop.index %}
 						<div id="ep-season-{{ loop.index }}">
 							{% for episode in season.getEpisodes() %}
 								<div>
 									{% if is_granted('ROLE_USER') %}
-										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
+										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}', {{ season_id }})">
 											{% if app.user.getEpisode().contains(episode) %}
 												<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
 											{% else %}
@@ -150,8 +152,6 @@
 	</style>
 	<script src="{{asset("follow.js")}}"></script>
 	<script>
-		var percentages_seasons = {{percentages_seasons}}
-		var percentage_serie = {{percentage_serie}}
 		function show_season(season){
 			{% for season in series.getSeasons() %}
 			document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
@@ -161,22 +161,5 @@
 		}
 		show_season(1)
 
-		function mark_as_seen(url_to_fetch) {
-			var ep_id = url_to_fetch.split("=")[1]
-			fetch(url_to_fetch).then(response => response.json()).then(result => {
-				if (!result.success) {
-					return
-				}
-
-			var ep = document.getElementById (`ep-${ep_id}`)
-			if (ep.classList.contains("nf-md-eye_off")) {
-				ep.classList.remove("nf-md-eye_off")
-				ep.classList.add("nf-fa-check")
-			} else {
-				ep.classList.remove("nf-fa-check")
-				ep.classList.add("nf-md-eye_off")
-			}
-			}).catch(error => console.log('error', error));
-		}
 	</script>
 {% endblock %}
