@@ -100,7 +100,7 @@
 					<span>&emsp;</span>
 					{{ series.plot | raw}}</p>
 				{# <hr class="border-[--grey] m-2"> #}
-				<div method="get" class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
+				<div method="get" id="seasons_episodes"class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
 					<div class="flex gap-1" id="seasons">
 						{% for season in series.getSeasons() %}
 							<div id="season-{{ loop.index }}" class="relative rounded overflow-hidden">

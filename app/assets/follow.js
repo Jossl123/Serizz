@@ -38,8 +38,9 @@ function mark_as_seen(url_to_fetch, season_id) {
         }
 
         var progress_bar_serie = document.getElementById("progress_bar_serie");
-        var nb_checked_episodes = document.querySelectorAll('.nf-fa-check').length;
-        var total_nb_episodes = document.querySelectorAll('.nf').length;
+        var nb_checked_episodes = document.querySelectorAll('#seasons_episodes .nf-fa-check').length;
+        var total_nb_episodes = document.querySelectorAll('#seasons_episodes .nf-md-eye_off').length + nb_checked_episodes;
+        console.log(nb_checked_episodes, total_nb_episodes)
         var serie_percent = parseInt(nb_checked_episodes/total_nb_episodes*100)
         for (let i = progress_bar_serie.classList.length - 1; i >= 0; i--) {
             const className = progress_bar_serie.classList[i];
