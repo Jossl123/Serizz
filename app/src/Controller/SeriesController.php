@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Episode;
 use App\Entity\Series;
+use App\Entity\Rating;
+use App\Form\SeriesRatingType;
 use App\Form\SeriesType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,7 +93,7 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
-    public function show(int $id, EntityManagerInterface $entityManager): Response
+    public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
@@ -99,6 +101,22 @@ class SeriesController extends AbstractController
         $percentages_seasons = array();
         $percentage_serie = 0;
         $episode_nb = 0;
+
+        $rating = new Rating();
+        $form = $this->createForm(SeriesRatingType::class);
+        $form->handleRequest($request);
+        dump($form->isSubmitted());
+        dump($rating);
+        try {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($rating);
+            $entityManager->flush();
+            $this->addFlash('success', 'You successfully rated this serie !');
+        }
+        } catch (\Exception $e) {
+            dump($e->getMessage()); // Afficher le message d'erreur
+        }
+       
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
             $season_episode_nb = $season->getEpisodes()->count();
@@ -118,6 +136,7 @@ class SeriesController extends AbstractController
                 'series' => $serie,
                 'percentages_seasons' => $percentages_seasons,
                 'percentage_serie' => $percentage_serie,
+                'ratingForm' => $form->createView(),
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
