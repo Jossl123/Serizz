@@ -65,7 +65,7 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
-    public function showFollowed(Request $request): Response
+    public function showFollowed(Request $request, EntityManagerInterface $entityManager): Response
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
@@ -75,17 +75,20 @@ class SeriesController extends AbstractController
 
         $seriesCompleted = array();
 
-        foreach($userSeries as $series){
-            $episode_nb = 0; // Total number of episodes of the series
+        // The performance is NOT optimal... around 1400 queries are done in dev
+        foreach ($userSeries as $series) {
+            $nbEpisodes = 0; // Total number of episodes of the series
             $seen = 0; // Number of episodes watched by the user of the series
             foreach ($series->getSeasons() as $key => $season) {
-                $season_episode_nb = $season->getEpisodes()->count();
-                $episode_nb+=$season_episode_nb;
-                foreach ($season->getEpisodes() as $ep_id => $episode){
-                    $seen+=$episode->getUser()->contains($user); // If the season contains the episode, increase seen by 1
+                $episodes = $season->getEpisodes();
+                $nbEpisodesSeason = $episodes->count();
+                $nbEpisodes += $nbEpisodesSeason;
+                foreach ($episodes as $ep_id => $episode) {
+                    // If the season contains the episode, increase seen by 1
+                    $seen += $episode->getUser()->contains($user);
                 }
             }
-            if($episode_nb == $seen){
+            if ($nbEpisodes == $seen) {
                 array_push($seriesCompleted, $series);
             }
         }
@@ -120,16 +123,22 @@ class SeriesController extends AbstractController
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
             $season_episode_nb = $season->getEpisodes()->count();
-            $episode_nb+=$season_episode_nb;
-            foreach ($season->getEpisodes() as $ep_id => $episode){
-                $seen+=$episode->getUser()->contains($user);
+            $episode_nb += $season_episode_nb;
+            foreach ($season->getEpisodes() as $ep_id => $episode) {
+                $seen += $episode->getUser()->contains($user);
             }
-            $percentage_serie+=$seen;
-            if ($season_episode_nb == 0)$percentages_seasons=100;
-            else $percentages_seasons[$key] = (int)($seen/$season_episode_nb*100);
+            $percentage_serie += $seen;
+            if ($season_episode_nb == 0) {
+                $percentages_seasons = 100;
+            } else {
+                $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
+            }
         }
-        if ($episode_nb == 0) $percentage_serie = 100;
-        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        if ($episode_nb == 0) {
+            $percentage_serie = 100;
+        } else {
+            $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
+        }
         dump($percentages_seasons);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
