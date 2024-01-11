@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -31,36 +32,39 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
  */
 final class UserFactory extends ModelFactory
 {
-    
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
-    public function __construct()
+    private static $em;
+    private static $hasher;
+
+    public function __construct(EntityManagerInterface $em)
     {
+        $this::$em = $em;
+        $factory = new PasswordHasherFactory([
+            'common' => ['algorithm' => 'bcrypt'],
+        ]);
+        
+        $this::$hasher = $factory->getPasswordHasher('common');
+
         parent::__construct();
     }
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      *
-     * @todo add your default values here
      */
     protected function getDefaults(): array
     {
-        $factory = new PasswordHasherFactory([
-            'common' => ['algorithm' => 'bcrypt'],
-        ]);
-        
-        $hasher = $factory->getPasswordHasher('common');
-
         return [
             'admin' => 0,
             'email' => self::faker()->email(),
             'name' => self::faker()->name(),
-            'password' => 'password',
+            'password' => $this::$hasher->hash('password'),
+            'country' => $this->randomCountry(),
         ];
+    }
+
+    protected function randomCountry() {
+        $p = $this::$em->createQuery('SELECT c from App\Entity\Country c')->getResult();
+        return $p[self::faker()->numberBetween(0, count($p)-1)];
     }
 
     /**
