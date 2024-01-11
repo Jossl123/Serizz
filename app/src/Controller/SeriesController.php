@@ -69,11 +69,28 @@ class SeriesController extends AbstractController
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        $series = $user->getSeries();
+        $userSeries = $user->getSeries();
         $page = $request->query->get('page', 0);
         $limit = 10;
 
-        $seriesNb = $series->count([]);
+        $seriesCompleted = array();
+
+        foreach($userSeries as $series){
+            $episode_nb = 0; // Total number of episodes of the series
+            $seen = 0; // Number of episodes watched by the user of the series
+            foreach ($series->getSeasons() as $key => $season) {
+                $season_episode_nb = $season->getEpisodes()->count();
+                $episode_nb+=$season_episode_nb;
+                foreach ($season->getEpisodes() as $ep_id => $episode){
+                    $seen+=$episode->getUser()->contains($user); // If the season contains the episode, increase seen by 1
+                }
+            }
+            if($episode_nb == $seen){
+                array_push($seriesCompleted, $series);
+            }
+        }
+
+        $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
         }
@@ -81,10 +98,11 @@ class SeriesController extends AbstractController
             $page = 0;
         }
 
-        $series = $series->slice($page * $limit, $limit);
+        $series = $userSeries->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
-            'series' => $series,
+            'series' => $userSeries,
+            'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
         ]);
