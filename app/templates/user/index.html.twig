@@ -16,7 +16,7 @@
             <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
         </div>
 
-        <table class="text-sm text-left rtl:text-right text-center">
+        <table class="text-sm text-center">
             <thead class="text-xs uppercase bg-gray-700 ">
                 <tr class="">
                     <th class="px-6 py-3"> Name </th>
@@ -42,7 +42,6 @@
                         <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
                         {% if app.user.admin != 0 %}<a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>{% endif %}
                     </td>
-
                 </tr>
             {% else %}
                 <tr>
@@ -52,7 +51,7 @@
             </tbody>
         </table>
 
-        <a href="{{ path('app_user_new') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium  rounded-lg  hover: hover:bg-gray-100  bg-gray-800 hover:bg-gray-700 hover:text-white">
+        <a href="{{ path('app_user_new') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 font-medium rounded-lg bg-gray-800 hover:bg-gray-700 hover:text-white">
             Create new
         </a>
 
