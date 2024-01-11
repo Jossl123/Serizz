@@ -93,11 +93,31 @@ class SeriesController extends AbstractController
     #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
     public function show(int $id, EntityManagerInterface $entityManager): Response
     {
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
         $serie = $entityManager->getRepository(Series::class)->find($id);
-
+        $percentages_seasons = array();
+        $percentage_serie = 0;
+        $episode_nb = 0;
+        foreach ($serie->getSeasons() as $key => $season) {
+            $seen =  0;
+            $season_episode_nb = $season->getEpisodes()->count();
+            $episode_nb+=$season_episode_nb;
+            foreach ($season->getEpisodes() as $ep_id => $episode){
+                $seen+=$episode->getUser()->contains($user);
+            }
+            $percentage_serie+=$seen;
+            if ($season_episode_nb == 0)$percentages_seasons=100;
+            else $percentages_seasons[$key] = (int)($seen/$season_episode_nb*100);
+        }
+        if ($episode_nb == 0) $percentage_serie = 100;
+        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        dump($percentages_seasons);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
+                'percentages_seasons' => $percentages_seasons,
+                'percentage_serie' => $percentage_serie,
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');

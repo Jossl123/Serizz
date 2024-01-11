@@ -9,8 +9,11 @@
 	{% include('./header.html.twig') with {'poster_picture_id': series.id} %}
 	<div class="flex p-12 relative">
 		<div class="flex flex-col">
-			<div class="m-3 w-64">
-				<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
+			<div class="m-3 w-64 ">
+				<div class="relative">
+					<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
+					{% include ('./percentage.html.twig') with {'percent': percentage_serie, 'name': "progress_bar_serie"} %}
+				</div>
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
 					{% if app.user %}
 						<button onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')">
@@ -42,9 +45,9 @@
 					<hr class="border-[--grey]">
 					<li>
 						<h2 class="font-bold text-[--grey]">Genre</h2>
-							{% for genre in series.genre %}
-								<button class="text-[--white] bg-[--grey] rounded m-1 ">{{ genre.name }}</button>
-							{% endfor %}
+						{% for genre in series.genre %}
+							<button class="text-[--white] bg-[--grey] rounded m-1 ">{{ genre.name }}</button>
+						{% endfor %}
 					</li>
 					<hr class="border-[--grey]">
 					<li>
@@ -92,51 +95,52 @@
 			<div class="m-3 flex flex-col">
 
 				<h1 class="text-3xl font-bold  text-white">{{ series.title }}</h1>
-				<p class="w-1/2 px-2 py-5 text-base"><span>&emsp;</span><span>&emsp;</span>{{ series.plot | raw}}</p>
+				<p class="w-1/2 px-2 py-5 text-base">
+					<span>&emsp;</span>
+					<span>&emsp;</span>
+					{{ series.plot | raw}}</p>
 				{# <hr class="border-[--grey] m-2"> #}
-				<div method="get" class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
-					<div class="flex gap-1">
-					{% for season in series.getSeasons() %}
-						<button id="season-{{ loop.index }}" onclick="show_season({{loop.index}})" class="text-white p-2 rounded">Season
-							{{ season.getNumber() }}</button>
-					{% endfor %}
-					</div>
-					{% for season in series.getSeasons() %}
-						<div  id="ep-season-{{ loop.index }}">
-						{% for episode in season.getEpisodes() %}
-							<div>
-								{% if is_granted('ROLE_USER') %}
-									<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
-										{% if app.user.getEpisode().contains(episode) %}
-											<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
-										{% else %}
-											<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
-										{% endif %}
-									</button>
-								{% endif %}
-								{{ episode.getNumber() }}
-								-
-								{{ episode.getTitle() }}
+				<div method="get" id="seasons_episodes"class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
+					<div class="flex gap-1" id="seasons">
+						{% for season in series.getSeasons() %}
+							<div id="season-{{ loop.index }}" class="relative rounded overflow-hidden">
+								<button  onclick="show_season({{loop.index}})" class="text-white p-2 ">Season
+									{{ season.getNumber() }}</button>
+
+								{% set progressBarId = "progress_bar_season_" ~ (loop.index) %}
+								{% include ('./percentage.html.twig') with {'percent': percentages_seasons[loop.index-1], "name": progressBarId } %}
 							</div>
 						{% endfor %}
+					</div>
+					{% for season in series.getSeasons() %}
+						{% set season_id = loop.index %}
+						<div id="ep-season-{{ loop.index }}">
+							{% for episode in season.getEpisodes() %}
+								<div>
+									{% if is_granted('ROLE_USER') %}
+										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}', {{ season_id }})">
+											{% if app.user.getEpisode().contains(episode) %}
+												<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
+											{% else %}
+												<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
+											{% endif %}
+										</button>
+									{% endif %}
+									{{ episode.getNumber() }}
+									-
+									{{ episode.getTitle() }}
+								</div>
+							{% endfor %}
 						</div>
 					{% endfor %}
 				</div>
 			</div>
 		</div>
 		{% set url = series.youtubeTrailer | split('='	)[1] %}
-		<iframe 
-			style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 95%);"			
-			{# style="-webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%),linear-gradient(0deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%);" #}
-			class="absolute top-0 right-0 w-1/2 h-1/2 -z-10"
-			width="560" 
-			id="trailer" 
-			height="315"   
-			allow="autoplay" 
-			src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
+		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 95%);" {# style="-webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%),linear-gradient(0deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%);" #} class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
 	</div>
 
-	
+
 	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
 		<i class="nf nf-md-keyboard_backspace"></i>
 		Back to list</a>
@@ -148,33 +152,14 @@
 	</style>
 	<script src="{{asset("follow.js")}}"></script>
 	<script>
-		function show_season(season) {
+		function show_season(season){
 			{% for season in series.getSeasons() %}
-				document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
-				document.getElementById("season-{{ loop.index }}").classList.remove("current");
-			{% endfor %}
+			document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
+			document.getElementById("season-{{ loop.index }}").classList.remove("current");{% endfor %}
 			document.getElementById("ep-season-" + season).style.display = "block";
 			document.getElementById("season-" + season).classList.add("current");
 		}
 		show_season(1)
-
-		function mark_as_seen(url_to_fetch){
-			var ep_id = url_to_fetch.split("=")[1]
-			fetch(url_to_fetch)
-				.then(response => response.json())
-				.then(result => {
-					if (!result.success)return
-					var ep = document.getElementById(`ep-${ep_id}`)
-					if (ep.classList.contains("nf-md-eye_off")) {
-						ep.classList.remove("nf-md-eye_off")
-						ep.classList.add("nf-fa-check")
-					}else{
-						ep.classList.remove("nf-fa-check")
-						ep.classList.add("nf-md-eye_off")
-					}
-				})
-				.catch(error => console.log('error', error));
-		}
 
 	</script>
 {% endblock %}
