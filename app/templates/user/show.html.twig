@@ -7,17 +7,17 @@
 
         <div class="relative inline-block my-2.5">
             <span class="text-2xl md:text-3xl font-bold">
-                You are viewing {{ user.name }} informations.
+                You are viewing {{ user.name }}
+                {% if user.admin == 1 %}<i class="nf nf-md-shield"></i>
+                {% elseif user.admin == 2 %} <i class="nf nf-md-shield" style='color: red;'></i> <!--Color of super admin must be replaced by tailwind class-->
+                {% endif %} information.
             </span>
             <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
         </div>
 
+
         <table class="mt-6 w-1/5 text-base text-center rtl:text-right text-gray-500 text-gray-400">
             <tbody>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Id</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.id }}</td>
-                </tr>
                 <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
                     <th class="text-xs  uppercase bg-gray-700 text-gray-400">Name</th>
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.name }}</td>
@@ -27,20 +27,14 @@
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.email }}</td>
                 </tr>
                 <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Password</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.password }}</td>
                 </tr>
                 <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">RegisterDate</th>
+                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Register Date</th>
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
                 </tr>
                 <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
                     <th class="text-xs  uppercase bg-gray-700 text-gray-400">Admin</th>
                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.admin }}</td>
-                </tr>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">UserId</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.userId }}</td>
                 </tr>
             </tbody>
         </table>
@@ -51,17 +45,18 @@
                 Back to user list
             </a>
 
-            {% if app.user.admin != 0 %}
-                <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
-                    Embody
+            {% if app.user %}
+                {% if app.user.admin != 0 %}
+                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                        Embody
+                    </a>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                    Edit
                 </a>
+                {{ include('user/_delete_form.html.twig') }}
+                {% endif %}
             {% endif %}
 
-            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
-                Edit
-            </a>
-
-            {{ include('user/_delete_form.html.twig') }}
 
         </div>
     </div>
