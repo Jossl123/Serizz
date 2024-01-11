@@ -65,7 +65,7 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
-    public function show_followed(Request $request): Response
+    public function showFollowed(Request $request): Response
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
@@ -106,7 +106,7 @@ class SeriesController extends AbstractController
 
     #[Route('/{id}/update', name: 'app_series_update', methods: ['GET'])]
     #[IsGranted("ROLE_USER")]
-    public function episode_update(Request $request, EntityManagerInterface $entityManager, Series $series)
+    public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
@@ -127,7 +127,7 @@ class SeriesController extends AbstractController
 
 
     #[Route('/poster/{id}', name: 'app_series_poster', methods: ['GET'])]
-    public function show_poster(Series $series): Response
+    public function showPoster(Series $series): Response
     {
         $response = new Response();
         $response->setContent(stream_get_contents($series->getPoster()));
@@ -136,7 +136,7 @@ class SeriesController extends AbstractController
 
 
     #[Route('/{id}/update_follow', name: 'app_series_update_followed', methods: ['GET'])]
-    public function series_update(Request $request, EntityManagerInterface $entityManager, Series $series): Response
+    public function seriesUpdate(Request $request, EntityManagerInterface $entityManager, Series $series): Response
     {
         $to_update = $request->query->get('update', 0);
         $series = $entityManager->getRepository(Series::class)->findOneBy(['id' => $to_update]);
