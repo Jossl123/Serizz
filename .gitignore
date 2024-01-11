@@ -27,3 +27,4 @@ app/assets/vendor
 .idea
 composer.*
 vendor/
+node_modules/
