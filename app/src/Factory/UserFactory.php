@@ -59,7 +59,7 @@ final class UserFactory extends ModelFactory
             'admin' => 0,
             'email' => self::faker()->email(),
             'name' => self::faker()->name(),
-            'password' => $hasher->hash('password'),
+            'password' => 'password',
         ];
     }
 

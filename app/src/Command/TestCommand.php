@@ -19,13 +19,7 @@ class TestCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        for ($i=0; $i < $input->getArgument('nb'); $i++) {
-            // TODO : replace that writeln w/ call to the creation of an user
-            $output->writeln('testy stuff : '.$i);
-        }
-
         UserFactory::createMany($input->getArgument('nb'));
-
         return Command::SUCCESS;
     }
 
