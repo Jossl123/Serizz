@@ -9,12 +9,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Series;
 use App\Entity\User;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 class DefaultController extends AbstractController
 {
     #[Route('/', name: 'app_default')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        //TODO return the good series 
+        //TODO return the good series
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
         $usersRepo = $entityManager
@@ -37,5 +38,4 @@ class DefaultController extends AbstractController
             "recently_seen" => $followed_series
         ]);
     }
-
 }

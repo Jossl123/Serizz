@@ -323,5 +323,4 @@ class Series
 
         return $this;
     }
-
 }
