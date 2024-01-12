@@ -7,19 +7,19 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use App\Factory\UserFactory;
+use App\Factory\RatingFactory;
 
 #[AsCommand(
-    name: 'app:a-comm',
-    description: 'a fookin test command',
+    name: 'app:gen-ratings',
+    description: 'Allows for the generation, in database, of fake ratings',
     hidden: false,
-    aliases: ['app:testcomm']
+    aliases: ['app:fake-ratings']
 )]
-class TestCommand extends Command
+class GenerateFakeRatingsCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        UserFactory::createMany($input->getArgument('nb'));
+        RatingFactory::createMany($input->getArgument('nb'));
         return Command::SUCCESS;
     }
 

@@ -10,6 +10,7 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
+use App\Factory\CountryFactory;
 
 /**
  * @extends ModelFactory<User>
@@ -58,13 +59,8 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->email(),
             'name' => self::faker()->name(),
             'password' => $this::$hasher->hash('password'),
-            'country' => $this->randomCountry(),
+            'country' => CountryFactory::random()
         ];
-    }
-
-    protected function randomCountry() {
-        $p = $this::$em->createQuery('SELECT c from App\Entity\Country c')->getResult();
-        return $p[self::faker()->numberBetween(0, count($p)-1)];
     }
 
     /**
