@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Rating;
+use App\Entity\Series;
 use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -111,10 +113,20 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(User $user, EntityManagerInterface $entityManager): Response
     {
+        $series = $entityManager
+            ->getRepository(Series::class)
+            ->findBy(array(), null, 4, 2);
+
+        $ratings = $entityManager
+            ->getRepository(Rating::class)
+            ->findBy(array('user' => $user->getId()));
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
+            'followedSeries' => $series,
+            'ratings' => $ratings,
         ]);
     }
 

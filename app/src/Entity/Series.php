@@ -61,9 +61,6 @@ class Series
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $seasons;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Rating $rating = null;
-
     /**
      * Constructor
      */
