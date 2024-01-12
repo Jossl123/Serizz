@@ -31,7 +31,7 @@
 				</svg>
 			</button>
 
-			<div x-show="open" @click.away="open = false" class="absolute top-8 right-0 mt-2 bg-gray-800 bg-opacity-50 w-48 p-4 rounded-md ">
+			<div x-show="open" @click.away="open = false" class="backdrop-blur absolute top-8 right-0 mt-2 bg-gray-800 bg-opacity-50 w-48 p-4 rounded-md ">
 				<div class="2xl:hidden flex flex-col">
 					<a href="{{ path('app_series_index') }}">Series</a>
 					{% if app.user %}
