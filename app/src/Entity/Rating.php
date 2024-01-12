@@ -26,7 +26,7 @@ class Rating
     #[ORM\Column(name: "value", type: "integer", nullable: false)]
     private $value;
 
-    #[ORM\Column(name:"comment", type:"text", length:0, nullable:false)]
+    #[ORM\Column(name:"comment", type:"text", length:0, nullable:true)]
     private $comment;
 
     #[ORM\Column(name:"date", type:"datetime", nullable:false)]
@@ -39,6 +39,12 @@ class Rating
     #[ORM\ManyToOne(targetEntity:"Series")]
     #[ORM\JoinColumn(name:"series_id", referencedColumnName:"id")]
     private $series;
+
+
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
 
     public function getId(): ?int
     {

@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Gregwar\CaptchaBundle\Type\CaptchaType;
-
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -42,7 +42,7 @@ class RegistrationFormType extends AbstractType
                 'width' => 200,
                 'height' => 50,
                 'length' => 6,
-            ));
+            ))->add('submit',SubmitType::class, array('label' => 'Register'));
         ;
     }
 
