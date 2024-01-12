@@ -16,9 +16,18 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'app_default')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        //TODO return the good series
-        $seriesRepo = $entityManager
-            ->getRepository(Series::class);
+        // Getting the four most followed series
+        $hallOfFameNb = 4;
+        $qb = $entityManager->createQueryBuilder();
+        $hallOfFameSeries = $qb->select('s')
+            ->from('App:Series', 's')
+            ->join('s.user', 'u')
+            ->groupBy('s.id')
+            ->orderBy('COUNT(u.id)', 'DESC')
+            ->setMaxResults($hallOfFameNb)
+        ->getQuery()->getResult();
+        dump($qb->getQuery());
+
         $usersRepo = $entityManager
             ->getRepository(User::class);
         $ratingRepo = $entityManager
@@ -27,9 +36,9 @@ class DefaultController extends AbstractController
 
         if (!$this->isGranted('ROLE_USER')) {
             return $this->render('default/showcase.html.twig', [
-                "hall_of_fame" => $series,
+                "hall_of_fame" => $hallOfFameSeries,
                 "user_nb" => $usersRepo->count([]),
-                "watched_episodes" => $usersRepo->count([]) * 13,//TODO
+                "watched_episodes" => $usersRepo->count([]) * 13, //TODO
             ]);
         }
         /** @var \App\Entity\User */
@@ -37,7 +46,7 @@ class DefaultController extends AbstractController
         $followed_series = $user->getSeries();
 
         return $this->render('default/index.html.twig', [
-            "hall_of_fame" => $series,
+            "hall_of_fame" => $hallOfFameSeries,
             "recently_seen" => $followed_series
         ]);
     }
