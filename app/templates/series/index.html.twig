@@ -16,7 +16,7 @@
 		{% include('./header.html.twig') %}
 	{% endif %}
 	<div class="flex ">
-		<div class="bg-[--dark-blue] py-20">
+		<div x-data="{ open: false }" class="bg-[--dark-blue] py-20 sm:translate-x-0 relative ":class="{ 'translate-x-0': open, '-translate-x-full': !open }" >
 			<form action="" method="get">
 				<div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
 					<input type="text" class="bg-transparent" name="init"/>
@@ -24,6 +24,9 @@
 					<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
 				</div>
 			</form>
+			<div @click="open = !open"  class="sm:hidden block absolute -right-6 top-8 bg-[--dark-blue] p-2 rounded">
+				<i class="nf nf-md-arrow_expand_right text-xl"></i>
+			</div>
 		</div>
 		<div class="px-10 w-full">
 			{% include('./pagination.html.twig') with {'app_path': "app_series_index", "pagesNb": pagesNb} %}
