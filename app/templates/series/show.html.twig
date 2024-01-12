@@ -23,8 +23,14 @@
 								<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark_o"></i>
 							{% endif %}
 						</button>
-						<!--Needs to be replaced by the actual status-->
-						<i class="nf nf-fa-check"></i>
+						{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
+						<button id="see_all" onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
+							{% if percentage_serie == 100 %}
+								<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
+							{% else %}
+								<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
+							{% endif %}
+						</button>
 					{% else %}
 						<a href="{{path('app_login')}}">Login to follow</a>
 					{% endif %}
@@ -118,7 +124,7 @@
 							{% for episode in season.getEpisodes() %}
 								<div>
 									{% if is_granted('ROLE_USER') %}
-										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}', {{ season_id }})">
+										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
 											{% if app.user.getEpisode().contains(episode) %}
 												<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
 											{% else %}
@@ -128,7 +134,7 @@
 									{% endif %}
 									{{ episode.getNumber() }}
 									-
-									{{ episode.getTitle() }}
+									<span>{{ episode.getTitle() }}</span>
 								</div>
 							{% endfor %}
 						</div>
@@ -139,6 +145,15 @@
 		{% set url = series.youtubeTrailer | split('='	)[1] %}
 		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 95%);" {# style="-webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%),linear-gradient(0deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%);" #} class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
 	</div>
+
+	{% if app.user %}
+    {{ form_start(ratingForm) }}
+        {{ form_row(ratingForm.rating) }}
+        {{ form_row(ratingForm.comment) }}
+        {{ form_row(ratingForm._token) }}
+        <button type="submit">Rate the serie</button>
+    {{ form_end(ratingForm) }}
+	{% endif %}
 
 
 	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
