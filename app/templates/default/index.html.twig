@@ -9,13 +9,14 @@
     {% else %}
         {% include('./header.html.twig') with {'poster_picture_id': (hall_of_fame|first).id, 'username': app.user.name} %}
     {% endif %}
-    <div class="py-10 px-64">
+    <div class="py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4 ">
         <div>
             {{ "now"|date("j F") }} 
         </div>
-        <div>
+        <div id="hall_of_fame" class="pb-2">
             <p class="text-white bold text-4xl font-bold"> Hall of Fame</p>
-            <ul class="flex gap-6 place-content-around flex-shrink-0 pb-20">
+
+            <ul class="flex xl:gap-6 gap-32 xl:place-content-around xl:overflow-hidden overflow-y-hidden overflow-x-auto scroll-white flex-shrink-0 pb-20 ">
                 {% for serie in hall_of_fame %}
                     <a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex items-center">
                         <p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
@@ -42,5 +43,24 @@
                 {% endfor %}
         </div>
     </div>
+    <style >
+    #hall_of_fame {
+        scrollbar-width: thin;
+        scrollbar-color: var(--dark-blue) var(--grey);
+    }
 
+    #hall_of_fame ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #hall_of_fame ::-webkit-scrollbar-thumb {
+        background-color: var(--grey);
+        border-radius: 4px;
+    }
+
+    #hall_of_fame ::-webkit-scrollbar-track {
+        background-color: var(--dark-blue);
+    }
+
+    </style>
 {% endblock %}
