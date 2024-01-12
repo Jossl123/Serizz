@@ -130,7 +130,6 @@ class SeriesController extends AbstractController
         }
         if ($episode_nb == 0) $percentage_serie = 100;
         else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
-        dump($percentages_seasons);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -148,17 +147,29 @@ class SeriesController extends AbstractController
     public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
+        $see_all = $request->query->get('all', true);
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
-
         /** @var \App\Entity\User */
         $user = $this->getUser();
-
         if ($user->getEpisode()->contains($episode)) {
             $user->removeEpisode($episode);
             $entityManager->flush();
         } else {
             $user->addEpisode($episode);
             $entityManager->flush();
+            $current_season = $episode->getSeason();
+            if ($see_all) {
+                foreach ($current_season->getSeries()->getSeasons() as $season) {
+                    foreach ($season->getEpisodes() as $ep) {
+                        if ($ep == $episode)break;
+                        if (!$user->getEpisode()->contains($ep)) {
+                            $user->addEpisode($ep);
+                            $entityManager->flush();
+                        }
+                    }
+                    if ($current_season == $season) break;
+                }
+            } 
         }
 
         return new JsonResponse(array('success' => "true"));
