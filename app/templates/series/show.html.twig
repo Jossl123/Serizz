@@ -141,12 +141,25 @@
 	</div>
 
 	{% if app.user %}
-    {{ form_start(ratingForm) }}
-        {{ form_row(ratingForm.rating) }}
-        {{ form_row(ratingForm.comment) }}
-        {{ form_row(ratingForm._token) }}
-        <button type="submit">Rate the serie</button>
-    {{ form_end(ratingForm) }}
+<div class="relative">
+    <div class="absolute bottom-8 right-8">
+        <div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
+            {{ form_start(ratingForm, {'attr': {'class': 'mb-4'}}) }}
+            <div class="mb-4">
+                {{ form_row(ratingForm.rating, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md'}}) }}
+                {{ form_errors(ratingForm.rating) }}
+            </div>
+
+            <div class="mb-4">
+                {{ form_row(ratingForm.comment, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md'}}) }}
+                {{ form_errors(ratingForm.comment) }}
+            </div>
+
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">Noter la série</button>
+            {{ form_end(ratingForm) }}
+        </div>
+    </div>
+</div>
 	{% endif %}
 
 

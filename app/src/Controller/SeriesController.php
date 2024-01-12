@@ -130,7 +130,6 @@ class SeriesController extends AbstractController
         }
         if ($episode_nb == 0) $percentage_serie = 100;
         else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
-        dump($percentages_seasons);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
