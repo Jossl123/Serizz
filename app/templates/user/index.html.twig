@@ -4,6 +4,12 @@
 
 {% block body %}
     {% include('./header.html.twig') %}
+    <script>
+        function formSubmit() {
+            const form = document.querySelector('form');
+            form.submit();
+        }
+    </script>
     <div class="flex">
 
         <div class="bg-[--dark-blue] py-20 w-fit left-0">
@@ -12,7 +18,7 @@
                     <label>
                         <input type="text" class="bg-transparent" name="search"/>
                     </label>
-                    <i class="nf nf-fa-search text-white"></i>
+                    <i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
                 </div>
 
                 <h1 class="mb-4 font-semibold text-2xl"> Filters </h1>
