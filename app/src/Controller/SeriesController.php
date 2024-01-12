@@ -105,7 +105,7 @@ class SeriesController extends AbstractController
         $series = $userSeries->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
-            'series' => $userSeries,
+            'series' => $series,
             'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
