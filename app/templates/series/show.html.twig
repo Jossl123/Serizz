@@ -99,8 +99,20 @@
 		</div>
 		<div>
 			<div class="m-3 flex flex-col">
-
-				<h1 class="text-3xl font-bold  text-white">{{ series.title }}</h1>
+				<div class="flex place-content-between w-[32rem] items-center">
+					<h1 class="text-3xl font-bold  text-white">{{ series.title }}</h1>
+					<div class="flex gap-1 justify-right items-center">
+						{% if app.user %}<a class=" p-2 font-bold block" href="#post_your_rating">Post your rating</a>{% endif %}
+						{% for i in 1..5 %}
+							{% if i <= 4 %}
+								<i class="nf nf-fa-star text-yellow-500"></i>
+							{% else %}
+								<i class="nf nf-fa-star text-[--grey]"></i>
+							{% endif %}
+						{% endfor %}
+						<p class="text-[--grey]">324 votes</p>
+					</div>
+				</div>
 				<p class="w-1/2 px-2 py-5 text-base">
 					<span>&emsp;</span>
 					<span>&emsp;</span>
@@ -143,8 +155,19 @@
 			</div>
 		</div>
 		{% set url = series.youtubeTrailer | split('='	)[1] %}
-		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 95%);" {# style="-webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%),linear-gradient(0deg, transparent 0%, transparent 20%,black 50%, transparent 80%,transparent 100%);" #} class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 85%);" class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
 	</div>
+	<div id="post_your_rating">
+		{% if app.user %}
+		{{ form_start(ratingForm) }}
+			{{ form_row(ratingForm.rating) }}
+			{{ form_row(ratingForm.comment) }}
+			{{ form_row(ratingForm._token) }}
+			<button type="submit">Rate the serie</button>
+		{{ form_end(ratingForm) }}
+		{% endif %}
+	</div>
+<<<<<<< HEAD
 
 	{% if app.user %}
 <div class="relative">
@@ -168,16 +191,13 @@
 </div>
 	{% endif %}
 
+=======
+>>>>>>> baaadbf (add front for stars)
 
 	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
 		<i class="nf nf-md-keyboard_backspace"></i>
 		Back to list</a>
 
-	<style>
-		.current {
-			background-color: var(--grey);
-		}
-	</style>
 	<script src="{{asset("follow.js")}}"></script>
 	<script>
 		function show_season(season){
