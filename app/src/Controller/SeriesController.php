@@ -24,24 +24,46 @@ class SeriesController extends AbstractController
         $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
+
         if ($_SERVER['REQUEST_METHOD'] == 'GET'){
                 $search->select('s')
                 ->from('\App\Entity\Series','s');
 
                 if (isset($_GET['init'])) {
-                    $search->orwhere('s.title LIKE :init')
-                    ->setParameter('init', $_GET['init']);
+                    $search->andwhere('s.title LIKE :init')
+                    ->setParameter('init', '%'.$_GET['init'].'%');
                 } 
-                
-                if (isset($_GET['yearS'])) {
-                    $search->orwhere('s.yearStart = :ys')
-                    ->setParameter('ys', $_GET['yearS']);
+
+                if (isset($_GET['synop'])) {
+                    $search->andwhere('s.plot LIKE :syn')
+                    ->setParameter('syn', '%'.$_GET['synop'].'%');
+                } 
+
+                if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
+                    $search->andwhere('s.yearStart >= :ys')
+                    ->setParameter('ys', $_GET['Syear'])
+                    ->orderBy('s.yearStart', 'ASC');
+                }
+
+                if (isset($_GET['yearE']) and !isset($_GET['Syear'])) {
+                    $search->andwhere('s.yearEnd = :ye')
+                    ->setParameter('ye', $_GET['yearE']);
+                }
+
+                if (isset($_GET['yearE']) and isset($_GET['Syear'])) {
+                    $search->andwhere('s.yearStart >= :ys')
+                    ->andwhere('s.yearStart <= :ye')
+                    ->setParameter('ys', $_GET['Syear'])
+                    ->setParameter('ye', $_GET['yearE']);
+                }
+
+                if (isset($_GET['genres'])){
+                    
                 }
 
                 $series_match = $search->getQuery()->getResult();
-                $seriesNb = sizeof((array)$series_match);
                 dump($search->getQuery());
-                dump($search->getQuery()->getResult());
+                $seriesNb = sizeof((array)$series_match);
                 if ($page > $seriesNb / $limit) {
                     $page = ceil($seriesNb / $limit);
                 }
