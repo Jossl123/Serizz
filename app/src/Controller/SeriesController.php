@@ -135,6 +135,7 @@ class SeriesController extends AbstractController
             $entityManager->persist($rating);
             $entityManager->flush();
             $this->addFlash('success', 'You successfully rated this serie !');
+            return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
