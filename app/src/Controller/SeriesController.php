@@ -74,7 +74,6 @@ class SeriesController extends AbstractController
         $limit = 10;
 
         $seriesCompleted = array();
-
         // The performance is NOT optimal... around 1400 queries are done in dev
         foreach ($userSeries as $series) {
             $nbEpisodes = 0; // Total number of episodes of the series
