@@ -24,16 +24,20 @@ class SeriesController extends AbstractController
         $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
-
-            $search->select('s')
-            ->from('Series','s');
+        $search->select('s')
+        ->from('\App\Entity\Series','s');
         if (isset($_GET['init'])) {
-                $search->where($search->expr()->like('s.title', $search->expr()->literal('%:init%')))
-                ->setParameter('init', $_GET['init'])
-                ->getMaxResults();
+            $search->andwhere('s.title LIKE :init')
+                ->setParameter('init', $_GET['init']);
+
+        } 
+         if (isset($_GET['yearS'])) {
+                $search->andwhere('s.yearStart = :ys')
+                    ->setParameter('ys', $_GET['yearS']);
             
-            $series_match = $search;
+            $series_match = $search->getQuery()->getResult();
             $seriesNb = sizeof((array)$series_match);
+            dump($_GET['yearS']);
 
             if ($page > $seriesNb / $limit) {
                 $page = ceil($seriesNb / $limit);
