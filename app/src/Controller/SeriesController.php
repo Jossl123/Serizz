@@ -24,27 +24,30 @@ class SeriesController extends AbstractController
         $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
-        $search->select('s')
-        ->from('\App\Entity\Series','s');
-        if (isset($_GET['init'])) {
-            $search->andwhere('s.title LIKE :init')
-                ->setParameter('init', $_GET['init']);
+        if ($_SERVER['REQUEST_METHOD'] == 'GET'){
+                $search->select('s')
+                ->from('\App\Entity\Series','s');
 
-        } 
-         if (isset($_GET['yearS'])) {
-                $search->andwhere('s.yearStart = :ys')
+                if (isset($_GET['init'])) {
+                    $search->orwhere('s.title LIKE :init')
+                    ->setParameter('init', $_GET['init']);
+                } 
+                
+                if (isset($_GET['yearS'])) {
+                    $search->orwhere('s.yearStart = :ys')
                     ->setParameter('ys', $_GET['yearS']);
-            
-            $series_match = $search->getQuery()->getResult();
-            $seriesNb = sizeof((array)$series_match);
-            dump($_GET['yearS']);
+                }
 
-            if ($page > $seriesNb / $limit) {
-                $page = ceil($seriesNb / $limit);
-            }
-            if ($page < 0) {
-                $page = 0;
-            }
+                $series_match = $search->getQuery()->getResult();
+                $seriesNb = sizeof((array)$series_match);
+                dump($search->getQuery());
+                dump($search->getQuery()->getResult());
+                if ($page > $seriesNb / $limit) {
+                    $page = ceil($seriesNb / $limit);
+                }
+                if ($page < 0) {
+                    $page = 0;
+                }
 
             $series_match = array_slice((array)$series_match, $page * $limit, $limit);
             $series = (array)$series_match;
