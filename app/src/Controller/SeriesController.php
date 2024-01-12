@@ -131,14 +131,11 @@ class SeriesController extends AbstractController
         $form->handleRequest($request);
         dump($form->isSubmitted());
         dump($rating);
-        try {
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($rating);
-                $entityManager->flush();
-                $this->addFlash('success', 'You successfully rated this serie !');
-            }
-        } catch (\Exception $e) {
-            dump($e->getMessage()); // Afficher le message d'erreur
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($rating);
+            $entityManager->flush();
+            $this->addFlash('success', 'You successfully rated this serie !');
+            return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
 
         foreach ($serie->getSeasons() as $key => $season) {
