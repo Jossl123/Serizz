@@ -1,5 +1,5 @@
 {% if app.user %}
-<button onclick="follow('{{ path('app_series_update_followed', {'id': serie.getId(), 'update': serie.getId()}) }}')" class="absolute left-0 w-auto top-0 w-full p-2 -translate-y-full {% if not app.user.getSeries().contains(serie) %}group-hover:{% endif %}translate-y-0 transition-all ease-in-out duration-200">
+<button onclick="follow('{{ path('app_series_update_followed', {'id': serie.getId(), 'update': serie.getId()}) }}')" class="absolute left-0 w-auto top-0 w-full p-2 sm:-translate-y-full sm:{% if not app.user.getSeries().contains(serie) %}group-hover:{% endif %}translate-y-0 transition-all ease-in-out duration-200">
 	{% if app.user.getSeries().contains(serie) %}
 		<i id="season-follow-{{serie.getId()}}" class="nf nf-fa-bookmark rounded-full bg-[--grey] p-2"></i>
 	{% else %}
