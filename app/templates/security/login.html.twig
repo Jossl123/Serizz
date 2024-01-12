@@ -7,12 +7,6 @@
 	{% include('./header.html.twig') %}
 
 	<style>
-		body:not(.user-is-tabbing) button:focus,
-		body:not(.user-is-tabbing) input:focus,
-		body:not(.user-is-tabbing) select:focus,
-		body:not(.user-is-tabbing) textarea:focus {
-			outline: none;
-		}
 
 		section body {
 			background-color: #151433;
@@ -37,10 +31,6 @@
 			max-width: 18vw;
 			padding: 1vw;
 			border-radius: 0.5rem;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
 			-webkit-box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 1);
 			-moz-box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 1);
 			box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 1);
@@ -96,7 +86,7 @@
 		}
 	</style>
 
-	<section>
+	<section class="flex w-full h-full justify-center items-center">
 		<h1>
 			Sign In
 		</h1>
