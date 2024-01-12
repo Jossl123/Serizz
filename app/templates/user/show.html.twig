@@ -85,7 +85,7 @@
 
             <div class="flex flex-row">
                 {% for fs in followedSeries %}
-                    <div class="flex text-center group overflow-hidden relative mx-2">
+                    <div class="flex text-center group overflow-hidden relative mt-3 mx-2">
                         <a href="{{ path('app_series_show', {'id': fs.id}) }}"><img class=" rounded-lg" alt="poster" src="{{ path('app_series_poster', {'id': fs.id}) }}"></a>
                         {% for r in ratings %}
                             {% if fs.getId() == r.series %}
@@ -100,6 +100,8 @@
                     </div>
                 {% endfor %}
             </div>
+            {% include 'pagination.html.twig' with {'app_path': "app_user_show", "pagesNb": pagesNb} %}
+
         </div>
     </div>
 

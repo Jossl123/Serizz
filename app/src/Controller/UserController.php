@@ -113,20 +113,34 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user, EntityManagerInterface $entityManager): Response
+    public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
-        $series = $entityManager
-            ->getRepository(Series::class)
-            ->findBy(array(), null, 4, 2);
+        $seriesRepo = $user->getSeries();
+        $page = $request->query->get('page', 0);
+        $limit = 10;
+        $seriesNb = sizeof($seriesRepo);
+
+        if ($page > sizeof($seriesRepo) / $limit) {
+            $page = ceil(sizeof($seriesRepo) / $limit);
+        }
+
+        if ($page < 0) {
+            $page = 0;
+        }
+
+        $series = $seriesRepo->slice($page * $limit, $limit);
 
         $ratings = $entityManager
             ->getRepository(Rating::class)
             ->findBy(array('user' => $user->getId()));
 
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
             'followedSeries' => $series,
             'ratings' => $ratings,
+            'pagesNb' => ceil(sizeof($series) / $limit),
+            'page' => $page
         ]);
     }
 
