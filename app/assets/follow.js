@@ -31,19 +31,16 @@ function mark_as_seen(url_to_fetch, season_id) {
         var progress_bar_serie = document.getElementById("progress_bar_serie");
         var ep = document.getElementById(`ep-${ep_id}`)
 
-        if (ep.classList.contains("nf-md-eye_off")) {
-            ep.classList.remove("nf-md-eye_off")
-            ep.classList.add("nf-fa-check")
+        ep.classList.toggle("nf-fa-check")
+        ep.classList.toggle("nf-md-eye_off")
+        if (ep.classList.contains("nf-fa-check")) {
             var i = 0
             var all_episodes = document.querySelectorAll("#seasons_episodes .nf")
             while (i < all_episodes.length && all_episodes[i] != ep){
-                i++
                 all_episodes[i].classList.add("nf-fa-check")
                 all_episodes[i].classList.remove("nf-md-eye_off")
+                i++
             };
-        } else {
-            ep.classList.remove("nf-fa-check")
-            ep.classList.add("nf-md-eye_off")
         }
 
         document.querySelectorAll('[id^="progress_bar_season_"]').forEach(season => {
