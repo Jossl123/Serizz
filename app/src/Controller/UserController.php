@@ -17,14 +17,52 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserController extends AbstractController
 {
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $users = $entityManager
-            ->getRepository(User::class)
-            ->findAll();
+        $page = $request->query->get('page', 0);
+        $search = $request->query->get('search', "");
+        $limit = 10;
+        $usersRepo = $entityManager
+            ->getRepository(User::class);
+
+        if (isset($_GET['search'])) {
+            $users = $usersRepo->findAll();
+            $users_match = array();
+            foreach ($users as $user) {
+                if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
+                    $users_match[] = $user;
+                }
+            }
+
+            $userNb = sizeof($users_match);
+
+            if ($page > $userNb / $limit) {
+                $page = ceil($userNb / $limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
+
+            $users_match = array_slice($users_match, $page * $limit, $limit);
+            $users = $users_match;
+        } else {
+            $userNb = $usersRepo->count([]);
+            dump($userNb);
+            if ($page > $userNb / $limit) {
+                $page = ceil($userNb / $limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
+
+            $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
+        }
+
 
         return $this->render('user/index.html.twig', [
             'users' => $users,
+            'pagesNb' => ceil($userNb / $limit),
+            'page' => $page,
         ]);
     }
 
