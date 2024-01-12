@@ -70,10 +70,11 @@
             </a>
             {% endif %}
         {% endif %}
-
-        <a href="{{ path('app_user_index') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 font-medium rounded-lg bg-gray-800 hover:bg-gray-700 hover:text-white">
-            Back to All
-        </a>
+        {% if search != "" %}
+            <a href="{{ path('app_user_index') }}" class="mt-6 text-xl inline-flex items-center justify-center p-5 font-medium rounded-lg bg-gray-800 hover:bg-gray-700 hover:text-white">
+                Back to All
+            </a>
+        {% endif %}
     </div>
     </div>
 {% endblock %}

@@ -63,6 +63,7 @@ class UserController extends AbstractController
             'users' => $users,
             'pagesNb' => ceil($userNb / $limit),
             'page' => $page,
+            'search' => $search
         ]);
     }
 
