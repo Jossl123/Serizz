@@ -16,12 +16,14 @@
             <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
         </div>
 
-        <form method="get">
-            <label>
-                <input name="search" type="text" class="border rounded-2xl" placeholder="search by email">
-            </label>
-            <button type="submit" class="border rounded-2xl">Search</button>
-        </form>
+            <form action="" method="get">
+                <div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
+                    <input type="text" class="bg-transparent" name="search"/>
+                    <input type="submit" value="">
+                    <i class="nf nf-fa-search text-white"></i>
+                    </input>
+                </div>
+            </form>
 
         {% include('./pagination.html.twig') with {'app_path': "app_user_index", "pagesNb": pagesNb} %}
 
@@ -30,9 +32,11 @@
                 <tr class="">
                     <th class="px-6 py-3"> Name </th>
                     <th class="px-6 py-3"> Email </th>
-                    <th class="px-6 py-3"> Register Date </th>
-                    <th class="px-6 py-3"> Country </th>
-                    <th class="px-6 py-3"> Admin </th>
+                    {% if ( app.user ) and (app.user.admin != 0) %}
+                        <th class="px-6 py-3"> Register Date </th>
+                        <th class="px-6 py-3"> Country </th>
+                        <th class="px-6 py-3"> Admin </th>
+                    {% endif %}
                     <th class="px-6 py-3"> Actions </th>
                 </tr>
             </thead>
@@ -41,9 +45,11 @@
                 <tr class="border-b transition duration-300 ease-in-out border-neutral-500 hover:bg-sky-900 bg-gray-800">
                     <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.name }}</td>
                     <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.email }}</td>
-                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
-                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.country }}</td>
-                    <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
+                    {% if ( app.user ) and (app.user.admin != 0) %}
+                        <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
+                        <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.country }}</td>
+                        <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
+                    {% endif %}
                     <td class="font-medium text-blue-600 hover:underline">
                         <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
                         {% if app.user %}
