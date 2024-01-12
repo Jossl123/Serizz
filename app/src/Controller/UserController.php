@@ -37,13 +37,12 @@ class UserController extends AbstractController
 
             if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
                 foreach($users as $user) {
-                    if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
-                        if ($searchForUser && !$user->isAdmin() && !$user->isSuperAdmin()) {
-                            $users_match[] = $user;
-                        } else if ($searchForAdmin && $user->isAdmin() && !$user->isSuperAdmin()) {
-                            $users_match[] = $user;
-                        } else if ($searchForSuperAdmin && $user->isSuperAdmin()) {
-                            $users_match[] = $user;
+                    $userRole = $user->getRoles();
+                    foreach($searchArray as $search) {
+                        for($i = 0; $i < sizeof($userRole); $i++) {
+                            if ($search == $userRole[$i]) {
+                                $users_match[] = $user;
+                            }
                         }
                     }
                 }
@@ -66,28 +65,6 @@ class UserController extends AbstractController
                 }
 
             }
-
-            $users_match = array_slice($users_match, $page * $limit, $limit);
-            $users = $users_match;
-        } else if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
-            $users = $usersRepo->findAll();
-            $users_match = array();
-
-            foreach($users as $user) {
-                $userRole = $user->getRoles();
-                foreach($searchArray as $search) {
-                    for($i = 0; $i < sizeof($userRole); $i++) {
-                        if ($search == $userRole[$i]) {
-                            dump($userRole[$i]);
-                            $users_match[] = $user;
-                        }
-                    }
-                }
-            }
-
-            dump($users_match);
-
-            $userNb = sizeof($users_match);
 
             $users_match = array_slice($users_match, $page * $limit, $limit);
             $users = $users_match;

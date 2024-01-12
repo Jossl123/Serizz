@@ -7,7 +7,7 @@
     <div class="flex">
 
         <div class="bg-[--dark-blue] py-20 w-fit left-0">
-            <form action="" method="get">
+            <form class="text-center" method="get">
                 <div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
                     <label>
                         <input type="text" class="bg-transparent" name="search"/>
@@ -15,10 +15,6 @@
                     <i class="nf nf-fa-search text-white"></i>
                 </div>
 
-                <input type="submit" value="">
-            </form>
-
-            <form class="text-center" method="get">
                 <h1 class="mb-4 font-semibold text-2xl"> Filters </h1>
                 {% if ( app.user ) and ( app.user.admin != 0) %}
                     <h1 class="text-xl"> User Type</h1>
@@ -38,7 +34,7 @@
                         <li class="inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium border -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg bg-user-form border-gray-700 text-white">
                             <label class="cursor-pointer">
                                 Super Admin
-                                <input type="checkbox" name="ROLE_SUPER_ADMIN" value="superAdmin" class="rounded disabled:opacity-50 bg-gray-800 border-gray-700 checked:bg-blue-500 checked:border-blue-500 focus:ring-offset-gray-800">
+                                <input type="checkbox" name="superAdmin" value="ROLE_SUPER_ADMIN" class="rounded disabled:opacity-50 bg-gray-800 border-gray-700 checked:bg-blue-500 checked:border-blue-500 focus:ring-offset-gray-800">
                             </label>
                         </li>
                     </ul>
