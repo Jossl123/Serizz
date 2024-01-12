@@ -19,7 +19,10 @@ class GenerateFakeRatingsCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        RatingFactory::setMoyEt(5, 1.5);
+        $moy = $input->getArgument('moy');
+        $et = $input->getArgument('et');
+
+        RatingFactory::setMoyEt(is_null($moy) ? 5 : $moy, is_null($et) ? 1.5 : $et);
         RatingFactory::createMany($input->getArgument('nb'));
         return Command::SUCCESS;
     }
@@ -28,6 +31,8 @@ class GenerateFakeRatingsCommand extends Command
     {
         $this
             ->addArgument('nb', InputArgument::REQUIRED, 'nb times')
+            ->addArgument('moy', InputArgument::OPTIONAL, 'gaussian\'s average')
+            ->addArgument('et', InputArgument::OPTIONAL, 'gaussian\'s standard deviation')
         ;
     }
 }
