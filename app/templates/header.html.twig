@@ -1,4 +1,4 @@
-<header class="flex p-3 relative place-content-between relative px-64 gap-8 text-white">
+<header class="flex p-3 relative place-content-between relative min-[1850px]:px-64 2xl:px-32 text-white">
 	{% set current_path = app.request.get('_route') %}
 	{% if app.user or current_path != "app_default"  %}
 		<div class="-z-10 absolute top-0 overflow-hidden  right-0 w-full h-full">
@@ -10,15 +10,17 @@
 		</div>
 	{% endif %}
 	<a
-		href="{{ path('app_default') }}" class="w-28 h-10 absolute left-3 top-1 flex items-center z-10 ">
+		href="{{ path('app_default') }}" class="md:w-28 h-full w-12  absolute left-3 top-1 flex items-center z-10 ">
 		{#-rotate-[8deg]#}
-		<img src="{{ asset('images/logo.png') }}" alt="Home" class="absolute brightness-150 top-0 left-0 z-10 cursor-pointer">
+		<img src="{{ asset('images/logo.png') }}" alt="Home" class="w-fit h-fit absolute brightness-150 top-0 left-0 z-10 cursor-pointer">
 	</a>
-	<a href="{{ path('app_series_index') }}" class="flex items-center z-10 font-bold text-2xl drop-shadow-md {% if current_path != 'app_series_index' %}text-[--white]{% endif %} ">Series</a>
-	{% if app.user %}
-		<a href="{{ path('app_series_show_followed') }}" class="flex items-center z-10 font-bold text-2xl  {% if current_path != 'app_series_show_followed' %}text-[--white]{% endif %} ">Followed</a>
-	{% endif %}
-	<a href="{{ path('app_user_index') }}" class="flex items-center z-10 font-bold text-2xl  {% if current_path != 'app_user_index' %}text-[--white]{% endif %} ">User index</a>
+	<div class="gap-8 2xl:flex hidden">
+		<a href="{{ path('app_series_index') }}" class="flex items-center z-10 font-bold text-2xl drop-shadow-md hover:text-white {% if current_path != 'app_series_index' %}text-[--white]{% endif %} ">Series</a>
+		{% if app.user %}
+			<a href="{{ path('app_series_show_followed') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white {% if current_path != 'app_series_show_followed' %}text-[--white]{% endif %} ">Followed</a>
+		{% endif %}
+		<a href="{{ path('app_user_index') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_user_index' %}text-[--white]{% endif %} ">Users</a>
+	</div>
 	<div class="z-10 flex items-center gap-2 ml-auto">
 
 		<div x-data="{ open: false }" class="relative ml-4">
@@ -29,7 +31,14 @@
 				</svg>
 			</button>
 
-			<div x-show="open" @click.away="open = false" class="absolute top-8 right-0 mt-2 bg-gray-800 bg-opacity-50 w-48 p-4 rounded-md ">
+			<div x-show="open" @click.away="open = false" class="backdrop-blur absolute top-8 right-0 mt-2 bg-gray-800 bg-opacity-50 w-48 p-4 rounded-md ">
+				<div class="2xl:hidden flex flex-col">
+					<a href="{{ path('app_series_index') }}">Series</a>
+					{% if app.user %}
+						<a href="{{ path('app_series_show_followed') }}">Followed</a>
+					{% endif %}
+					<a href="{{ path('app_user_index') }}">Users</a>
+				</div>
 				{% if app.user %}
 					{% if is_granted('IS_IMPERSONATOR') %}
 						<a href="{{ impersonation_exit_path(path('app_user_index') ) }}">Exit impersonation</a>
@@ -41,6 +50,9 @@
 					<a href="{{ path('app_logout') }}">
 						Logout
 					</a>
+						<br>
+					<div class="2xl:hidden block text-[--white] top-4">Logged in as
+						{{app.user.name}}</div>
 				{% else %}
 					<a href="{{ path('app_register') }}" class="text-white">Register</a>
 					<br>
@@ -50,7 +62,8 @@
 		</div>
 	</div>
 	{% if app.user %}
-	<div class="absolute right-2 text-white top-4">Logged in as {{app.user.name}}</div>
+		<div class="2xl:block hidden absolute right-2 text-white top-4">Logged in as
+			{{app.user.name}}</div>
 	{% endif %}
 </header>
 

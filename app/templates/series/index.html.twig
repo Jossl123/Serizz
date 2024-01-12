@@ -16,7 +16,7 @@
 		{% include('./header.html.twig') %}
 	{% endif %}
 	<div class="flex ">
-		<div class="bg-[--dark-blue] py-20">
+		<div x-data="{ open: false }" class="bg-[--dark-blue] py-20 xl:translate-x-0 xl:relative absolute xl:z-0 z-30 xl:rounded-0 rounded transition-all ease-in-out duration-200"  :class="{ 'translate-x-0': open, '-translate-x-full': !open }" >
 			<form action="" method="get">
 				<div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
 					<input type="text" class="bg-transparent" name="init"/>
@@ -24,13 +24,16 @@
 					<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
 				</div>
 			</form>
+			<div @click="open = !open"  class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
+				<i class="nf  text-xl"  :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
+			</div>
 		</div>
-		<div class="px-10 w-full">
+		<div class="xl:px-10 w-full scrollable">
 			{% include('./pagination.html.twig') with {'app_path': "app_series_index", "pagesNb": pagesNb} %}
-			<div class="grid grid-cols-5 grid-rows-2">
+			<div class="md:grid flex gap-4 md:grid-cols-5 md:grid-rows-2 md:overflow-hidden overflow-auto ">
 				{% for series in series %}
-					<div class="flex flex-col py-5">
-						<div class="relative w-fit h-64 group overflow-hidden rounded">
+					<div class="flex flex-col px-5 ">
+						<div class="relative w-[10rem] h-64 group overflow-hidden rounded">
 							<a href="{{ path('app_series_show', {'id': series.id}) }}">
 								<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
 							</a>
