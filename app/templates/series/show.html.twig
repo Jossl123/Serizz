@@ -159,16 +159,6 @@
 		{% set url = series.youtubeTrailer | split('='	)[1] %}
 		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 85%);" class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
 	</div>
-	<div id="post_your_rating">
-		{% if app.user %}
-		{{ form_start(ratingForm) }}
-			{{ form_row(ratingForm.rating) }}
-			{{ form_row(ratingForm.comment) }}
-			{{ form_row(ratingForm._token) }}
-			<button type="submit">Rate the serie</button>
-		{{ form_end(ratingForm) }}
-		{% endif %}
-	</div>
 
 	{% if app.user %}
 		<div class="relative">
@@ -192,7 +182,7 @@
 					{% endfor %}
 					{{ form_end(ratingForm) }}
 
-					{% if series.rating is not null %}
+					{# {% if series.rating is not null %}
 						<div>
 							{% for i in 1..5 %}
 								{% if i <= series.rating.value %}
@@ -206,12 +196,12 @@
 							<p>{{ series.rating.comment }}</p>
 						{% else %}
 							<p>No comment added</p>
-						{% endif %}
+						{% endif %} #}
 					{% endif %}
 				</div>
 			</div>
 		</div>
-	{% endif %}
+
 
 
 	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
