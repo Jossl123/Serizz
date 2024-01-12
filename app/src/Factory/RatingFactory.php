@@ -36,13 +36,27 @@ final class RatingFactory extends ModelFactory
 
 
     private static $em;
+    private static $moy;
+    private static $et;
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this::$em = $em;
+        RatingFactory::$em = $em;
         parent::__construct();
     }
 
+    public static function setMoyEt(float $moy, float $et) {
+        RatingFactory::$moy = $moy;
+        RatingFactory::$et = $et;
+    }
+
+    public static function gaussienne($av, $sd): float
+    {
+        $x = mt_rand() / mt_getrandmax();
+        $y = mt_rand() / mt_getrandmax();
+    
+        return sqrt(-2 * log($x)) * cos(2 * pi() * $y) * $sd + $av;
+    }
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
@@ -53,7 +67,7 @@ final class RatingFactory extends ModelFactory
         return [
             'comment' => self::faker()->text(100),
             'date' => DateTime::createFromFormat('m/d/Y h:i:s a', date('m/d/Y h:i:s a')),
-            'value' => self::faker()->numberBetween(0,10),
+            'value' => (int) round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)),
             'user' => UserFactory::random(),
             'series' => SeriesFactory::random()
         ];

@@ -19,6 +19,7 @@ class GenerateFakeRatingsCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        RatingFactory::setMoyEt(5, 1.5);
         RatingFactory::createMany($input->getArgument('nb'));
         return Command::SUCCESS;
     }
