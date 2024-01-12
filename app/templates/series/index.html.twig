@@ -4,6 +4,12 @@
 {% endblock %}
 
 {% block body %}
+	<script>
+		function formSubmit() {
+			const form = document.querySelector('form');
+			form.submit();
+		}
+	</script>
 	{% if series|length > 0 %}
 		{% include('./header.html.twig') with {'poster_picture_id': (series|first).id} %}
 	{% else %}
@@ -15,8 +21,7 @@
 				<div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
 					<input type="text" class="bg-transparent" name="init"/>
 					<input type="submit" value="">
-						<i class="nf nf-fa-search text-white"></i>
-					</input>
+					<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
 				</div>
 			</form>
 		</div>

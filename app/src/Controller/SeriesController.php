@@ -67,15 +67,34 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
-    public function showFollowed(Request $request): Response
+    public function showFollowed(Request $request, EntityManagerInterface $entityManager): Response
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        $series = $user->getSeries();
+        $userSeries = $user->getSeries();
         $page = $request->query->get('page', 0);
         $limit = 10;
 
-        $seriesNb = $series->count([]);
+        $seriesCompleted = array();
+        // The performance is NOT optimal... around 1400 queries are done in dev
+        foreach ($userSeries as $series) {
+            $nbEpisodes = 0; // Total number of episodes of the series
+            $seen = 0; // Number of episodes watched by the user of the series
+            foreach ($series->getSeasons() as $key => $season) {
+                $episodes = $season->getEpisodes();
+                $nbEpisodesSeason = $episodes->count();
+                $nbEpisodes += $nbEpisodesSeason;
+                foreach ($episodes as $ep_id => $episode) {
+                    // If the season contains the episode, increase seen by 1
+                    $seen += $episode->getUser()->contains($user);
+                }
+            }
+            if ($nbEpisodes == $seen) {
+                array_push($seriesCompleted, $series);
+            }
+        }
+
+        $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
         }
@@ -83,10 +102,11 @@ class SeriesController extends AbstractController
             $page = 0;
         }
 
-        $series = $series->slice($page * $limit, $limit);
+        $series = $userSeries->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
-            'series' => $series,
+            'series' => $userSeries,
+            'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
         ]);
@@ -119,13 +139,16 @@ class SeriesController extends AbstractController
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
             $season_episode_nb = $season->getEpisodes()->count();
-            $episode_nb+=$season_episode_nb;
-            foreach ($season->getEpisodes() as $ep_id => $episode){
-                $seen+=$episode->getUser()->contains($user);
+            $episode_nb += $season_episode_nb;
+            foreach ($season->getEpisodes() as $ep_id => $episode) {
+                $seen += $episode->getUser()->contains($user);
             }
-            $percentage_serie+=$seen;
-            if ($season_episode_nb == 0)$percentages_seasons=100;
-            else $percentages_seasons[$key] = (int)($seen/$season_episode_nb*100);
+            $percentage_serie += $seen;
+            if ($season_episode_nb == 0) {
+                $percentages_seasons = 100;
+            } else {
+                $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
+            }
         }
         if ($episode_nb == 0) $percentage_serie = 100;
         else $percentage_serie = (int)($percentage_serie/$episode_nb*100);

@@ -23,6 +23,16 @@
                     </div>
 				{% endfor %}
 			</div>
+		<h1 class="text-3xl font-bold p-2 m-5">Series you've completed</h1>
+		<div class="flex flex-wrap px-32">
+				{% for serie in completed %}
+                    <div class="flex gap-0 flex relative group overflow-hidden w-1/5 m-4">
+						<a href="{{ path('app_series_show', {'id': serie.id}) }}" >
+							<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
+						</a>
+                        {% include('./follow.html.twig') with {'serie': serie} %}
+                    </div>
+				{% endfor %}
 		{% else %}
 			<h2 class="text-xl font-bold p-2 m-3">You do not follow any series</h2>
 		{% endif %}
