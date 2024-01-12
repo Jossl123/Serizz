@@ -32,12 +32,12 @@ class SeriesController extends AbstractController
                 if (isset($_GET['init'])) {
                     $search->andwhere('s.title LIKE :init')
                     ->setParameter('init', '%'.$_GET['init'].'%');
-                } 
+                }
 
                 if (isset($_GET['synop'])) {
                     $search->andwhere('s.plot LIKE :syn')
                     ->setParameter('syn', '%'.$_GET['synop'].'%');
-                } 
+                }
 
                 if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
                     $search->andwhere('s.yearStart >= :ys')
@@ -58,10 +58,14 @@ class SeriesController extends AbstractController
                 }
 
                 if (isset($_GET['genres'])){
-                    $search->join('s.genre','g')
+                    $tousGenres = explode("_", $_GET['genres']);
+                    $search->join('s.genre','g');
+
+                    foreach ($tousGenres as $genre) {
                     
-                    ->where(':ge = g.name')
-                    ->setParameter('ge', $_GET['genres']);
+                        $search->andwhere(':ge = g.name')
+                        ->setParameter('ge', $genre);
+                    }
                 }
                 dump($search->getQuery());
                 $series_match = $search->getQuery()->getResult();
