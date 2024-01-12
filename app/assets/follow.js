@@ -22,7 +22,9 @@ function follow(url_to_fetch){
 }
 
 
-function mark_as_seen(url_to_fetch, season_id) {
+function mark_as_seen(url_to_fetch, first=false) {
+    var see_all = document.getElementById("see_all").children[0]
+    if (first && see_all.classList.contains("nf-fa-check"))return
     var ep_id = url_to_fetch.split("=")[1]
     fetch(url_to_fetch).then(response => response.json()).then(result => {
         if (!result.success) {
@@ -68,7 +70,13 @@ function mark_as_seen(url_to_fetch, season_id) {
             }
             progress_bar_serie.classList.add("w-["+serie_percent+"%]")
         }
-
-
+        console.log(see_all)
+        if (serie_percent == 100){
+            see_all.classList.remove("nf-md-eye_off")
+            see_all.classList.add("nf-fa-check")
+        }else{
+            see_all.classList.remove("nf-fa-check") 
+            see_all.classList.add("nf-md-eye_off")
+        }
     }).catch(error => console.log('error', error));
 }

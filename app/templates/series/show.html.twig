@@ -23,8 +23,14 @@
 								<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark_o"></i>
 							{% endif %}
 						</button>
-						<!--Needs to be replaced by the actual status-->
-						<i class="nf nf-fa-check"></i>
+						{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
+						<button id="see_all" onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
+							{% if percentage_serie == 100 %}
+								<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
+							{% else %}
+								<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
+							{% endif %}
+						</button>
 					{% else %}
 						<a href="{{path('app_login')}}">Login to follow</a>
 					{% endif %}
@@ -118,7 +124,7 @@
 							{% for episode in season.getEpisodes() %}
 								<div>
 									{% if is_granted('ROLE_USER') %}
-										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}', {{ season_id }})">
+										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
 											{% if app.user.getEpisode().contains(episode) %}
 												<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
 											{% else %}
