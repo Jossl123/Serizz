@@ -61,8 +61,6 @@ class Series
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $seasons;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Rating $rating = null;
 
     /**
      * Constructor
@@ -327,15 +325,4 @@ class Series
         return $this;
     }
 
-    public function getRating(): ?Rating
-    {
-        return $this->rating;
-    }
-
-    public function setRating(?Rating $rating): static
-    {
-        $this->rating = $rating;
-
-        return $this;
-    }
 }

@@ -182,7 +182,11 @@
 					{% endfor %}
 					{{ form_end(ratingForm) }}
 
+<<<<<<< HEAD
 					{% if series.rating is not null %}
+=======
+					{# {% if series.rating is not null %}
+>>>>>>> main
 						<div>
 							{% for i in 1..5 %}
 								{% if i <= series.rating.value %}
@@ -196,12 +200,20 @@
 							<p>{{ series.rating.comment }}</p>
 						{% else %}
 							<p>No comment added</p>
+<<<<<<< HEAD
 						{% endif %}
+=======
+						{% endif %} #}
+>>>>>>> main
 					{% endif %}
 				</div>
 			</div>
 		</div>
+<<<<<<< HEAD
 	{% endif %}
+=======
+
+>>>>>>> main
 
 
 	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
