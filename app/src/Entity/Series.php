@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: "series", uniqueConstraints: [
@@ -60,6 +61,11 @@ class Series
     #[ORM\OneToMany(mappedBy: 'series', targetEntity: Season::class)]
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $seasons;
+
+    /**
+    * @ORM\OneToMany(targetEntity="App\Entity\Rating", mappedBy="series", cascade={"persist", "remove"})
+    */
+    private $ratings;
 
 
     /**
@@ -323,6 +329,19 @@ class Series
         }
 
         return $this;
+    }
+
+    public function getRatings( EntityManagerInterface $entityManager): ?Rating
+    {
+        if ($this->ratings) {
+            return $this->ratings;
+        }
+
+        $ratingRepository = $entityManager->getRepository(Rating::class);
+
+        $this->ratings = $ratingRepository->findOneBy(['series' => $this->id]);
+
+        return $this->ratings;
     }
 
 }

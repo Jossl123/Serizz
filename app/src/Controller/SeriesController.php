@@ -8,6 +8,7 @@ use App\Entity\Rating;
 use App\Form\SeriesRatingType;
 use App\Form\SeriesType;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -121,7 +122,7 @@ class SeriesController extends AbstractController
         $percentages_seasons = array();
         $percentage_serie = 0;
         $episode_nb = 0;
-
+        $ratings = $entityManager->getRepository(Rating::class)->findBy(array("series"=>$id));
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);
@@ -159,6 +160,7 @@ class SeriesController extends AbstractController
                 'percentages_seasons' => $percentages_seasons,
                 'percentage_serie' => $percentage_serie,
                 'ratingForm' => $form->createView(),
+                'ratings' => $ratings
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
