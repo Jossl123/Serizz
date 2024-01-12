@@ -108,28 +108,34 @@ class SeriesController extends AbstractController
         dump($form->isSubmitted());
         dump($rating);
         try {
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($rating);
-            $entityManager->flush();
-            $this->addFlash('success', 'You successfully rated this serie !');
-        }
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($rating);
+                $entityManager->flush();
+                $this->addFlash('success', 'You successfully rated this serie !');
+            }
         } catch (\Exception $e) {
             dump($e->getMessage()); // Afficher le message d'erreur
         }
-       
+
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
             $season_episode_nb = $season->getEpisodes()->count();
-            $episode_nb+=$season_episode_nb;
-            foreach ($season->getEpisodes() as $ep_id => $episode){
-                $seen+=$episode->getUser()->contains($user);
+            $episode_nb += $season_episode_nb;
+            foreach ($season->getEpisodes() as $ep_id => $episode) {
+                $seen += $episode->getUser()->contains($user);
             }
-            $percentage_serie+=$seen;
-            if ($season_episode_nb == 0)$percentages_seasons=100;
-            else $percentages_seasons[$key] = (int)($seen/$season_episode_nb*100);
+            $percentage_serie += $seen;
+            if ($season_episode_nb == 0) {
+                $percentages_seasons = 100;
+            } else {
+                $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
+            }
         }
-        if ($episode_nb == 0) $percentage_serie = 100;
-        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        if ($episode_nb == 0) {
+            $percentage_serie = 100;
+        } else {
+            $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
+        }
         dump($percentages_seasons);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
