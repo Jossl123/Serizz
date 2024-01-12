@@ -32,7 +32,6 @@ class DefaultController extends AbstractController
             ->getRepository(User::class);
         $ratingRepo = $entityManager
             ->getRepository(Rating::class);
-        $series = $seriesRepo->findBy(array(), null, 4, 2);
 
         if (!$this->isGranted('ROLE_USER')) {
             return $this->render('default/showcase.html.twig', [
