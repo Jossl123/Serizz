@@ -34,7 +34,7 @@ use App\Factory\CountryFactory;
 final class UserFactory extends ModelFactory
 {
     private static $em;
-    private static $hasher;
+    private static $password;
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -42,8 +42,7 @@ final class UserFactory extends ModelFactory
         $factory = new PasswordHasherFactory([
             'common' => ['algorithm' => 'bcrypt'],
         ]);
-        
-        $this::$hasher = $factory->getPasswordHasher('common');
+        $this::$password = $factory->getPasswordHasher('common')->hash('password');
 
         parent::__construct();
     }
@@ -58,7 +57,7 @@ final class UserFactory extends ModelFactory
             'admin' => 0,
             'email' => self::faker()->email(),
             'name' => self::faker()->name(),
-            'password' => $this::$hasher->hash('password'),
+            'password' => $this::$password,
             'country' => CountryFactory::random()
         ];
     }
