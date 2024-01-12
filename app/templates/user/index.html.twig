@@ -4,21 +4,52 @@
 
 {% block body %}
     {% include('./header.html.twig') %}
-    <div>
+    <div class="flex">
 
-        <div class="bg-[--dark-blue] py-20 w-fit">
+        <div class="bg-[--dark-blue] py-20 w-fit left-0">
             <form action="" method="get">
                 <div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
                     <label>
                         <input type="text" class="bg-transparent" name="search"/>
                     </label>
-                    <input type="submit" value="">
                     <i class="nf nf-fa-search text-white"></i>
                 </div>
+
+                <input type="submit" value="">
+            </form>
+
+            <form class="text-center" method="get">
+                <h1 class="mb-4 font-semibold text-2xl"> Filters </h1>
+                {% if ( app.user ) and ( app.user.admin != 0) %}
+                    <h1 class="text-xl"> User Type</h1>
+                    <ul class="w-fit flex flex-col m-auto mt-3">
+                        <li class="inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium border -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg bg-user-form border-gray-700 text-white">
+                            <label class="cursor-pointer">
+                                User
+                                <input type="checkbox" name="user" value="ROLE_USER" class="rounded disabled:opacity-50 bg-gray-800 border-gray-700 checked:bg-blue-500 checked:border-blue-500 focus:ring-offset-gray-800">
+                            </label>
+                        </li>
+                        <li class="inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium border -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg bg-user-form border-gray-700 text-white">
+                            <label class="cursor-pointer">
+                                Admin
+                                <input type="checkbox" name="admin" value="ROLE_ADMIN" class="rounded disabled:opacity-50 bg-gray-800 border-gray-700 checked:bg-blue-500 checked:border-blue-500 focus:ring-offset-gray-800">
+                            </label>
+                        </li>
+                        <li class="inline-flex items-center gap-x-2 py-3 px-4 text-sm font-medium border -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg bg-user-form border-gray-700 text-white">
+                            <label class="cursor-pointer">
+                                Super Admin
+                                <input type="checkbox" name="ROLE_SUPER_ADMIN" value="superAdmin" class="rounded disabled:opacity-50 bg-gray-800 border-gray-700 checked:bg-blue-500 checked:border-blue-500 focus:ring-offset-gray-800">
+                            </label>
+                        </li>
+                    </ul>
+
+                {% endif %}
+                <br>
+                <button class="bg-[--grey] rounded-full px-2 py-1"> Apply </button>
             </form>
         </div>
 
-        <div class="text-xl flex items-center flex-col">
+        <div class="text-xl flex items-center flex-col m-auto">
 
             <script src="https://cdn.tailwindcss.com"></script>
 
@@ -30,7 +61,7 @@
             </div>
 
             {% include('./pagination.html.twig') with {'app_path': "app_user_index", "pagesNb": pagesNb} %}
-            
+
             <table class="text-sm text-center">
                 <thead class="text-xs uppercase bg-gray-700 ">
                     <tr class="">

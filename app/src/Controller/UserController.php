@@ -21,6 +21,12 @@ class UserController extends AbstractController
     {
         $page = $request->query->get('page', 0);
         $search = $request->query->get('search', "");
+        $searchForUser = $request->query->get('user', false);
+        $searchForAdmin = $request->query->get('admin', false);
+        $searchForSuperAdmin = $request->query->get('superAdmin', false);
+
+        $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
+
         $limit = 10;
         $usersRepo = $entityManager
             ->getRepository(User::class);
@@ -28,26 +34,66 @@ class UserController extends AbstractController
         if (isset($_GET['search'])) {
             $users = $usersRepo->findAll();
             $users_match = array();
-            foreach ($users as $user) {
-                if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
-                    $users_match[] = $user;
+
+            if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
+                foreach($users as $user) {
+                    if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
+                        if ($searchForUser && !$user->isAdmin() && !$user->isSuperAdmin()) {
+                            $users_match[] = $user;
+                        } else if ($searchForAdmin && $user->isAdmin() && !$user->isSuperAdmin()) {
+                            $users_match[] = $user;
+                        } else if ($searchForSuperAdmin && $user->isSuperAdmin()) {
+                            $users_match[] = $user;
+                        }
+                    }
+                }
+
+                $userNb = sizeof($users_match);
+            } else {
+                foreach ($users as $user) {
+                    if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
+                        $users_match[] = $user;
+                    }
+                }
+
+                $userNb = sizeof($users_match);
+
+                if ($page > $userNb / $limit) {
+                    $page = ceil($userNb / $limit);
+                }
+                if ($page < 0) {
+                    $page = 0;
+                }
+
+            }
+
+            $users_match = array_slice($users_match, $page * $limit, $limit);
+            $users = $users_match;
+        } else if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
+            $users = $usersRepo->findAll();
+            $users_match = array();
+
+            foreach($users as $user) {
+                $userRole = $user->getRoles();
+                foreach($searchArray as $search) {
+                    for($i = 0; $i < sizeof($userRole); $i++) {
+                        if ($search == $userRole[$i]) {
+                            dump($userRole[$i]);
+                            $users_match[] = $user;
+                        }
+                    }
                 }
             }
 
-            $userNb = sizeof($users_match);
+            dump($users_match);
 
-            if ($page > $userNb / $limit) {
-                $page = ceil($userNb / $limit);
-            }
-            if ($page < 0) {
-                $page = 0;
-            }
+            $userNb = sizeof($users_match);
 
             $users_match = array_slice($users_match, $page * $limit, $limit);
             $users = $users_match;
         } else {
             $userNb = $usersRepo->count([]);
-            dump($userNb);
+
             if ($page > $userNb / $limit) {
                 $page = ceil($userNb / $limit);
             }
@@ -57,7 +103,6 @@ class UserController extends AbstractController
 
             $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
         }
-
 
         return $this->render('user/index.html.twig', [
             'users' => $users,
