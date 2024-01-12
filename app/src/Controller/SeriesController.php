@@ -60,16 +60,23 @@ class SeriesController extends AbstractController
                 if (isset($_GET['genres'])){
                     $tousGenres = explode("_", $_GET['genres']);
                     $search->join('s.genre','g');
-
                     foreach ($tousGenres as $genre) {
-                    
-                        $search->andwhere(':ge = g.name')
+                        $search->andwhere(':ge IN(g.name)')
                         ->setParameter('ge', $genre);
+                        dump($search->getParameter('ge')); 
                     }
                 }
+
+                if (isset($_GET['grade'])) {
+                    $search->join()
+                    ->andwhere('s.yearStart >= :ys')
+                    ->setParameter('ys', $_GET['Syear'])
+                    ->orderBy('s.yearStart', 'ASC');
+                }
+
+
                 dump($search->getQuery());
                 $series_match = $search->getQuery()->getResult();
-                dump($search->getQuery()->getResult());
                 $seriesNb = sizeof((array)$series_match);
                 if ($page > $seriesNb / $limit) {
                     $page = ceil($seriesNb / $limit);
