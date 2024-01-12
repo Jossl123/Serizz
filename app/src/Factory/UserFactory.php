@@ -55,11 +55,26 @@ final class UserFactory extends ModelFactory
     {
         return [
             'admin' => 0,
-            'email' => self::faker()->email(),
+            'email' => $this::getEmail(),
             'name' => self::faker()->name(),
             'password' => $this::$password,
             'country' => CountryFactory::random()
         ];
+    }
+
+    /**
+     * Ensures an user is created with an unique email
+     */
+    protected function getEmail(): string
+    {
+        $repo = $this::$em->getRepository('App\Entity\User');
+        $mail = self::faker()->email();
+
+        while ($repo->findOneBy(['email'=>$mail])) {
+            $mail = self::faker()->email();
+        }
+
+        return $mail;
     }
 
     /**
