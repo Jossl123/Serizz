@@ -58,13 +58,13 @@ class SeriesController extends AbstractController
                 }
 
                 if (isset($_GET['genres'])){
-                    $search->join('\App\Entity\Genre','g')
-                    ->andwhere('g.name = :ge')
+                    $search->join('s.genre','g')
+                    
+                    ->where(':ge = g.name')
                     ->setParameter('ge', $_GET['genres']);
                 }
-
-                $series_match = $search->getQuery()->getResult();
                 dump($search->getQuery());
+                $series_match = $search->getQuery()->getResult();
                 dump($search->getQuery()->getResult());
                 $seriesNb = sizeof((array)$series_match);
                 if ($page > $seriesNb / $limit) {
