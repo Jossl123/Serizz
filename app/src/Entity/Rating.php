@@ -40,6 +40,7 @@ class Rating
     #[ORM\JoinColumn(name:"series_id", referencedColumnName:"id")]
     private $series;
 
+
     public function __construct()
     {
         $this->date = new \DateTime();

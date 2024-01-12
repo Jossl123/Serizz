@@ -17,7 +17,7 @@ class SeriesRatingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('rating', IntegerType::class, [
+            ->add('value', IntegerType::class, [
                 'label' => 'Rate (from 1 to 10)',
                 'attr' => [
                     'min' => 1,
