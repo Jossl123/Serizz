@@ -21,6 +21,7 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $NbG = 0;
         $page = $request->query->get('page', 0);
         $search = $entityManager->createQueryBuilder();
         $limit = 10;
@@ -58,14 +59,15 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
                 }
-
+                dump(isset($_GET['genres']));
                 if (isset($_GET['genres'])){
                     $tousGenres = explode("_", $_GET['genres']);
                     $search->join('s.genre','g');
                     foreach ($tousGenres as $genre) {
-                        $search->andwhere(':ge IN(g.name)')
-                        ->setParameter('ge', $genre);
-                        dump($search->getParameter('ge')); 
+                        $search->setParameter(strval($tousGenres[$NbG]), $genre)
+                        ->andwhere(':'.strval($tousGenres[$NbG]).' IN (g.name)');
+                        dump($search->getParameter(strval($tousGenres[$NbG])));
+                        $NbG += 1;  
                     }
                 }
 
