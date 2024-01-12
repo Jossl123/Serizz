@@ -18,12 +18,11 @@
 				</div>
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
 					{% if app.user %}
-						<button onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')">
-							{% if app.user.getSeries().contains(series) %}
-								<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark"></i>
-							{% else %}
-								<i id="season-follow-{{series.id}}" class="nf nf-fa-bookmark_o"></i>
-							{% endif %}
+					<button 
+						x-data="{ following: {{ app.user.getSeries().contains(series) ? 'true' : 'false'}} }" 
+						@click="following = !following" 
+						onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')">
+							<i id="season-follow-{{series.getId()}}" class="nf" :class="{ 'nf-fa-bookmark': following, 'nf-fa-bookmark_o': !following }"></i>
 						</button>
 						{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
 						<button id="see_all" onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
