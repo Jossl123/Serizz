@@ -111,12 +111,3 @@ class Rating
         return $this;
     }
 }
-
-
-foreach(ratings){
-    if (app.user.id == ratings.user && ratings.series == series.id) {
-        {{ ratings.value}}
-        {{ratings.comment}}
-    }
-
-}
