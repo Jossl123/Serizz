@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Rating;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,9 @@ class DefaultController extends AbstractController
 
         $usersRepo = $entityManager
             ->getRepository(User::class);
+        $ratingRepo = $entityManager
+            ->getRepository(Rating::class);
+        $series = $seriesRepo->findBy(array(), null, 4, 2);
 
         if (!$this->isGranted('ROLE_USER')) {
             return $this->render('default/showcase.html.twig', [

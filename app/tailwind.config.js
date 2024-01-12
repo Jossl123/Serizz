@@ -2,7 +2,10 @@
 module.exports = {
   content: ["/templates/**/*.twig"],
   theme: {
-    extend: {},
+    colors: {
+      'user-form': '#8f81b9',
+    },
+    extend: { },
   },
   plugins: [],
 }
