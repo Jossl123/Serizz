@@ -101,7 +101,7 @@
 			<div class="m-3 flex flex-col">
 				<div class="flex place-content-between w-[32rem] items-center">
 					<h1 class="text-3xl font-bold  text-white">{{ series.title }}</h1>
-					<div class="flex gap-1 justify-end items-center " style="width:-webkit-fill-available;">
+					<div class="flex gap-1 justify-right items-center">
 						{% if app.user %}<a class=" p-2 font-bold block" href="#post_your_rating">Post your rating</a>{% endif %}
 						{% for i in 1..5 %}
 							{% if i <= 4 %}
@@ -167,7 +167,6 @@
 		{{ form_end(ratingForm) }}
 		{% endif %}
 	</div>
-<<<<<<< HEAD
 
 	{% if app.user %}
 <div class="relative">
@@ -191,8 +190,6 @@
 </div>
 	{% endif %}
 
-=======
->>>>>>> baaadbf (add front for stars)
 
 	<a href="{{ path('app_series_index') }}" class="text-[--white] text-center text-2xl font-bold block">
 		<i class="nf nf-md-keyboard_backspace"></i>

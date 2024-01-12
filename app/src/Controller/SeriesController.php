@@ -112,7 +112,7 @@ class SeriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
     public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var \App\Entity\User */
@@ -123,7 +123,11 @@ class SeriesController extends AbstractController
         $episode_nb = 0;
 
         $rating = new Rating();
-        $form = $this->createForm(SeriesRatingType::class);
+        $rating -> setUser($user);
+        $rating -> setSeries($serie);
+        //$rating -> setValue($request -> query -> get("value", 5));
+        //$rating -> setComment($request -> query -> get("comment", "No comment added"));
+        $form = $this->createForm(SeriesRatingType::class, $rating);
         $form->handleRequest($request);
         dump($form->isSubmitted());
         dump($rating);
