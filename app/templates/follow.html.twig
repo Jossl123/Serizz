@@ -1,10 +1,11 @@
 {% if app.user %}
-<button onclick="follow('{{ path('app_series_update_followed', {'id': serie.getId(), 'update': serie.getId()}) }}')" class="absolute left-0 w-auto top-0 w-full p-2 sm:-translate-y-full sm:{% if not app.user.getSeries().contains(serie) %}group-hover:{% endif %}translate-y-0 transition-all ease-in-out duration-200">
-	{% if app.user.getSeries().contains(serie) %}
-		<i id="season-follow-{{serie.getId()}}" class="nf nf-fa-bookmark rounded-full bg-[--grey] p-2"></i>
-	{% else %}
-		<i id="season-follow-{{serie.getId()}}" class="nf nf-fa-bookmark_o rounded-full bg-[--grey] p-2"></i>
-	{% endif %}
-</button>
-<script src="{{asset("follow.js")}}"></script>
+	<button 
+	x-data="{ following: {{ app.user.getSeries().contains(serie) ? 'true' : 'false'}} }" 
+	@click="following = !following" 
+	onclick="follow('{{ path('app_series_update_followed', {'id': serie.getId(), 'update': serie.getId()}) }}')" 
+	class="absolute left-0 w-auto top-0 w-full p-2 transition-all ease-in-out duration-200"
+	:class="{ 'translate-y-0': following, 'md:-translate-y-full md:group-hover:translate-y-0': !following }">
+		<i id="season-follow-{{serie.getId()}}" class="nf rounded-full bg-[--grey] p-2" :class="{ 'nf-fa-bookmark': following, 'nf-fa-bookmark_o': !following }"></i>
+	</button>
+	<script src="{{asset("follow.js")}}"></script>
 {% endif %}
