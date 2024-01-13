@@ -6,27 +6,27 @@
 {% block body %}
 	{% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
 	<img id="background" src="{{ asset("/images/showcase_background.jpg") }}" alt="Series poster" class="absolute w-full blur-sm -z-10s ">
-	<div class="py-10 px-64 ">
-		<div class="text-white flex flex-col items-center text-6xl font-bold gap-16 pb-10 pt-16">
-			<p class>Serizz, the best place for your series list</p>
-			<div class="flex gap-32 text-3xl text-[--white]">
+	<div class="sm:py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4  m-2">
+		<div class="text-white flex flex-col items-center sm:text-6xl text-4xl font-bold sm:gap-16 gap-2 sm:pb-10 pb-2 sm:pt-16 ">
+			<p  class="text-center">Serizz, the best place for your series list</p>
+			<div class="flex items-center sm:gap-32 sm:flex-row flex-col sm:text-3xl text-2xl text-[--white]">
 				<p>{{user_nb}}
 					users</p>
 				<p>{{watched_episodes}}
 					watched episodes</p>
 			</div>
-			<div class="flex justify-center gap-16">
-				<div class="justify-center bg-gradient-to-b from-transparent to-[--dark-blue] p-2 rounded-md">
-					<p class="text-center text-3xl">Visualize</p>
-                    <p class="text-center text-xl">Keep up with the latest releases of the moment, or the most popular series on the web!</p>
+			<div class="flex justify-center sm:gap-16 gap-2 py-6 font-normal sm:flex-row flex-col">
+				<div class="justify-center bg-gradient-to-b from-transparent to-[--dark-blue]   p-2 rounded-md">
+					<p class="text-center sm:text-3xl text-xl font-bold">Visualize</p>
+                    <p class="text-center sm:text-xl text-sm">Keep up with the latest releases of the moment, or the most popular series on the web!</p>
 				</div>
 				<div class="justify-center bg-gradient-to-b from-transparent to-[--dark-blue] p-2 rounded-md">
-					<p class="text-center text-3xl">Subscribe</p>
-                    <p class="text-center text-xl">Follow your favorite series, be notified during new releases, find quickly all this in your personal space!</p>
+					<p class="text-center sm:text-3xl text-xl font-bold">Subscribe</p>
+                    <p class="text-center sm:text-xl text-sm">Follow your favorite series, be notified during new releases, find quickly all this in your personal space!</p>
 				</div>
 				<div class="justify-center bg-gradient-to-b from-transparent to-[--dark-blue] p-2 rounded-md">
-					<p class="text-center text-3xl">Track</p>
-                    <p class="text-center text-xl">With our website, always be aware of where you are at, mark the episodes viewed, and never lose track!</p>
+					<p class="text-center sm:text-3xl text-xl font-bold">Track</p>
+                    <p class="text-center sm:text-xl text-sm">With our website, always be aware of where you are at, mark the episodes viewed, and never lose track!</p>
 				</div>
 			</div>
 
@@ -36,14 +36,15 @@
 		<div>
 			{{ "now"|date("j F") }}
 		</div>
-		<div>
+		<div class="pb-2 scrollable">
 			<p class="text-white bold text-4xl font-bold">
 				Hall of Fame</p>
-			<ul class="flex gap-6 place-content-around flex-shrink-0 pb-20">
+
+			<ul class="flex xl:gap-6  gap-32 xl:place-content-around xl:overflow-hidden overflow-y-hidden overflow-x-auto  flex-shrink-0 sm:pb-20 pb-8">
 				{% for serie in hall_of_fame %}
-					<a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex items-center">
+					<a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 items-center">
 						<p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
-						<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 h-80 translate-y-8">
+						<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 sm:h-80 h-60 translate-y-8">
 					</a>
 				{% endfor %}
 			</ul>
