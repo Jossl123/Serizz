@@ -75,7 +75,37 @@ class SeriesController extends AbstractController
         $page = $request->query->get('page', 0);
         $limit = 10;
 
-        $seriesCompleted = array();
+        $qb = $entityManager->createQueryBuilder();
+        $qb
+            ->select('series')
+            ->from('App:Series', 'series')
+            ->innerJoin('series.seasons', 'season')
+            ->innerJoin('season.episodes', 'episode')
+            ->leftJoin('episode.user', 'user', 'WITH', 'user.id = :userId')
+            ->groupBy('series.id')
+            ->having(
+                $qb->expr()->eq(
+                    $qb->expr()->countDistinct('episode'),
+                    $qb->expr()->countDistinct('user.id')
+                )
+            )
+            ->andHaving(
+                $qb->expr()->eq(
+                    $qb->expr()->countDistinct('episode.id'),
+                    $qb->expr()->literal(
+                        '(SELECT COUNT(DISTINCT ep.id) FROM App:Series s
+                INNER JOIN s.seasons se
+                INNER JOIN se.episodes ep
+                LEFT JOIN ep.user u
+                WHERE s.id = series.id AND u.id = :userId)'
+                    )
+                )
+            )
+            ->setParameter('userId', $user->getId());
+
+        $seriesCompleted = $qb->getQuery()->getResult();
+
+        /*$seriesCompleted = array();
         // The performance is NOT optimal... around 1400 queries are done in dev
         foreach ($userSeries as $series) {
             $nbEpisodes = 0; // Total number of episodes of the series
@@ -93,6 +123,7 @@ class SeriesController extends AbstractController
                 array_push($seriesCompleted, $series);
             }
         }
+        */
 
         $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
@@ -123,8 +154,8 @@ class SeriesController extends AbstractController
         $episode_nb = 0;
 
         $rating = new Rating();
-        $rating -> setUser($user);
-        $rating -> setSeries($serie);
+        $rating->setUser($user);
+        $rating->setSeries($serie);
         //$rating -> setValue($request -> query -> get("value", 5));
         //$rating -> setComment($request -> query -> get("comment", "No comment added"));
         $form = $this->createForm(SeriesRatingType::class, $rating);
@@ -153,7 +184,7 @@ class SeriesController extends AbstractController
             }
         }
         if ($episode_nb == 0) $percentage_serie = 100;
-        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        else $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -185,7 +216,7 @@ class SeriesController extends AbstractController
             if ($see_all) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
-                        if ($ep == $episode)break;
+                        if ($ep == $episode) break;
                         if (!$user->getEpisode()->contains($ep)) {
                             $user->addEpisode($ep);
                             $entityManager->flush();
@@ -193,7 +224,7 @@ class SeriesController extends AbstractController
                     }
                     if ($current_season == $season) break;
                 }
-            } 
+            }
         }
 
         return new JsonResponse(array('success' => "true"));
