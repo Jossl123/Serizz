@@ -35,8 +35,6 @@ use DateTime;
  */
 final class RatingFactory extends ModelFactory
 {
-
-
     private static $em;
     private static $moy;
     private static $et;
@@ -49,7 +47,8 @@ final class RatingFactory extends ModelFactory
         parent::__construct();
     }
 
-    public static function setMoyEt(float $moy, float $et) {
+    public static function setMoyEt(float $moy, float $et)
+    {
         RatingFactory::$moy = $moy;
         RatingFactory::$et = $et;
     }
@@ -58,7 +57,7 @@ final class RatingFactory extends ModelFactory
     {
         $x = mt_rand() / mt_getrandmax();
         $y = mt_rand() / mt_getrandmax();
-    
+
         return sqrt(-2 * log($x)) * cos(2 * pi() * $y) * $sd + $av;
     }
 
@@ -73,7 +72,7 @@ final class RatingFactory extends ModelFactory
         return [
             'comment' => self::faker()->text(100),
             'date' => DateTime::createFromFormat('m/d/Y h:i:s a', date('m/d/Y h:i:s a')),
-            'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et))%11),
+            'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)) % 11),
             'user' => $user,
             'series' => $series
         ];
@@ -88,7 +87,7 @@ final class RatingFactory extends ModelFactory
         $user = UserFactory::random()->object();
         $count = 0;
 
-        while ($repo->findOneBy(['series'=>$series, 'user'=>$user]) && $count < 5) {
+        while ($repo->findOneBy(['series' => $series, 'user' => $user]) && $count < 5) {
             $user = UserFactory::random()->object();
             $count++;
         }

@@ -27,8 +27,8 @@ class GenerateFakeRatingsCommand extends Command
         $time = floor(microtime(true) * 1000);
 
         RatingFactory::createMany($nb);
-        $output->writeln("successfully created ".$nb." new ratings");
-        $output->writeln("took ".round(floor(microtime(true) * 1000) - $time, 2)." ms");
+        $output->writeln("successfully created " . $nb . " new ratings");
+        $output->writeln("took " . round(floor(microtime(true) * 1000) - $time, 2) . " ms");
         return Command::SUCCESS;
     }
 

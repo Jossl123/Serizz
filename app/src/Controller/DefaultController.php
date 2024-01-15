@@ -25,10 +25,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class DefaultController extends AbstractController
 {
-
     public function __construct(private HttpClientInterface $client)
     {
-
     }
     #[Route('/', name: 'app_default')]
     public function index(EntityManagerInterface $entityManager): Response
@@ -70,7 +68,8 @@ class DefaultController extends AbstractController
      */
     #[IsGranted("ROLE_ADMIN")]
     #[Route('/add', name:'app_series_add')]
-    public function addSeries(Request $request, EntityManagerInterface $entityManager): Response {
+    public function addSeries(Request $request, EntityManagerInterface $entityManager): Response
+    {
         $url = "http://www.omdbapi.com/?apikey=3c7a370d&type=series&";
         $posterUrl = "http://img.omdbapi.com/?apikey=3c7a370d&";
         $episodeUrl = "http://www.omdbapi.com/?apikey=3c7a370d&";
@@ -99,7 +98,7 @@ class DefaultController extends AbstractController
             $content = $response->getContent();
             $content = $response->toArray();
 
-            if($content['Response'] != "False") {
+            if ($content['Response'] != "False") {
                 $years = explode("-", $content['Year']);
                 $genres = explode(", ", $content['Genre']);
                 $actors = explode(", ", $content['Actors']);
@@ -115,19 +114,18 @@ class DefaultController extends AbstractController
                     $posterContent = $posterResponse->getContent();
                 }
             }
-
         }
 
-        if (isset($_POST['add'])){
+        if (isset($_POST['add'])) {
             $series = new Series();
             $series->setTitle($content['Title']);
             $series->setPoster($posterContent);
             $series->setYearStart(intval($years[0]));
-            if (isset($years[1])){
+            if (isset($years[1])) {
                 $series->setYearEnd(intval($years[1]));
             }
 
-            for ($i = 0; $i < sizeof($genres); $i++){
+            for ($i = 0; $i < sizeof($genres); $i++) {
                 $genre = new Genre();
                 $genre->setName($genres[$i]);
                 $genre->addSeries($series);
@@ -139,7 +137,7 @@ class DefaultController extends AbstractController
             $series->setImdb($content['imdbID']);
             $series->setDirector($content['Director']);
 
-            for ($i = 0; $i < sizeof($actors); $i++){
+            for ($i = 0; $i < sizeof($actors); $i++) {
                 $actor = new Actor();
                 $actor->setName($actors[$i]);
                 $actor->addSeries($series);
@@ -158,11 +156,12 @@ class DefaultController extends AbstractController
             }
 
             $series->setAwards($content['Awards']);
-            $series->setYoutubeTrailer("https://www.youtube.com/embed/o9CeEHUG1sU?controls=0&autoplay=1&mute=1&&showinfo=0autohide%3D2&playlist=o9CeEHUG1sU");
+            $series->setYoutubeTrailer("https://www.youtube.com\
+            /embed/o9CeEHUG1sU?controls=0&autoplay=1&mute=1&&showinfo=0autohide%3D2&playlist=o9CeEHUG1sU");
             $entityManager->persist($series);
 
-            if(isset($content['totalSeasons'])){
-                for($i = 0; $i < $content['totalSeasons']; $i++){
+            if (isset($content['totalSeasons'])) {
+                for ($i = 0; $i < $content['totalSeasons']; $i++) {
                     $episodeUrl .= "t=" . $content['Title'] . "&Season=" . ($i + 1);
                     $episodeResponse = $this->client->request('GET', $episodeUrl);
                     $episodeStatusCode = $episodeResponse->getStatusCode();
@@ -175,9 +174,9 @@ class DefaultController extends AbstractController
                     $season->setSeries($series);
                     $series->addSeason($season);
 
-                    for($j = 0; $j < sizeof($episodeContent['Episodes']); $j++){
+                    for ($j = 0; $j < sizeof($episodeContent['Episodes']); $j++) {
                         $episode = new Episode();
-                        if(strlen($episodeContent['Episodes'][$j]['Title']) > 128) {
+                        if (strlen($episodeContent['Episodes'][$j]['Title']) > 128) {
                             $episode->setTitle(substr($episodeContent['Episodes'][$j]['Title'], 0, 128));
                         } else {
                             $episode->setTitle($episodeContent['Episodes'][$j]['Title']);
@@ -193,7 +192,6 @@ class DefaultController extends AbstractController
             }
 
             $entityManager->flush();
-
         }
 
 

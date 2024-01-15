@@ -70,7 +70,7 @@ final class UserFactory extends ModelFactory
         $repo = $this::$em->getRepository('App\Entity\User');
         $mail = self::faker()->email();
 
-        while ($repo->findOneBy(['email'=>$mail])) {
+        while ($repo->findOneBy(['email' => $mail])) {
             $mail = self::faker()->email();
         }
 

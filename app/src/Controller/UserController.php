@@ -21,7 +21,7 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $page = $request->query->get('page', 1)-1;
+        $page = $request->query->get('page', 1) - 1;
         $search = $request->query->get('search', "");
         $searchForUser = $request->query->get('user', false);
         $searchForAdmin = $request->query->get('admin', false);
@@ -38,10 +38,10 @@ class UserController extends AbstractController
             $users_match = array();
 
             if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
-                foreach($users as $user) {
+                foreach ($users as $user) {
                     $userRole = $user->getRoles();
-                    foreach($searchArray as $search) {
-                        for($i = 0; $i < sizeof($userRole); $i++) {
+                    foreach ($searchArray as $search) {
+                        for ($i = 0; $i < sizeof($userRole); $i++) {
                             if ($search == $userRole[$i]) {
                                 $users_match[] = $user;
                             }
@@ -65,7 +65,6 @@ class UserController extends AbstractController
                 if ($page < 0) {
                     $page = 0;
                 }
-
             }
 
             $users_match = array_slice($users_match, $page * $limit, $limit);
@@ -116,7 +115,7 @@ class UserController extends AbstractController
     public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
         $seriesRepo = $user->getSeries();
-        $page = $request->query->get('page', 1)-1;
+        $page = $request->query->get('page', 1) - 1;
         $limit = 10;
         $seriesNb = $seriesRepo->count([]);
 

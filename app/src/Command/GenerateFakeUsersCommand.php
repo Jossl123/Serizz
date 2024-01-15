@@ -22,8 +22,8 @@ class GenerateFakeUsersCommand extends Command
         $nb = $input->getArgument('nb');
         $time = floor(microtime(true) * 1000);
         UserFactory::createMany($nb);
-        $output->writeln("successfully created ".$nb." new users");
-        $output->writeln("took ".round(floor(microtime(true) * 1000) - $time, 2)." ms");
+        $output->writeln("successfully created " . $nb . " new users");
+        $output->writeln("took " . round(floor(microtime(true) * 1000) - $time, 2) . " ms");
         return Command::SUCCESS;
     }
 
