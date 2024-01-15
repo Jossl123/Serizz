@@ -2,7 +2,7 @@
 
 cd app/
 
-if [ -f .env] 
+if [ -f .env ]
 then 
 
     echo "Already existing environment file"; 
@@ -25,7 +25,7 @@ if [ -f .env ]
 then
     echo ".env created properly";
 else 
-    echo "An error occured when creating the .env file";
+    echo "An error occurred when creating the .env file";
 fi
 
 echo "WARNING : Edit the .env file and add your database connection before proceeding."
@@ -38,12 +38,13 @@ while IFS= read -n1 -r -p "Is the file edited with correct credentials ? [y]es|[
 done
 
 composer install
+npm install
 
 read -p "Do you want to start the prod now ? y/N " answer
 
 if [ $answer == 'y' ]
 then
-    if [ -f prod.sh]
+    if [ -f prod.sh ]
     then
         /bin/bash prod.sh;
     else
