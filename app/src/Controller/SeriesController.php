@@ -63,11 +63,13 @@ class SeriesController extends AbstractController
                 if (isset($_GET['genres'])){
                     $tousGenres = explode("_", $_GET['genres']);
                     $subsearch = $entityManager->createQueryBuilder();
-                    $subsearch->select('s')
-                    ->from('\App\Entity\Series','s')
-                    ->join('s.genre','g');
-                    $subsearch->andWhere('g.name IN (:genres)')
-                        ->setParameter('genres', $tousGenres);
+                    $subsearch->select('sub_s')
+                    ->from('\App\Entity\Series','sub_s')
+                    ->join('sub_s.genre','g')
+                    ->andWhere('g.name IN (:genres)');
+                    $search->setParameter('genres', $tousGenres);
+                    $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
+
                 }
 
                 if (isset($_GET['grade'])) {
