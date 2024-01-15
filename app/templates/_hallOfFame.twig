@@ -1,0 +1,16 @@
+<div class="pb-2 scrollable">
+  <p class="text-white bold text-4xl font-bold">Hall of Fame</p>
+
+  <ul class="flex xl:gap-6 gap-32 xl:place-content-around xl:overflow-hidden overflow-y-hidden overflow-x-auto flex-shrink-0 sm:pb-20 pb-8">
+    {% if hall_of_fame %}
+    {% for serie in hall_of_fame %}
+      <a href="{{ path('app_series_show', { id: serie.id }) }}" class="flex gap-0 items-center">
+        <p class="text-xl font-extrabold" style="font-size:18rem">{{ loop.index }}</p>
+        <img src="{{ path('app_series_poster', { id: serie.id }) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 sm:h-80 h-60 translate-y-8" />
+      </a>
+    {% endfor %}
+    {% else %}
+        <p class="text-white bold text-2xl font-bold">No user has followed any series yet. Would you be the first one?</p>
+    {% endif %}
+  </ul>
+</div>

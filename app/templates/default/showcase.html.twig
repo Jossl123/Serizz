@@ -4,7 +4,11 @@
 {% endblock %}
 
 {% block body %}
-	{% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
+{% if (hall_of_fame|first) != null %}
+		{% include('./header.html.twig') with {'poster_picture_id': (hall_of_fame|first).id}  %}
+	{% else %}
+		{% include('./header.html.twig') %}
+	{% endif %}
 	<img id="background" src="{{ asset("/images/showcase_background.jpg") }}" alt="Series poster" class="absolute w-full blur-sm -z-10s ">
 	<div class="sm:py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4  m-2">
 		<div class="text-white flex flex-col items-center sm:text-6xl text-4xl font-bold sm:gap-16 gap-2 sm:pb-10 pb-2 sm:pt-16 ">
@@ -36,19 +40,7 @@
 		<div>
 			{{ "now"|date("j F") }}
 		</div>
-		<div class="pb-2 scrollable">
-			<p class="text-white bold text-4xl font-bold">
-				Hall of Fame</p>
-
-			<ul class="flex xl:gap-6  gap-32 xl:place-content-around xl:overflow-hidden overflow-y-hidden overflow-x-auto  flex-shrink-0 sm:pb-20 pb-8">
-				{% for serie in hall_of_fame %}
-					<a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 items-center">
-						<p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
-						<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 sm:h-80 h-60 translate-y-8">
-					</a>
-				{% endfor %}
-			</ul>
-		</div>
+		{% include ('./_hallOfFame.twig') with {'hall_of_fame': hall_of_fame} %}
 	</div>
 	<style>
 		#background {
