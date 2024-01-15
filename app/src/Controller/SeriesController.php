@@ -21,32 +21,74 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $NbG = 0;
         $page = $request->query->get('page', 0);
-        $search = $request->query->get('init', "");
+        $search = $entityManager->createQueryBuilder();
         $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
-        if (isset($_GET['init'])) {
-            $series = $seriesRepo->findAll();
-            $series_match = array();
-            foreach ($series as $serie) {
-                if (str_contains(strtoupper($serie->getTitle()), strtoupper($search))) {
-                    $series_match[] = $serie;
+        if ($_SERVER['REQUEST_METHOD'] == 'GET'){
+                $search->select('s')
+                ->from('\App\Entity\Series','s');
+
+                if (isset($_GET['init'])) {
+                    $search->andwhere('s.title LIKE :init')
+                    ->setParameter('init', '%'.$_GET['init'].'%');
                 }
-            }
 
-            $seriesNb = sizeof($series_match);
+                if (isset($_GET['synop'])) {
+                    $search->andwhere('s.plot LIKE :syn')
+                    ->setParameter('syn', '%'.$_GET['synop'].'%');
+                }
 
-            if ($page > $seriesNb / $limit) {
-                $page = ceil($seriesNb / $limit);
-            }
-            if ($page < 0) {
-                $page = 0;
-            }
+                if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
+                    $search->andwhere('s.yearStart >= :ys')
+                    ->setParameter('ys', $_GET['Syear'])
+                    ->orderBy('s.yearStart', 'ASC');
+                }
 
-            $series_match = array_slice($series_match, $page * $limit, $limit);
-            $series = $series_match;
+                if (isset($_GET['yearE']) and !isset($_GET['Syear'])) {
+                    $search->andwhere('s.yearEnd = :ye')
+                    ->setParameter('ye', $_GET['yearE']);
+                }
+
+                if (isset($_GET['yearE']) and isset($_GET['Syear'])) {
+                    $search->andwhere('s.yearStart >= :ys')
+                    ->andwhere('s.yearStart <= :ye')
+                    ->setParameter('ys', $_GET['Syear'])
+                    ->setParameter('ye', $_GET['yearE']);
+                }
+                dump($_GET['genres']);
+                if (isset($_GET['genres'])){
+                    $tousGenres = explode("_", $_GET['genres']);
+                    $subsearch = $entityManager->createQueryBuilder();
+                    $subsearch->select('sub_s')
+                    ->from('\App\Entity\Series','sub_s')
+                    ->join('sub_s.genre','g')
+                    ->andWhere('g.name IN (:genres)');
+                    $search->setParameter('genres', $tousGenres);
+                    $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
+
+                }
+
+                if (isset($_GET['grade'])) {
+                    $search->join()
+                    ->andwhere('s.yearStart >= :ys')
+                    ->setParameter('ys', $_GET['Syear'])
+                    ->orderBy('s.yearStart', 'ASC');
+                }
+                $series_match = $search->getQuery()->getResult();
+                $seriesNb = sizeof((array)$series_match);
+                if ($page > $seriesNb / $limit) {
+                    $page = ceil($seriesNb / $limit);
+                }
+                if ($page < 0) {
+                    $page = 0;
+                }
+
+            $series_match = array_slice((array)$series_match, $page * $limit, $limit);
+            $series = (array)$series_match;
         } else {
             $seriesNb = $seriesRepo->count([]);
             if ($page > $seriesNb / $limit) {
@@ -106,18 +148,19 @@ class SeriesController extends AbstractController
         $episode_nb = 0;
 
         $rating = new Rating();
-        $form = $this->createForm(SeriesRatingType::class);
+        $rating -> setUser($user);
+        $rating -> setSeries($serie);
+        //$rating -> setValue($request -> query -> get("value", 5));
+        //$rating -> setComment($request -> query -> get("comment", "No comment added"));
+        $form = $this->createForm(SeriesRatingType::class, $rating);
         $form->handleRequest($request);
         dump($form->isSubmitted());
         dump($rating);
-        try {
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($rating);
-                $entityManager->flush();
-                $this->addFlash('success', 'You successfully rated this serie !');
-            }
-        } catch (\Exception $e) {
-            dump($e->getMessage()); // Afficher le message d'erreur
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($rating);
+            $entityManager->flush();
+            $this->addFlash('success', 'You successfully rated this serie !');
+            return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
 
         foreach ($serie->getSeasons() as $key => $season) {
@@ -135,7 +178,7 @@ class SeriesController extends AbstractController
             }
         }
         if ($episode_nb == 0) $percentage_serie = 100;
-        else $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
+        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -167,7 +210,7 @@ class SeriesController extends AbstractController
             if ($see_all) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
-                        if ($ep == $episode) break;
+                        if ($ep == $episode)break;
                         if (!$user->getEpisode()->contains($ep)) {
                             $user->addEpisode($ep);
                             $entityManager->flush();
@@ -175,7 +218,7 @@ class SeriesController extends AbstractController
                     }
                     if ($current_season == $season) break;
                 }
-            }
+            } 
         }
 
         return new JsonResponse(array('success' => "true"));
