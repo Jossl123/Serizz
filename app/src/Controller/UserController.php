@@ -118,10 +118,10 @@ class UserController extends AbstractController
         $seriesRepo = $user->getSeries();
         $page = $request->query->get('page', 0);
         $limit = 10;
-        $seriesNb = sizeof($seriesRepo);
+        $seriesNb = $seriesRepo->count([]);
 
-        if ($page > sizeof($seriesRepo) / $limit) {
-            $page = ceil(sizeof($seriesRepo) / $limit);
+        if ($page > $seriesNb / $limit) {
+            $page = ceil($seriesNb / $limit);
         }
 
         if ($page < 0) {
@@ -139,7 +139,7 @@ class UserController extends AbstractController
             'user' => $user,
             'followedSeries' => $series,
             'ratings' => $ratings,
-            'pagesNb' => ceil(sizeof($series) / $limit),
+            'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page
         ]);
     }

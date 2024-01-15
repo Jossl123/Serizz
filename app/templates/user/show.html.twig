@@ -83,15 +83,15 @@
                 <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
             </div>
 
-            <div class="flex flex-row">
+            <div class="grid grid-cols-5 grid-rows-2">
                 {% for fs in followedSeries %}
                     <div class="flex text-center group overflow-hidden relative mt-3 mx-2">
                         <a href="{{ path('app_series_show', {'id': fs.id}) }}"><img class=" rounded-lg" alt="poster" src="{{ path('app_series_poster', {'id': fs.id}) }}"></a>
                         {% for r in ratings %}
                             {% if fs.getId() == r.series %}
                                 <div class="absolute m-2 transition duration-300 -translate-x-full p-2 group-hover:translate-x-0">
-                                    <p class="bg-[--grey] mb-1 rounded-lg w-fit p-1"> {{ r.value }} / 10 </p>
-                                    <p class="w-fit resize-none block text-sm rounded-lg border bg-gray-700 border-gray-600 text-white max-w-xl">
+                                    <p class="bg-[--grey] mb-1 rounded-lg w-fit p-1 text-2xl"> {{ r.value }} / 10 </p>
+                                    <p class="text-2xl w-fit resize-none block p-1 rounded-lg border bg-gray-700 border-gray-600 text-white max-w-xl">
                                         {{ r.comment }}
                                     </p>
                                 </div>
