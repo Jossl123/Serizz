@@ -74,57 +74,9 @@ class SeriesController extends AbstractController
         $userSeries = $user->getSeries();
         $page = $request->query->get('page', 0);
         $limit = 10;
-
-        $qb = $entityManager->createQueryBuilder();
-        $qb
-            ->select('series')
-            ->from('App:Series', 'series')
-            ->innerJoin('series.seasons', 'season')
-            ->innerJoin('season.episodes', 'episode')
-            ->leftJoin('episode.user', 'user', 'WITH', 'user.id = :userId')
-            ->groupBy('series.id')
-            ->having(
-                $qb->expr()->eq(
-                    $qb->expr()->countDistinct('episode'),
-                    $qb->expr()->countDistinct('user.id')
-                )
-            )
-            ->andHaving(
-                $qb->expr()->eq(
-                    $qb->expr()->countDistinct('episode.id'),
-                    $qb->expr()->literal(
-                        '(SELECT COUNT(DISTINCT ep.id) FROM App:Series s
-                INNER JOIN s.seasons se
-                INNER JOIN se.episodes ep
-                LEFT JOIN ep.user u
-                WHERE s.id = series.id AND u.id = :userId)'
-                    )
-                )
-            )
-            ->setParameter('userId', $user->getId());
-
-        $seriesCompleted = $qb->getQuery()->getResult();
-
-        /*$seriesCompleted = array();
-        // The performance is NOT optimal... around 1400 queries are done in dev
-        foreach ($userSeries as $series) {
-            $nbEpisodes = 0; // Total number of episodes of the series
-            $seen = 0; // Number of episodes watched by the user of the series
-            foreach ($series->getSeasons() as $key => $season) {
-                $episodes = $season->getEpisodes();
-                $nbEpisodesSeason = $episodes->count();
-                $nbEpisodes += $nbEpisodesSeason;
-                foreach ($episodes as $ep_id => $episode) {
-                    // If the season contains the episode, increase seen by 1
-                    $seen += $episode->getUser()->contains($user);
-                }
-            }
-            if ($nbEpisodes == $seen) {
-                array_push($seriesCompleted, $series);
-            }
-        }
-        */
-
+ 
+        $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
+        
         $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
@@ -136,14 +88,14 @@ class SeriesController extends AbstractController
         $series = $userSeries->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
-            'series' => $series,
+            'series' => $userSeries,
             'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
     public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var \App\Entity\User */
@@ -153,33 +105,19 @@ class SeriesController extends AbstractController
         $percentage_serie = 0;
         $episode_nb = 0;
 
-        $qb = $entityManager->createQueryBuilder();
-        $oldRating = $qb
-            ->select('rating')
-            ->from('App:Rating', 'rating')
-            ->where('rating.user = :user')
-            ->setParameter('user', $user)
-            ->andWhere('rating.series = :serie')
-            ->setParameter('serie', $serie)
-            ->getQuery()->getOneOrNullResult(); // If there is a record, only get this one
-
         $rating = new Rating();
-        $rating->setUser($user);
-        $rating->setSeries($serie);
-        //$rating -> setValue($request -> query -> get("value", 5));
-        //$rating -> setComment($request -> query -> get("comment", "No comment added"));
-        $form = $this->createForm(SeriesRatingType::class, $rating);
+        $form = $this->createForm(SeriesRatingType::class);
         $form->handleRequest($request);
         dump($form->isSubmitted());
         dump($rating);
-        if ($form->isSubmitted() && $form->isValid()) {
-            if ($oldRating != null) { // If the user set a previous rating, delete it
-                $entityManager->remove($oldRating);
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($rating);
+                $entityManager->flush();
+                $this->addFlash('success', 'You successfully rated this serie !');
             }
-            $entityManager->persist($rating);
-            $entityManager->flush();
-            $this->addFlash('success', 'You successfully rated this serie !');
-            return $this->redirectToRoute('app_series_show', ['id' => $id]);
+        } catch (\Exception $e) {
+            dump($e->getMessage()); // Afficher le message d'erreur
         }
 
         foreach ($serie->getSeasons() as $key => $season) {
@@ -261,6 +199,8 @@ class SeriesController extends AbstractController
 
         /** @var \App\Entity\User */
         $user = $this->getUser();
+
+
 
         if ($user->getSeries()->contains($series)) {
             $user->removeSeries($series);
