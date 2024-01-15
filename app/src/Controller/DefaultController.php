@@ -17,16 +17,10 @@ class DefaultController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         // Getting the four most followed series
+        $seriesRepo = $entityManager
+            ->getRepository(Series::class);
         $hallOfFameNb = 4;
-        $qb = $entityManager->createQueryBuilder();
-        $hallOfFameSeries = $qb->select('s')
-            ->from('App:Series', 's')
-            ->join('s.user', 'u')
-            ->groupBy('s.id')
-            ->orderBy('COUNT(u.id)', 'DESC')
-            ->setMaxResults($hallOfFameNb)
-        ->getQuery()->getResult();
-        dump($qb->getQuery());
+        $hallOfFameSeries = $seriesRepo->findAllByMostFollowed($hallOfFameNb);
 
         $usersRepo = $entityManager
             ->getRepository(User::class);
