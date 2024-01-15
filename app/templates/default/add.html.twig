@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %} Add Series {% endblock %}
+
+{% block body %}
+    <script>
+        function formSubmit() {
+            const form = document.querySelector('form');
+            form.submit();
+        }
+    </script>
+
+    <h1>Add Series</h1>
+
+    <form action="" method="get">
+        <div class="w-fit rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
+            <label>
+                <input type="text" class="bg-transparent" name="title"/>
+            </label>
+            <input type="submit" value="">
+            <i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
+        </div>
+    </form>
+    <div @click="open = !open"  class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
+        <i class="nf  text-xl"  :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
+    </div>
+
+    {% if content['Response'] != 'False' %}
+        <img src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
+
+        {% if series != null %}
+            <h2> This series is already in the database. </h2>
+        {% else %}
+            <form method="post">
+                <button type="submit" name="add" value="{{ content.imdbID }}">Add</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <h2> No series found with this title. </h2>
+    {% endif %}
+
+{% endblock %}
