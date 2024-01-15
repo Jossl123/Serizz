@@ -6,11 +6,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SeriesRepository;
 
 #[ORM\Table(name: "series", uniqueConstraints: [
     new ORM\UniqueConstraint(name: "UNIQ_3A10012D85489131", columns: ["imdb"])
 ])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SeriesRepository::class)]
 class Series
 {
     #[ORM\Column(name: "id", type: "integer", nullable: false)]
@@ -60,7 +61,6 @@ class Series
     #[ORM\OneToMany(mappedBy: 'series', targetEntity: Season::class)]
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $seasons;
-
 
     /**
      * Constructor

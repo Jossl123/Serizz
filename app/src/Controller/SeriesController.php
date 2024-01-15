@@ -153,6 +153,16 @@ class SeriesController extends AbstractController
         $percentage_serie = 0;
         $episode_nb = 0;
 
+        $qb = $entityManager->createQueryBuilder();
+        $oldRating = $qb
+            ->select('rating')
+            ->from('App:Rating', 'rating')
+            ->where('rating.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('rating.series = :serie')
+            ->setParameter('serie', $serie)
+            ->getQuery()->getOneOrNullResult(); // If there is a record, only get this one
+
         $rating = new Rating();
         $rating->setUser($user);
         $rating->setSeries($serie);
@@ -163,6 +173,9 @@ class SeriesController extends AbstractController
         dump($form->isSubmitted());
         dump($rating);
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($oldRating != null) { // If the user set a previous rating, delete it
+                $entityManager->remove($oldRating);
+            }
             $entityManager->persist($rating);
             $entityManager->flush();
             $this->addFlash('success', 'You successfully rated this serie !');
