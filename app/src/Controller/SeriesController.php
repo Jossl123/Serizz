@@ -59,15 +59,15 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
                 }
-                dump(isset($_GET['genres']));
+                dump($_GET['genres']);
                 if (isset($_GET['genres'])){
                     $tousGenres = explode("_", $_GET['genres']);
-                    $Subsearch = $entityManager->createQueryBuilder();
-                    $Subsearch->select('s')
+                    $subsearch = $entityManager->createQueryBuilder();
+                    $subsearch->select('s')
                     ->from('\App\Entity\Series','s')
                     ->join('s.genre','g');
-                    dump($Subsearch->getQuery());
-                    dump($Subsearch->getQuery()->getResult());
+                    $subsearch->andWhere('g.name IN (:genres)')
+                        ->setParameter('genres', $tousGenres);
                 }
 
                 if (isset($_GET['grade'])) {
@@ -76,9 +76,6 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->orderBy('s.yearStart', 'ASC');
                 }
-
-
-                dump($search->getQuery());
                 $series_match = $search->getQuery()->getResult();
                 $seriesNb = sizeof((array)$series_match);
                 if ($page > $seriesNb / $limit) {
