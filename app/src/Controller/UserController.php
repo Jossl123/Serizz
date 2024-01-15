@@ -21,7 +21,7 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $page = $request->query->get('page', 0);
+        $page = $request->query->get('page', 1)-1;
         $search = $request->query->get('search', "");
         $searchForUser = $request->query->get('user', false);
         $searchForAdmin = $request->query->get('admin', false);
@@ -116,7 +116,7 @@ class UserController extends AbstractController
     public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
         $seriesRepo = $user->getSeries();
-        $page = $request->query->get('page', 0);
+        $page = $request->query->get('page', 1)-1;
         $limit = 10;
         $seriesNb = $seriesRepo->count([]);
 
