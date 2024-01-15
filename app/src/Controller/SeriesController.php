@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Episode;
+use App\Entity\Genre;
 use App\Entity\Series;
 use App\Entity\Rating;
 use App\Form\SeriesRatingType;
@@ -104,7 +105,8 @@ class SeriesController extends AbstractController
             'series' => $series,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
-            'init' => $search
+            'init' => $search,
+            'genres' => $entityManager->getRepository(Genre::class)->findAll([])
         ]);
     }
 

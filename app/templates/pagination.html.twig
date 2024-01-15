@@ -8,7 +8,7 @@
 	{% set pages_to_show = 7 %}
 	{% if page > 0 %}
 		{% set diff = max(-page-1, -(pages_to_show/2+1)-1) %}
-		{% set offset = (diff*2)|abs %}	
+		{% set offset = (diff*2)|abs %}
 		<a class="-translate-x-[{{-offset}}rem] " href="{{ path(app_path, app.request.query.all| merge({'page': page - 1})) }}">
 			
 		<i class="nf nf-fa-arrow_left"></i></a></a>

@@ -6,9 +6,9 @@
 {% block body %}
 	<script>
 		function formSubmit() {
-			const form = document.querySelector('form');
-			form.submit();
-		}
+const form = document.querySelector('form');
+form.submit();
+}
 	</script>
 	{% if series|length > 0 %}
 		{% include('./header.html.twig') with {'poster_picture_id': (series|first).id} %}
@@ -16,16 +16,52 @@
 		{% include('./header.html.twig') %}
 	{% endif %}
 	<div class="flex ">
-		<div x-data="{ open: false }" class="bg-[--dark-blue] py-20 xl:translate-x-0 xl:relative absolute xl:z-0 z-30 xl:rounded-0 rounded transition-all ease-in-out duration-200"  :class="{ 'translate-x-0': open, '-translate-x-full': !open }" >
-			<form action="" method="get">
-				<div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
-					<input type="text" class="bg-transparent" name="init"/>
-					<input type="submit" value="">
-					<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
+		<div x-data="{ open: false }" class="bg-[--dark-blue] py-20 xl:translate-x-0 xl:relative absolute xl:z-0 z-30 xl:rounded-0 rounded transition-all ease-in-out duration-200" :class="{ 'translate-x-0': open, '-translate-x-full': !open }">
+			<form action="" class="p-2 " method="get">
+				<div class="py-1">
+					<div class="rounded-full bg-[--grey] flex px-2  py-1 items-center">
+						<input type="text" class="bg-transparent" name="init"/>
+						<input type="submit" value="">
+						<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
+					</div>
+					<div class="flex gap-2 px-1">
+						<input type="checkbox" name="synopsis">
+						<p>Search in synopsis</p>
+					</div>
+				</div>
+				<div id="filters" class="flex flex-col gap-1 py-2 ">
+					<div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
+						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
+							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
+							<p>Rating</p>
+						</div>
+						<div id="rate_range" class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': rating, 'hidden': !rating }">
+							<div class="flex h-2 bg-[--grey] rounded w-auto relative">
+								<input value="" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<input class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+							</div>
+						</div>
+					</div>
+					<div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
+						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
+							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
+							<p>Category</p>
+						</div>
+						<div class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': rating, 'hidden': !rating }">
+							<div class="grid rounded grid-cols-2">
+								{% for genre in genres %}
+									<div class="flex gap-2 items-baseline leading-4 pb-1">
+										<input type="checkbox">
+										<p>{{genre}}</p>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
 				</div>
 			</form>
-			<div @click="open = !open"  class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
-				<i class="nf  text-xl"  :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
+			<div @click="open = !open" class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
+				<i class="nf  text-xl" :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
 			</div>
 		</div>
 		<div class="xl:px-10 w-full scrollable">
@@ -55,4 +91,30 @@
 
 		</div>
 	</div>
+	<style>
+		#rate_range input {
+			pointer-events: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+		}
+		#rate_range input::-webkit-slider-thumb {
+			height: 20px;
+			width: 20px;
+			border-radius: 50%;
+			border: 3px solid #1b53c0;
+			background-color: #fff;
+			pointer-events: auto;
+			-webkit-appearance: none;
+
+		}
+		#rate_range input::-moz-range-thumb {
+			height: 15px;
+			width: 15px;
+			border-radius: 50%;
+			border: 3px solid #1b53c0;
+			background-color: #fff;
+			pointer-events: auto;
+			-moz-appearance: none;
+		}
+	</style>
 {% endblock %}
