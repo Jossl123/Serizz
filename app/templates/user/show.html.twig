@@ -3,60 +3,104 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <div class="text-xl h-screen flex items-center flex-col">
+    {% include 'header.html.twig' %}
+    <div class="text-xl w-full h-screen mt-12 flex flex-row">
 
-        <div class="relative inline-block my-2.5">
+        <div class="w-fit left-0 overflow-hidden p-4">
+
+            <div class="relative inline-block my-2.5">
             <span class="text-2xl md:text-3xl font-bold">
-                You are viewing {{ user.name }}
+                {{ user.name }}'s Profile
                 {% if user.admin == 1 %}<i class="nf nf-md-shield"></i>
-                {% elseif user.admin == 2 %} <i class="nf nf-md-shield" style='color: red;'></i> <!--Color of super admin must be replaced by tailwind class-->
-                {% endif %} information.
+                {% elseif user.admin == 2 %} <i class="nf nf-md-shield" style='color: #8a1616;'></i> <!--Color of super admin must be replaced by tailwind class-->
+                {% endif %}
             </span>
-            <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+            </div>
+
+            <dl class="sm:divide-y sm:divide-[--grey]">
+                <div class="py-3 sm:py-5 sm:gap-4 sm:px-6">
+                    <dt class="font-bold text-[--grey]">
+                        User name :
+                    </dt>
+                    <dd>
+                        <p> {{ user.name }}</p>
+                    </dd>
+                </div>
+
+                <div class="py-3 sm:py-5 sm:gap-4 sm:px-6">
+                    <dt class="font-bold text-[--grey]">
+                        Email :
+                    </dt>
+                    <dd class="mt-1 text-xl">
+                        <p> {{ user.email }}</p>
+                    </dd>
+                </div>
+                <div class="py-3 sm:py-5 sm:gap-4 sm:px-6">
+                    <dt class="font-bold text-[--grey]">
+                        Registered the :
+                    </dt>
+                    <dd class="mt-1 text-xl">
+                        <p> {{ user.registerDate ? user.registerDate|date('d/m/y') }} </p>
+                    </dd>
+                </div>
+                <div class="py-3 sm:py-5sm:gap-4 sm:px-6">
+                    <dt class="font-bold text-[--grey]">
+                        Admin :
+                    </dt>
+                    <dd class="mt-1 text-xl">
+                        {% if user.admin != 0 %}
+                        <p> Yes </p>
+                        {% else %}
+                            <p> No </p>
+                        {% endif %}
+                    </dd>
+                </div>
+            </dl>
+
         </div>
 
-
-        <table class="mt-6 w-1/5 text-base text-center rtl:text-right text-gray-500 text-gray-400">
-            <tbody>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Name</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.name }}</td>
-                </tr>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Email</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.email }}</td>
-                </tr>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                </tr>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Register Date</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
-                </tr>
-                <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 border-neutral-500 hover:bg-sky-900  border-b bg-gray-800 border-gray-700">
-                    <th class="text-xs  uppercase bg-gray-700 text-gray-400">Admin</th>
-                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-white">{{ user.admin }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="flex flex-row">
-
-            <a href="{{ path('app_user_index') }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
-                Back to user list
-            </a>
+        <div class="flex flex-col">
 
             {% if app.user %}
                 {% if app.user.admin != 0 %}
-                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
                         Embody
                     </a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
                     Edit
                 </a>
                 {{ include('user/_delete_form.html.twig') }}
                 {% endif %}
             {% endif %}
 
+        </div>
+
+        <div class="flex flex-col h-fit">
+            <div class="relative inline-block my-2.5 h-fit w-fit m-auto">
+                <span class="text-2xl md:text-3xl font-bold">
+                    Followed Series
+                </span>
+                <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+            </div>
+
+            <div class="grid grid-cols-5 grid-rows-2">
+                {% for fs in followedSeries %}
+                    <div class="flex text-center group overflow-hidden relative mt-3 mx-2">
+                        <a href="{{ path('app_series_show', {'id': fs.id}) }}"><img class=" rounded-lg" alt="poster" src="{{ path('app_series_poster', {'id': fs.id}) }}"></a>
+                        {% for r in ratings %}
+                            {% if fs.getId() == r.series %}
+                                <div class="absolute m-2 transition duration-300 -translate-x-full p-2 group-hover:translate-x-0">
+                                    <p class="bg-[--grey] mb-1 rounded-lg w-fit p-1 text-2xl"> {{ r.value }} / 10 </p>
+                                    <p class="text-2xl w-fit resize-none block p-1 rounded-lg border bg-gray-700 border-gray-600 text-white max-w-xl">
+                                        {{ r.comment }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% include 'pagination.html.twig' with {'app_path': "app_user_show", "pagesNb": pagesNb} %}
 
         </div>
     </div>

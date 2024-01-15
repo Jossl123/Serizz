@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Rating;
+use App\Entity\Series;
 use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -111,10 +113,34 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
+        $seriesRepo = $user->getSeries();
+        $page = $request->query->get('page', 0);
+        $limit = 10;
+        $seriesNb = $seriesRepo->count([]);
+
+        if ($page > $seriesNb / $limit) {
+            $page = ceil($seriesNb / $limit);
+        }
+
+        if ($page < 0) {
+            $page = 0;
+        }
+
+        $series = $seriesRepo->slice($page * $limit, $limit);
+
+        $ratings = $entityManager
+            ->getRepository(Rating::class)
+            ->findBy(array('user' => $user->getId()));
+
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
+            'followedSeries' => $series,
+            'ratings' => $ratings,
+            'pagesNb' => ceil($seriesNb / $limit),
+            'page' => $page
         ]);
     }
 

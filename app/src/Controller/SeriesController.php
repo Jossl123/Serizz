@@ -116,26 +116,9 @@ class SeriesController extends AbstractController
         $userSeries = $user->getSeries();
         $page = $request->query->get('page', 0);
         $limit = 10;
-
-        $seriesCompleted = array();
-        // The performance is NOT optimal... around 1400 queries are done in dev
-        foreach ($userSeries as $series) {
-            $nbEpisodes = 0; // Total number of episodes of the series
-            $seen = 0; // Number of episodes watched by the user of the series
-            foreach ($series->getSeasons() as $key => $season) {
-                $episodes = $season->getEpisodes();
-                $nbEpisodesSeason = $episodes->count();
-                $nbEpisodes += $nbEpisodesSeason;
-                foreach ($episodes as $ep_id => $episode) {
-                    // If the season contains the episode, increase seen by 1
-                    $seen += $episode->getUser()->contains($user);
-                }
-            }
-            if ($nbEpisodes == $seen) {
-                array_push($seriesCompleted, $series);
-            }
-        }
-
+ 
+        $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
+        
         $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
@@ -154,7 +137,7 @@ class SeriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
     public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var \App\Entity\User */
@@ -259,6 +242,8 @@ class SeriesController extends AbstractController
 
         /** @var \App\Entity\User */
         $user = $this->getUser();
+
+
 
         if ($user->getSeries()->contains($series)) {
             $user->removeSeries($series);
