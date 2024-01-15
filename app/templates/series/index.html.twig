@@ -5,10 +5,27 @@
 
 {% block body %}
 	<script>
-		function formSubmit() {
-const form = document.querySelector('form');
-form.submit();
-}
+		function formSubmit(e) {
+			e.preventDefault(); 
+			const form = document.querySelector('form');
+			var checkboxes = document.querySelectorAll(".genre");  
+			var genres = [];
+			for(var i = 0; i < checkboxes.length; i++)  
+			{  
+				if(checkboxes[i].checked) {
+					genres.push(checkboxes[i].id);
+				}
+
+			}  
+
+			var input = document.createElement('input');
+			input.setAttribute('name', "genre");
+			input.setAttribute('value', genres.join("_"));
+
+			form.appendChild(input);
+
+			form.submit();
+		}
 	</script>
 	{% if series|length > 0 %}
 		{% include('./header.html.twig') with {'poster_picture_id': (series|first).id} %}
@@ -22,7 +39,7 @@ form.submit();
 					<div class="rounded-full bg-[--grey] flex px-2  py-1 items-center">
 						<input type="text" class="bg-transparent" name="init"/>
 						<input type="submit" value="">
-						<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
+						<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit(event)"></i>
 					</div>
 					<div class="flex gap-2 px-1">
 						<input type="checkbox" name="synopsis">
@@ -51,7 +68,7 @@ form.submit();
 							<div class="grid rounded grid-cols-2">
 								{% for genre in genres %}
 									<div class="flex gap-2 items-baseline leading-4 pb-1">
-										<input type="checkbox">
+										<input type="checkbox" class="genre" id="{{genre}}">
 										<p>{{genre}}</p>
 									</div>
 								{% endfor %}

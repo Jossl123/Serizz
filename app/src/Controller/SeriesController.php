@@ -34,14 +34,15 @@ class SeriesController extends AbstractController
                 ->from('\App\Entity\Series','s');
 
                 if (isset($_GET['init'])) {
-                    $search->andwhere('s.title LIKE :init')
-                    ->setParameter('init', '%'.$_GET['init'].'%');
+                    if (isset($_GET['synopsis'])) {
+                        $search->andwhere('s.plot LIKE :syn')
+                        ->setParameter('syn', '%'.$_GET['init'].'%');
+                    }else{
+                        $search->andwhere('s.title LIKE :init')
+                        ->setParameter('init', '%'.$_GET['init'].'%');
+                    }
                 }
 
-                if (isset($_GET['synop'])) {
-                    $search->andwhere('s.plot LIKE :syn')
-                    ->setParameter('syn', '%'.$_GET['synop'].'%');
-                }
 
                 if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
                     $search->andwhere('s.yearStart >= :ys')
@@ -60,7 +61,6 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
                 }
-                dump($_GET['genres']);
                 if (isset($_GET['genres'])){
                     $tousGenres = explode("_", $_GET['genres']);
                     $subsearch = $entityManager->createQueryBuilder();
