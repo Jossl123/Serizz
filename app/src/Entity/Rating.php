@@ -7,12 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(
     name: "rating",
-    uniqueConstraints: [
-        new ORM\UniqueConstraint(name: "unique_rating", columns: ["series_id", "users_id"])
-    ],
     indexes: [
         new ORM\Index(name: "IDX_D88926225278319C", columns: ["series_id"]),
         new ORM\Index(name: "IDX_D8892622A76ED395", columns: ["user_id"])
+    ],
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: "unique_rating", columns: ["series_id", "users_id"])
     ]
 )]
 #[ORM\Entity]
@@ -99,9 +99,9 @@ class Rating
         return $this;
     }
 
-    public function getSeries(): ?Series
+    public function getSeries(): ?int
     {
-        return $this->series;
+        return $this->series->getId();
     }
 
     public function setSeries(?Series $series): self

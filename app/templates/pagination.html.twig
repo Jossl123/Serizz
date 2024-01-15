@@ -1,9 +1,15 @@
+{% if app.user %}
+	{% set id = app.user.id %}
+{% else %}
+	{%set id = 0 %}
+{% endif %}
+
 <div class="flex gap-2 justify-center p-4">
 	{% set pages_to_show = 7 %}
 	{% if page > 0 %}
 		{% set diff = max(-page-1, -(pages_to_show/2+1)-1) %}
 		{% set offset = (diff*2)|abs %}
-		<a class="-translate-x-[{{-offset}}rem] " href="{{ path(app_path, {'page': page - 1}) }}">
+		<a class="-translate-x-[{{-offset}}rem] " href="{{ path(app_path, {'page': page - 1, 'id':id}) }}">
 			
 		<i class="nf nf-fa-arrow_left"></i></a></a>
 	{% endif %}
@@ -13,14 +19,14 @@
 		{% set offset = (diff*2)|abs %}
 		{% set size = max((1-(diff|abs)/(pages_to_show)), 0)%}
 		{% if size > 0.39 %}
-			<a href="{{ path(app_path, {'page': i}) }}" class="absolute {% if diff < 0 %}-{% endif %}translate-x-[{{offset}}rem] scale-[{{size}}] px-1 w-6 flex justify-center items-center {% if i == page %} rounded bg-cyan-600 text-white {% endif %}">{{ i + 1}}</a>
+			<a href="{{ path(app_path, {'page': i, 'id':id}) }}" class="absolute {% if diff < 0 %}-{% endif %}translate-x-[{{offset}}rem] scale-[{{size}}] px-1 w-6 flex justify-center items-center {% if i == page %} rounded bg-cyan-600 text-white {% endif %}">{{ i + 1}}</a>
 		{% endif %}
 	{% endfor %}
 
 	{% if page < pagesNb-1 %}
 		{% set diff = min(pagesNb-page, (pages_to_show/2)+2) %}
 		{% set offset = (diff*2)|abs %}
-		<a class="translate-x-[{{-offset}}rem] "href="{{ path(app_path, {'page': page + 1}) }}">
+		<a class="translate-x-[{{-offset}}rem]" href="{{ path(app_path, {'page': page + 1, 'id':id}) }}">
 		<i class="nf nf-fa-arrow_right"></i></a>
 	{% endif %}
 </div>

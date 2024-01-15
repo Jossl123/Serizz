@@ -61,7 +61,6 @@ class Series
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $seasons;
 
-
     /**
      * Constructor
      */
