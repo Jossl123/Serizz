@@ -8,34 +8,46 @@
             form.submit();
         }
     </script>
+    {% include 'header.html.twig' %}
+<div class="flex flex-col items-center">
 
-    <h1>Add Series</h1>
+    <div class="relative inline-block my-2.5 h-fit w-fit m-auto">
+                <span class="text-2xl md:text-3xl font-bold">
+                    Add Series
+                </span>
+        <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+    </div>
 
     <form action="" method="get">
         <div class="w-fit rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
             <label>
-                <input type="text" class="bg-transparent" name="title"/>
+                <input type="text" class="bg-transparent" name="title" placeholder="Search series"/>
             </label>
             <input type="submit" value="">
             <i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
         </div>
     </form>
+
     <div @click="open = !open"  class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
         <i class="nf  text-xl"  :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
     </div>
 
-    {% if content['Response'] != 'False' %}
-        <img src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
+    {% if content != [] %}
+        {% if content['Response'] != 'False' %}
+            <img class="rounded-lg" src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
 
-        {% if series != null %}
-            <h2> This series is already in the database. </h2>
+            {% if series != null %}
+                <h2> This series is already in the database. </h2>
+            {% else %}
+                <form method="post">
+                    <button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
+                </form>
+            {% endif %}
         {% else %}
-            <form method="post">
-                <button type="submit" name="add" value="{{ content.imdbID }}">Add</button>
-            </form>
+            <h2> No series found with this title. </h2>
         {% endif %}
-    {% else %}
-        <h2> No series found with this title. </h2>
     {% endif %}
+
+</div>
 
 {% endblock %}
