@@ -25,7 +25,7 @@
 
 
 	<iframe class="xl:hidden block absolute w-[100vw] h-[56vw] -translate-y-[20%] -z-[1000]" id="trailer" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" style="-webkit-mask-image: linear-gradient(0deg, transparent 0,#030516 100%)"></iframe>
-	<div x-data="{ following: {{ app.user.getSeries().contains(series) ? 'true' : 'false'}} }" class="flex sm:px-12 px-4 xl:py-12 pt-64 relative sm:flex-row flex-col">
+	<div x-data="{ following: {{ (app.user and app.user.getSeries().contains(series)) ? 'true' : 'false'}} }" class="flex sm:px-12 px-4 xl:py-12 pt-64 relative sm:flex-row flex-col">
 		<div class="flex flex-col sm:items-left items-center">
 			<div class="m-3 w-64 ">
 				<div class="relative">
@@ -213,8 +213,8 @@
 			{% if userRating %}
 				<div class="ml-2 mt-4 border border-gray-300 p-4 rounded-md w-1/5">
 					<div class="font-bold text-xl">Your rating</div>
+					<div class="flex gap-4 ">
 					<div class="flex items-center">
-						<span class="mr-2">{{ userRating.value }}</span>
 						{% for i in 1..5 %}
 							{% if i <= userRating.value %}
 								<i class="nf nf-fa-star text-yellow-500"></i>
@@ -223,7 +223,8 @@
 							{% endif %}
 						{% endfor %}
 					</div>
-					<div class="mt-2 text-gray-600">{{ userRating.comment }}</div>
+					<div class="mt-2 text-gray-200">{{ userRating.comment }}</div>
+					</div>
 				</div>
 			{% else %}
 				<div>You've not reviewed this serie yet!</div>

@@ -82,6 +82,7 @@
                 </span>
                 <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
             </div>
+            {% include 'pagination.html.twig' with {'app_path': "app_user_show", "pagesNb": pagesNb} %}
 
             <div class="grid grid-cols-5 grid-rows-2">
                 {% for fs in followedSeries %}
