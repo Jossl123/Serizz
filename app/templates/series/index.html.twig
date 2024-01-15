@@ -47,7 +47,7 @@
 					</div>
 				</div>
 				<div id="filters" class="flex flex-col gap-1 py-2 ">
-					<div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
+					{# <div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
 						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
 							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
 							<p>Rating</p>
@@ -58,11 +58,11 @@
 								<input class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
 							</div>
 						</div>
-					</div>
+					</div> #}
 					<div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
 						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
 							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
-							<p>Category</p>
+							<p>Genres</p>
 						</div>
 						<div class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': rating, 'hidden': !rating }">
 							<div class="grid rounded grid-cols-2">
