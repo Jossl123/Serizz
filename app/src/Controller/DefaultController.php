@@ -74,6 +74,7 @@ class DefaultController extends AbstractController
         $posterUrl = "http://img.omdbapi.com/?apikey=3c7a370d&";
         $episodeUrl = "http://www.omdbapi.com/?apikey=3c7a370d&";
         $title = $request->query->get('title', "");
+        $year = $request->query->get('year', 2000);
         $url .= "t=" . $title;
         $series = $entityManager
             ->getRepository(Series::class)
@@ -87,6 +88,10 @@ class DefaultController extends AbstractController
         $posterContent = null;
 
         if (isset($_GET['title'])) {
+            if (isset($_GET['year'])) {
+                $url .= "&y=" . $year;
+            }
+
             $response = $this->client->request('GET', $url);
             $statusCode = $response->getStatusCode();
             $contentType = $response->getHeaders()['content-type'][0];
@@ -115,7 +120,6 @@ class DefaultController extends AbstractController
         if (isset($_POST['add'])){
             $series = new Series();
             $series->setTitle($content['Title']);
-            dump($content['Title']);
             $series->setPoster($posterContent);
             $series->setYearStart(intval($years[0]));
             if (isset($years[1])){
@@ -169,7 +173,7 @@ class DefaultController extends AbstractController
                     $season->setNumber($i);
                     $season->setSeries($series);
                     $series->addSeason($season);
-
+                    
                     for($j = 0; $j < sizeof($episodeContent['Episodes']); $j++){
                         $episode = new Episode();
                         if(strlen($episodeContent['Episodes'][$j]['Title']) > 128) {

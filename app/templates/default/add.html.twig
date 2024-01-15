@@ -18,7 +18,7 @@
         <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
     </div>
 
-    <form action="" method="get">
+    <form action="" method="get" class="mb-2">
         <div class="w-fit rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
             <label>
                 <input type="text" class="bg-transparent" name="title" placeholder="Search series"/>
@@ -26,6 +26,16 @@
             <input type="submit" value="">
             <i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
         </div>
+        <div class="flex flex-row">
+            <label>
+                <select name="year" class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                    {% for i in 1970..2023 %}
+                        <option name="year" value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+
     </form>
 
     <div @click="open = !open"  class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
