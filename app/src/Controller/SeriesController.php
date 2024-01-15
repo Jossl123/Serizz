@@ -149,7 +149,7 @@ class SeriesController extends AbstractController
         $series = $userSeries->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
-            'series' => $userSeries,
+            'series' => $series,
             'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
@@ -166,9 +166,19 @@ class SeriesController extends AbstractController
         $percentage_serie = 0;
         $episode_nb = 0;
 
+        $qb = $entityManager->createQueryBuilder();
+        $oldRating = $qb
+            ->select('rating')
+            ->from('App:Rating', 'rating')
+            ->where('rating.user = :user')
+            ->setParameter('user', $user)
+            ->andWhere('rating.series = :serie')
+            ->setParameter('serie', $serie)
+            ->getQuery()->getOneOrNullResult(); // If there is a record, only get this one
+
         $rating = new Rating();
-        $rating -> setUser($user);
-        $rating -> setSeries($serie);
+        $rating->setUser($user);
+        $rating->setSeries($serie);
         //$rating -> setValue($request -> query -> get("value", 5));
         //$rating -> setComment($request -> query -> get("comment", "No comment added"));
         $form = $this->createForm(SeriesRatingType::class, $rating);
@@ -176,6 +186,9 @@ class SeriesController extends AbstractController
         dump($form->isSubmitted());
         dump($rating);
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($oldRating != null) { // If the user set a previous rating, delete it
+                $entityManager->remove($oldRating);
+            }
             $entityManager->persist($rating);
             $entityManager->flush();
             $this->addFlash('success', 'You successfully rated this serie !');
@@ -197,7 +210,7 @@ class SeriesController extends AbstractController
             }
         }
         if ($episode_nb == 0) $percentage_serie = 100;
-        else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        else $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -229,7 +242,7 @@ class SeriesController extends AbstractController
             if ($see_all) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
-                        if ($ep == $episode)break;
+                        if ($ep == $episode) break;
                         if (!$user->getEpisode()->contains($ep)) {
                             $user->addEpisode($ep);
                             $entityManager->flush();
@@ -237,7 +250,7 @@ class SeriesController extends AbstractController
                     }
                     if ($current_season == $season) break;
                 }
-            } 
+            }
         }
 
         return new JsonResponse(array('success' => "true"));
