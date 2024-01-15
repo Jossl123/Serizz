@@ -131,7 +131,7 @@
 						<p class="text-[--grey]">324 votes</p>
 					</div>
 				</div>
-				<p class="w-1/2 px-2 py-5 text-base">
+				<p class="md:w-1/2 px-2 py-5 text-base">
 					<span>&emsp;</span>
 					<span>&emsp;</span>
 					{{ series.plot | raw}}</p>
@@ -173,7 +173,7 @@
 			</div>
 		</div>
 		{% set url = series.youtubeTrailer | split('='	)[1] %}
-		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 85%);" class="absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+		<iframe style=" -webkit-mask-image: radial-gradient(closest-side,#030516 0%, transparent 85%);" class="xl:block hidden absolute top-0 right-0 w-1/2 h-1/2 -z-10" width="560" id="trailer" height="315" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
 	</div>
 	<div class="text-white bg-gray p-4">
 		<div class="text-4xl flex items-center">
@@ -228,7 +228,7 @@
 				</div>
 			{% else %}
 				<div>You've not reviewed this serie yet!</div>
-				<div class="absolute bottom-8 right-8">
+				<div class="xl:absolute xl:bottom-8 xl:right-8">
 					<div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
 						{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
 						<div class="mb-4 ">
