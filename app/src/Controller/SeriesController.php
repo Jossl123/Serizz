@@ -126,8 +126,6 @@ class SeriesController extends AbstractController
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);
-        //$rating -> setValue($request -> query -> get("value", 5));
-        //$rating -> setComment($request -> query -> get("comment", "No comment added"));
         $form = $this->createForm(SeriesRatingType::class, $rating);
         $form->handleRequest($request);
         dump($form->isSubmitted());
