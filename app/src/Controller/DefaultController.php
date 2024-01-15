@@ -68,6 +68,7 @@ class DefaultController extends AbstractController
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
      */
+    #[IsGranted("ROLE_ADMIN")]
     #[Route('/add', name:'app_series_add')]
     public function addSeries(Request $request, EntityManagerInterface $entityManager): Response {
         $url = "http://www.omdbapi.com/?apikey=3c7a370d&type=series&";
@@ -173,7 +174,7 @@ class DefaultController extends AbstractController
                     $season->setNumber($i);
                     $season->setSeries($series);
                     $series->addSeason($season);
-                    
+
                     for($j = 0; $j < sizeof($episodeContent['Episodes']); $j++){
                         $episode = new Episode();
                         if(strlen($episodeContent['Episodes'][$j]['Title']) > 128) {
