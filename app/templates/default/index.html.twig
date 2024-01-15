@@ -4,11 +4,19 @@
 {% endblock %}
 
 {% block body %}
+{% if hall_of_fame %}
 	{% if not app.user %}
 		{% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
 	{% else %}
 		{% include('./header.html.twig') with {'poster_picture_id': (hall_of_fame|first).id, 'username': app.user.name} %}
 	{% endif %}
+{% else %}
+	{% if not app.user %}
+		{% include('./header.html.twig') %}
+	{% else %}
+		{% include('./header.html.twig') with {'username': app.user.name} %}
+	{% endif %}
+{% endif %}
 	<div class="sm:py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4  m-2">
 		<div>
 			{{ "now"|date("j F") }}

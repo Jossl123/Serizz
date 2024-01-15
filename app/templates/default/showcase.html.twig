@@ -4,7 +4,11 @@
 {% endblock %}
 
 {% block body %}
-	{% include('./header.html.twig') with {'poster_picture_id':  (hall_of_fame|first).id} %}
+{% if (hall_of_fame|first) != null %}
+		{% include('./header.html.twig') with {'poster_picture_id': (hall_of_fame|first).id}  %}
+	{% else %}
+		{% include('./header.html.twig') %}
+	{% endif %}
 	<img id="background" src="{{ asset("/images/showcase_background.jpg") }}" alt="Series poster" class="absolute w-full blur-sm -z-10s ">
 	<div class="sm:py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4  m-2">
 		<div class="text-white flex flex-col items-center sm:text-6xl text-4xl font-bold sm:gap-16 gap-2 sm:pb-10 pb-2 sm:pt-16 ">
