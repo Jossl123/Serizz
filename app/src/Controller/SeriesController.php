@@ -132,7 +132,7 @@ class SeriesController extends AbstractController
         $series = $userSeries->slice($page * $limit, $limit);
 
         return $this->render('series/followed.html.twig', [
-            'series' => $userSeries,
+            'series' => $series,
             'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
@@ -207,6 +207,7 @@ class SeriesController extends AbstractController
             $entityManager->flush();
         } else {
             $user->addEpisode($episode);
+            $user->addSeries($episode->getSeason()->getSeries());
             $entityManager->flush();
             $current_season = $episode->getSeason();
             if ($see_all) {
