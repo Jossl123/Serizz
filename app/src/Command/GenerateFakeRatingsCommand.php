@@ -21,9 +21,14 @@ class GenerateFakeRatingsCommand extends Command
     {
         $moy = $input->getArgument('moy');
         $et = $input->getArgument('et');
+        $nb = $input->getArgument('nb');
 
         RatingFactory::setMoyEt(is_null($moy) ? 5 : $moy, is_null($et) ? 1.5 : $et);
-        RatingFactory::createMany($input->getArgument('nb'));
+        $time = floor(microtime(true) * 1000);
+
+        RatingFactory::createMany($nb);
+        $output->writeln("successfully created ".$nb." new ratings");
+        $output->writeln("took ".round(floor(microtime(true) * 1000) - $time, 2)." ms");
         return Command::SUCCESS;
     }
 

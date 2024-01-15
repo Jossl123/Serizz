@@ -10,6 +10,8 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 use App\Factory\UserFactory;
 use App\Factory\SeriesFactory;
+use App\Entity\Series;
+use App\Entity\User;
 use DateTime;
 
 /**
@@ -39,6 +41,8 @@ final class RatingFactory extends ModelFactory
     private static $moy;
     private static $et;
 
+
+
     public function __construct(EntityManagerInterface $em)
     {
         RatingFactory::$em = $em;
@@ -64,13 +68,36 @@ final class RatingFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        $series = SeriesFactory::random()->object();
+        $user = RatingFactory::getCorrectUser($series);
         return [
             'comment' => self::faker()->text(100),
             'date' => DateTime::createFromFormat('m/d/Y h:i:s a', date('m/d/Y h:i:s a')),
             'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et))%11),
-            'user' => UserFactory::random(),
-            'series' => SeriesFactory::random()
+            'user' => $user,
+            'series' => $series
         ];
+    }
+
+    /**
+     * Ensures an user is created with an unique email
+     */
+    protected function getCorrectUser(Series $series): User
+    {
+        $repo = $this::$em->getRepository('App\Entity\Rating');
+        $user = UserFactory::random()->object();
+        $count = 0;
+
+        while ($repo->findOneBy(['series'=>$series, 'user'=>$user]) && $count < 5) {
+            $user = UserFactory::random()->object();
+            $count++;
+        }
+
+        if ($count == 5) {
+            $user = UserFactory::createOne()->object();
+        }
+
+        return $user;
     }
 
     /**
