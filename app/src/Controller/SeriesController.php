@@ -139,7 +139,7 @@ class SeriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_series_show')]
     public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var \App\Entity\User */
@@ -149,21 +149,20 @@ class SeriesController extends AbstractController
         $percentage_serie = 0;
         $episode_nb = 0;
 
+        $ratings = $entityManager->getRepository(Rating::class)->findBy(array("series"=>$id));
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);
-        //$rating -> setValue($request -> query -> get("value", 5));
-        //$rating -> setComment($request -> query -> get("comment", "No comment added"));
         $form = $this->createForm(SeriesRatingType::class, $rating);
         $form->handleRequest($request);
-        dump($form->isSubmitted());
-        dump($rating);
         if ($form->isSubmitted() && $form->isValid()) {
+            $rating->setDate(new \DateTime());  
             $entityManager->persist($rating);
             $entityManager->flush();
             $this->addFlash('success', 'You successfully rated this serie !');
             return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
+
 
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
@@ -181,13 +180,21 @@ class SeriesController extends AbstractController
         }
         if ($episode_nb == 0) $percentage_serie = 100;
         else $percentage_serie = (int)($percentage_serie/$episode_nb*100);
+        $rating_5 = $entityManager->getRepository(Rating::class)->count(array("series"=>$id, "value"=> 10));
+        $rating_4 = $entityManager->getRepository(Rating::class)->count(array("series"=>$id,"value"=> 8));
+        $rating_3 = $entityManager->getRepository(Rating::class)->count(array("series"=>$id, "value"=> 6));
+        $rating_2 = $entityManager->getRepository(Rating::class)->count(array("series"=>$id,"value"=> 4));
+        $rating_1 = $entityManager->getRepository(Rating::class)->count(array("series"=>$id,"value"=> 2));
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
                 'percentages_seasons' => $percentages_seasons,
                 'percentage_serie' => $percentage_serie,
                 'ratingForm' => $form->createView(),
+                'ratings' => $ratings,
+                'ratings_displayed' => [0,$rating_1,$rating_2,$rating_3,$rating_4,$rating_5]
             ]);
+
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
         }

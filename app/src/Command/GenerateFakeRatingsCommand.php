@@ -23,7 +23,7 @@ class GenerateFakeRatingsCommand extends Command
         $et = $input->getArgument('et');
         $nb = $input->getArgument('nb');
 
-        RatingFactory::setMoyEt(is_null($moy) ? 5 : $moy, is_null($et) ? 1.5 : $et);
+        RatingFactory::setMoyEt(is_null($moy) ? 2.5 : $moy, is_null($et) ? 0.75 : $et);
         $time = floor(microtime(true) * 1000);
 
         RatingFactory::createMany($nb);
