@@ -23,7 +23,7 @@ class SeriesController extends AbstractController
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $NbG = 0;
-        $page = $request->query->get('page', 0);
+        $page = $request->query->get('page', 1)-1;
         $search = $entityManager->createQueryBuilder();
         $limit = 10;
         $seriesRepo = $entityManager
@@ -116,7 +116,7 @@ class SeriesController extends AbstractController
         /** @var \App\Entity\User */
         $user = $this->getUser();
         $userSeries = $user->getSeries();
-        $page = $request->query->get('page', 0);
+        $page = $request->query->get('page', 1)-1;
         $limit = 10;
  
         $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
