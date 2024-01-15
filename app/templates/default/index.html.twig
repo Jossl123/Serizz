@@ -17,7 +17,7 @@
             <p class="text-white bold text-4xl font-bold"> Hall of Fame</p>
             <ul class="flex gap-6 place-content-around flex-shrink-0 pb-20">
                 {% for serie in hall_of_fame %}
-                    <a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 flex items-center">
+                    <a href="{{ path('app_series_show', {'id': serie.id}) }}" class="flex gap-0 items-center">
                         <p class="text-xl font-extrabold" style="font-size:18rem">{{loop.index}}</p>
                         <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover -translate-x-12 h-80 translate-y-8">
                     </a>
@@ -33,7 +33,7 @@
             
             <ul class="flex gap-6 ">
                 {% for serie in recently_seen|slice(0, 5)  %}
-                    <div class="flex gap-0 flex relative group overflow-hidden">
+                    <div class="flex gap-0 relative group overflow-hidden">
                         <a href="{{ path('app_series_show', {'id': serie.id}) }}" >
                             <img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="translate-center object-cover h-64">
                         </a>
