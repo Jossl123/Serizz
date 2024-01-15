@@ -19,7 +19,11 @@ class GenerateFakeUsersCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        UserFactory::createMany($input->getArgument('nb'));
+        $nb = $input->getArgument('nb');
+        $time = floor(microtime(true) * 1000);
+        UserFactory::createMany($nb);
+        $output->writeln("successfully created ".$nb." new users");
+        $output->writeln("took ".round(floor(microtime(true) * 1000) - $time, 2)." ms");
         return Command::SUCCESS;
     }
 
