@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -186,7 +187,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/settings', name: 'app_user_settings', methods: ['GET', 'POST'])]
-    public function settings(User $user, EntityManagerInterface $entityManager, Request $request): Response {
+    public function settings(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher): Response {
         $countries = $entityManager
             ->getRepository(Country::class)
             ->findAll();
@@ -195,24 +196,37 @@ class UserController extends AbstractController
         $country = $request->request->get('country');
         $password = $request->request->get('password');
         $passwordConfirm = $request->request->get('passwordConfirm');
+        $currentPassword = $request->request->get('currentPassword');
 
-        foreach ($countries as $c) {
-            if ($c->getName() == $country) {
-                $user->setCountry($c);
-                $entityManager->flush();
+        $isPasswordValid = $passwordHasher->isPasswordValid($user, $currentPassword);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($currentPassword != null && $isPasswordValid) {
+                foreach ($countries as $c) {
+                    if ($c->getName() == $country) {
+                        $user->setCountry($c);
+                        $entityManager->flush();
+                    }
+                }
+
+                if ($name != null && $name != $user->getName()) {
+                    $user->setName($name);
+                    $entityManager->flush();
+                }
+                if ($password != null && $passwordConfirm != null) {
+                    if ($password == $passwordConfirm) {
+                        $user->setPassword($password);
+                        $entityManager->flush();
+                    }
+                }
+            } else {
+                $this->addFlash('error', 'Incorrect password');
             }
         }
 
-        if ($name != null && $name != $user->getName()) {
-            $user->setName($name);
-            $entityManager->flush();
-        }
-        if ($password != null && $passwordConfirm != null) {
-            if ($password == $passwordConfirm) {
-                $user->setPassword($password);
-                $entityManager->flush();
-            }
-        }
+
+
+
 
         return $this->render('user/_userEdit.html.twig', [
             'user' => $user,
