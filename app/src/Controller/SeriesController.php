@@ -122,6 +122,15 @@ class SeriesController extends AbstractController
         // We need the series to get only the followed ones
         $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
 
+        // Exclude the completed series from the followed ones
+        // Would rather not do it in O(n) but it works
+        foreach($seriesCompleted as $completed){
+            $userSeries->removeElement($completed);
+        }
+        
+
+        dump($userSeries);
+
         $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
