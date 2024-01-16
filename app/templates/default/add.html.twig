@@ -1,88 +1,117 @@
 {% extends 'base.html.twig' %}
-{% block title %} Add Series {% endblock %}
+{% block title %}
+	Add Series
+{% endblock %}
 
 {% block body %}
-    <script>
-        function formSubmit() {
-            const form = document.querySelector('form');
-            form.submit();
-        }
-    </script>
-    {% include 'header.html.twig' %}
-<div class="flex flex-col items-center">
+	<script>
+		function formSubmit() {
+const form = document.querySelector('form');
+form.submit();
+}
+	</script>
+	{% include 'header.html.twig' %}
+	<div class="flex flex-col items-center">
 
-    <div class="relative inline-block my-2.5 h-fit w-fit m-auto">
-                <span class="text-2xl md:text-3xl font-bold">
-                    Add Series
-                </span>
-        <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
-    </div>
+		<div class="relative inline-block my-2.5 h-fit w-fit m-auto">
+			<span class="text-2xl md:text-3xl font-bold">
+				Add Series
+			</span>
+			<span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+		</div>
 
-    <form action="" method="get" class="mb-2">
-        <div class="w-fit rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
-            <label>
-                <input type="text" class="bg-transparent" name="title" placeholder="Search series"/>
-            </label>
-            <input type="submit" value="">
-            <i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
-        </div>
-        <div class="flex flex-row">
-            <label>
-                <select name="year" class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">--- Select a year ---</option>
-                    {% for i in 1970..2023 %}
-                        <option name="year" value="{{ i }}">{{ i }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-        </div>
+		<form action="" method="get" class="mb-2">
+			<div class="w-fit rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
+				<label>
+					<input type="text" class="bg-transparent" name="title" placeholder="Search series"/>
+				</label>
+				<input type="submit" value="">
+				<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit()"></i>
+			</div>
+			<div class="flex flex-row">
+				<label>
+					<select name="year" class="border text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+						<option value="">--- Select a year ---</option>
+						{% for i in 1970..2023 %}
+							<option name="year" value="{{ i }}">{{ i }}</option>
+						{% endfor %}
+					</select>
+				</label>
+			</div>
 
-    </form>
+		</form>
 
-    <div @click="open = !open"  class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
-        <i class="nf  text-xl"  :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
-    </div>
+		<div @click="open = !open" class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
+			<i class="nf  text-xl" :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
+		</div>
 
-        {% if content != [] %}
-            {% if content['Response'] != 'False' %}
-                <div class="flex flex-row items-center text-center justify-center mt-4">
+		{% if content != [] %}
+			{% if content['Response'] != 'False' %}
+				<div class="flex flex-row items-center text-center justify-center mt-4">
 
-                    <div class="flex flex-col mr-8">
-                        <img class="rounded-lg" src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
-                        <p class="mt-2 text-2xl "> {{ content.Title }}</p>
-                    </div>
+					<div class="flex flex-col mr-8">
+						<img class="rounded-lg" src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
+						<p class="mt-2 text-2xl ">
+							{{ content.Title }}</p>
+					</div>
 
-                    <div class="flex flex-col w-1/4 text-left sm:divide-y sm:divide-[--grey]">
-                        <dl>
-                            <dt class="text-2xl text-[--grey]"> Title : </dt>
-                            <dd class="mt-2 text-xl"> {{ content.Title }}</dd>
-                        </dl>
-                        <dl class="mt-2">
-                            <dt class="text-2xl text-[--grey]"> Year of parution : </dt>
-                            <dd class="mt-2 text-xl"> {{ content.Year }}</dd>
-                        </dl>
-                        <dl class="mt-2">
-                            <dt class="text-2xl text-[--grey]"> Genre : </dt>
-                            <dd class="mt-2 text-xl"> {{ content.Genre }}</dd>
-                        </dl>
-                        <dl class="mt-2">
-                            <dt class="text-xl text-[--grey]"> Plot : </dt>
-                            <dd class="mt-2 text-xl"> {{ content.Plot }}</dd>
-                        </dl>
-                    </div>
-                </div>
-                {% if series != null %}
-                    <h2 class="text-xl mt-2 "> This series is already in the database. </h2>
-                {% else %}
-                    <form method="post">
-                        <button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
-                    </form>
-                {% endif %}
-            {% else %}
-                <h2> No series found with this title. </h2>
-            {% endif %}
-        {% endif %}
+					<div class="flex flex-col w-1/4 text-left sm:divide-y sm:divide-[--grey]">
+						<dl>
+							<dt class="text-2xl text-[--grey]">
+								Title :
+							</dt>
+							<dd class="mt-2 text-xl">
+								{{ content.Title }}</dd>
+						</dl>
+						<dl class="mt-2">
+							<dt class="text-2xl text-[--grey]">
+								Year of parution :
+							</dt>
+							<dd class="mt-2 text-xl">
+								{{ content.Year }}</dd>
+						</dl>
+						<dl class="mt-2">
+							<dt class="text-2xl text-[--grey]">
+								Genre :
+							</dt>
+							<dd class="mt-2 text-xl">
+								{{ content.Genre }}</dd>
+						</dl>
+						<dl class="mt-2">
+							<dt class="text-xl text-[--grey]">
+								Plot :
+							</dt>
+							<dd class="mt-2 text-xl">
+								{{ content.Plot }}</dd>
+						</dl>
+						<dl class="mt-2">
+							<dt class="text-xl text-[--grey]">
+								Trailer :
+							</dt>
+							{% if content.Trailer == "" %}No trailer found
+							{% else %}
+								<dd class="mt-2 text-xl">
+									{{ content.Trailer }}</dd>
+							{% endif %}
+						</dl>
+					</div>
+				</div>
+				{% if series != null %}
+					<h2 class="text-xl mt-2 ">
+						This series is already in the database.
+					</h2>
+				{% else %}
+					<form method="post">
+						<button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
+					</form>
+				{% endif %}
+			{% else %}
+				<h2>
+					No series found with this title.
+				</h2>
+			{% endif %}
+		{% endif %}
 
-</div>
+	</div>
 
 {% endblock %}
