@@ -43,22 +43,45 @@
         <i class="nf  text-xl"  :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
     </div>
 
-    {% if content != [] %}
-        {% if content['Response'] != 'False' %}
-            <img class="rounded-lg" src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
-            <p class="mt-2 text-2xl "> {{ content.Title }}</p>
+        {% if content != [] %}
+            {% if content['Response'] != 'False' %}
+                <div class="flex flex-row items-center text-center justify-center mt-4">
 
-            {% if series != null %}
-                <h2> This series is already in the database. </h2>
+                    <div class="flex flex-col mr-8">
+                        <img class="rounded-lg" src="{{ content.Poster }}" alt="poster of {{ content.Title }}">
+                        <p class="mt-2 text-2xl "> {{ content.Title }}</p>
+                    </div>
+
+                    <div class="flex flex-col w-1/4 text-left sm:divide-y sm:divide-[--grey]">
+                        <dl>
+                            <dt class="text-2xl text-[--grey]"> Title : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Title }}</dd>
+                        </dl>
+                        <dl class="mt-2">
+                            <dt class="text-2xl text-[--grey]"> Year of parution : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Year }}</dd>
+                        </dl>
+                        <dl class="mt-2">
+                            <dt class="text-2xl text-[--grey]"> Genre : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Genre }}</dd>
+                        </dl>
+                        <dl class="mt-2">
+                            <dt class="text-xl text-[--grey]"> Plot : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Plot }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                {% if series != null %}
+                    <h2 class="text-xl mt-2 "> This series is already in the database. </h2>
+                {% else %}
+                    <form method="post">
+                        <button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
+                    </form>
+                {% endif %}
             {% else %}
-                <form method="post">
-                    <button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
-                </form>
+                <h2> No series found with this title. </h2>
             {% endif %}
-        {% else %}
-            <h2> No series found with this title. </h2>
         {% endif %}
-    {% endif %}
 
 </div>
 
