@@ -4,29 +4,83 @@
 {% block body %}
 {% include 'header.html.twig' %}
 
-<h1>Liste des Ratings</h1>
-<div class="pt-4 text-center font-bold text-3xl">Administrator Panel</div>
+    <div class="pt-5 text-center relative my-2.5 h-fit w-fit m-auto">
+                <span class="text-2xl md:text-3xl font-bold">
+                    Administrator Panel
+                </span>
+        <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+    </div>
 
-<div class="flex justify-center items-center h-screen">
-    <table class="max-w-md bg-white border border-gray-300">
-        <thead>
-            <tr class="bg-gray-100">
-                <th class="py-2 px-4 border-b">Date</th>
-                <th class="py-2 px-4 border-b">Grade</th>
-                <th class="py-2 px-4 border-b">Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rating in ratings|slice(0, 9) %}
-                <tr class="hover:bg-gray-50">
-                    <td class="py-2 px-4 border-b">{{ rating.date|date('Y-m-d H:i:s') }}</td>
-                    <td class="py-2 px-4 border-b">{{ rating.value }}</td>
-                    <td class="py-2 px-4 border-b">{{ rating.comment }}</td>
+<div class="mb-auto">
+        {% include('./pagination.html.twig') with {'app_path': "app_admin_panel", "pagesNb": pagesNb} %}
+    </div>
+
+<div class="flex flex-col items-center h-2/3">
+    <div class="flex">
+        <table class="max-w-md bg-white border border-gray-300">
+            <thead>
+                <tr class="bg-gray-700">
+                    <th class="py-0.5 px-7 border-b border-r text-center">User</th>
+                    <th class="py-0.5 px-4 border-b border-r text-center">Date</th>
+                    <th class="py-0.5 px-4 border-b border-r text-center">Grade</th>
+                    <th class="py-0.5 px-9 border-b border-r text-center">Comment</th>
+                    <th class="py-0.5 px-4 border-b text-center">Decision</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for rating in ratings|slice(0, 5) %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-0.5 px-7 border-b border-r text-center">test</td>
+                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
+                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.value }}</td>
+                        <td class="py-0.5 px-9 border-b border-r text-center">{{ rating.comment }}</td>
+                        <td class="py-0.5 px-4 border-b text-center">
+                            <div class="text-green-600"><a href="#">ACCEPT</a></div>
+                            <div class="text-red-600"><a href="#">REJECT</a></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="max-w-md bg-white border border-gray-300 ml-4">
+            <thead>
+                <tr class="bg-gray-700">
+                    <th class="py-0.5 px-7 border-b border-r text-center">User</th>
+                    <th class="py-0.5 px-4 border-b border-r text-center">Date</th>
+                    <th class="py-0.5 px-4 border-b border-r text-center">Grade</th>
+                    <th class="py-0.5 px-9 border-b border-r text-center">Comment</th>
+                    <th class="py-0.5 px-4 border-b text-center">Decision</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings|slice(5, 5) %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-0.5 px-7 border-b border-r text-center">test</td>
+                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
+                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.value }}</td>
+                        <td class="py-0.5 px-9   border-b border-r text-center">{{ rating.comment }}</td>
+                        <td class="py-0.5 px-4 border-b text-center">
+                            <div class="text-green-600"><a href="#">ACCEPT</a></div>
+                            <div class="text-red-600"><a href="#">REJECT</a></div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+
+
+    
+    <div class="mt-auto">
+        {% include('./pagination.html.twig') with {'app_path': "app_admin_panel", "pagesNb": pagesNb} %}
+    </div>
+</div>
+
+
+
+
 
 
 

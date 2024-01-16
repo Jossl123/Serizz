@@ -204,9 +204,21 @@ class DefaultController extends AbstractController
     #[Route('/adminpanel', name:'app_admin_panel')]
     public function moderateRatings(Request $request, EntityManagerInterface $entityManager): Response{
         $ratings = $entityManager->getRepository(Rating::class)->findBy([], ['date' => 'ASC']);
+        $limit = 10;
+        $page = $request->query->get('page', 1)-1;
+        $ratingsNb = count($ratings);
+        if ($page > $ratingsNb / $limit) {
+            $page = ceil($ratingsNb / $limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
+        $ratings = array_slice($ratings, $page * $limit, $limit);
 
         return $this->render('default/adminPanel.html.twig', [
             'ratings' => $ratings,
+            'pagesNb' => ceil($ratingsNb / $limit),
+            'page' => $page
         ]);
     }
 }
