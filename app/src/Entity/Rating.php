@@ -87,9 +87,9 @@ class Rating
         return $this;
     }
 
-    public function getUser(): ?int
+    public function getUser(): ?User
     {
-        return $this->user->getId();
+        return $this->user;
     }
 
     public function setUser(?User $user): self
