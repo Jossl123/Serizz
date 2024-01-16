@@ -18,10 +18,10 @@ class SeriesRatingType extends AbstractType
     {
         $builder
             ->add('value', IntegerType::class, [
-                'label' => 'Rate (from 1 to 10)',
+                'label' => 'Rate (from 1 to 5)',
                 'attr' => [
                     'min' => 1,
-                    'max' => 10,
+                    'max' => 5,
                 ],
             ])
             ->add('comment', TextareaType::class, [
