@@ -37,14 +37,16 @@
 						<button @click="following = !following" onclick="follow('{{ path('app_series_update_followed', {'id': series.id, 'update': series.getId()}) }}')">
 							<i id="season-follow-{{series.getId()}}" class="nf" :class="{ 'nf-fa-bookmark': following, 'nf-fa-bookmark_o': !following }"></i>
 						</button>
-						{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
-						<button id="see_all" onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
-							{% if percentage_serie == 100 %}
-								<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
-							{% else %}
-								<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
-							{% endif %}
-						</button>
+						{% if (series.getSeasons()|last).getEpisodes()|length > 0 %}
+							{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
+							<button id="see_all" onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
+								{% if percentage_serie == 100 %}
+									<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
+								{% else %}
+									<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
+								{% endif %}
+							</button>
+						{% endif %}
 					{% else %}
 						<a href="{{path('app_login')}}">Login to follow</a>
 					{% endif %}
@@ -282,13 +284,22 @@
 		Back to list</a>
 
 	<script src="{{asset("follow.js")}}"></script>
+
+	<style>
+		.current {
+			background-color: var(--grey);
+		}
+	</style>
+
 	<script>
 		function show_season(season){
 			{% for season in series.getSeasons() %}
-document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
-document.getElementById("season-{{ loop.index }}").classList.remove("current");{% endfor %}document.getElementById("ep-season-" + season).style.display = "block";
-document.getElementById("season-" + season).classList.add("current");
-}
-show_season(1)
+				document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
+				document.getElementById("season-{{ loop.index }}").classList.remove("current");
+			{% endfor %}
+			document.getElementById("ep-season-" + season).style.display = "block";
+			document.getElementById("season-" + season).classList.add("current");
+		}
+		show_season(1)
 	</script>
 {% endblock %}

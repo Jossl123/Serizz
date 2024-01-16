@@ -207,7 +207,7 @@ class SeriesController extends AbstractController
             }
             $percentage_serie += $seen;
             if ($season_episode_nb == 0) {
-                $percentages_seasons = 100;
+                $percentages_seasons[$key] = 100;
             } else {
                 $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
             }
