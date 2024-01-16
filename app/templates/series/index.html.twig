@@ -13,17 +13,22 @@
 		<div x-data="{ open: false }" class="bg-[--dark-blue] py-20 xl:translate-x-0 xl:relative absolute xl:z-0 z-30 xl:rounded-0 rounded transition-all ease-in-out duration-200" :class="{ 'translate-x-0': open, '-translate-x-full': !open }">
 			<form action="" class="p-2 " method="get">
 				<div class="py-1">
-					<div class="rounded-full bg-[--grey] flex px-2  py-1 items-center">
-						<input type="text" class="bg-transparent" name="init"/>
+					<div class="focus:ring-2 rounded-full bg-[--grey] flex px-2  py-1 items-center">
+						<input type="text" class="bg-transparent outline-none rounded" name="init"/>
 						<input type="submit" value="">
 						<i class="nf nf-fa-search text-white cursor-pointer" onclick="formSubmit(event)"></i>
 					</div>
-					<div class="flex gap-2 px-1">
-						<input type="checkbox" name="synopsis">
-						<p>Search in synopsis</p>
-					</div>
 				</div>
 				<div id="filters" class="flex flex-col gap-1 py-2 ">
+					<div x-data="{syno:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
+						<div @click="syno = !syno" class=" flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey] ">
+							<i class="nf nf-fa-filter text-white cursor-pointer transition-all ease-in-out duration-200" :class="{ '-rotate-0': syno, '-rotate-90':!syno}"></i>
+							<p>Synopsis</p>
+						</div>
+						<div class="p-2 bg-divide-[--grey] rounded-b w-full flex justify-center" :class="{ 'flex': syno, 'hidden': !syno }">
+							<input type="text" class="rounded-full bg-[--grey] flex px-2  py-1 items-center" name="syno"/>
+						</div>
+					</div>
 					<div x-data="{rate:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
 						<div @click="rate = !rate" class=" flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey] ">
 							<i class="nf nf-fa-filter text-white cursor-pointer  transition-all ease-in-out duration-200" :class="{ '-rotate-0': rate, '-rotate-90':!rate}"></i>
@@ -34,7 +39,7 @@
 								{% for i in 0..4 %}
 									{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
 									<div class="relative w-4 h-4">
-										<i id="rate-star-grey-{{i}}" class="absolute nf nf-fa-star text-[--grey] " ></i>
+										<i id="rate-star-grey-{{i}}" class="absolute nf nf-fa-star text-[--grey] "></i>
 										<i id="rate-star-yellow-{{i}}" class="absolute nf nf-fa-star text-yellow-500"></i>
 									</div>
 								{% endfor %}
