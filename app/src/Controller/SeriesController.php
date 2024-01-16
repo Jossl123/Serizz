@@ -9,6 +9,7 @@ use App\Entity\Rating;
 use App\Form\SeriesRatingType;
 use App\Form\SeriesType;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,7 +128,6 @@ class SeriesController extends AbstractController
         foreach($seriesCompleted as $completed){
             $userSeries->removeElement($completed);
         }
-        
 
         dump($userSeries);
 
@@ -143,7 +143,6 @@ class SeriesController extends AbstractController
 
         return $this->render('series/followed.html.twig', [
             'series' => $series,
-            'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
         ]);
@@ -154,7 +153,6 @@ class SeriesController extends AbstractController
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        $userSeries = $user->getSeries(); 
         $page = $request->query->get('page', 1)-1;
         $limit = 10;
         
@@ -168,7 +166,7 @@ class SeriesController extends AbstractController
             $page = 0;
         }
 
-        $series = $userSeries->slice($page * $limit, $limit);
+        $seriesCompleted = array_slice((array)$seriesCompleted, $page * $limit, $limit);
 
         return $this->render('series/completed.html.twig', [
             'completed' => $seriesCompleted,
