@@ -12,12 +12,12 @@ else
     touch .env;
 
     echo "APP_ENV=dev" > .env;
-    echo "APP_SECRET=30b8d1c83771d3c9d6f32e77af433faf" > .env;
-    echo "# DATABASE_URL='sqlite:///%kernel.project_dir%/var/data.db'" > .env;
-    echo "# DATABASE_URL='mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4'" > .env;
-    echo "# DATABASE_URL='mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4'" > .env;
-    echo "# DATABASE_URL='mysql://username:password@host/database_name'" > .env;
-    echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" > .env;
+    echo "APP_SECRET=30b8d1c83771d3c9d6f32e77af433faf" >> .env;
+    echo "# DATABASE_URL='sqlite:///%kernel.project_dir%/var/data.db'" >> .env;
+    echo "# DATABASE_URL='mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.32&charset=utf8mb4'" >> .env;
+    echo "# DATABASE_URL='mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=10.11.2-MariaDB&charset=utf8mb4'" >> .env;
+    echo "# DATABASE_URL='mysql://username:password@host/database_name'" >> .env;
+    echo "MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0" >> .env;
 
 fi
 
