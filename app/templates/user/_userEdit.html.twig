@@ -11,6 +11,14 @@
             <form class="flex -translate-x-1/2 -translate-y-1/2 gap-5  flex-col bg-[--dark-blue] p-4 rounded" method="post">
                 <h1 class="text-3xl text-white text-center font-bold"> Edit Information </h1>
 
+                {% if app.flashes != [] %}
+                    {% for flash in app.flashes['error'] %}
+                        <div class="bg-red-500 text-white p-2 rounded">
+                            {{ flash }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
                 <label class="mb-2 text-xl">
                     Name : <br>
                     <input name="name" placeholder="{{ user.name }}" class="bg-[--black] outline-0">
@@ -23,12 +31,12 @@
 
                 <label class="mb-2 text-xl">
                     Password : <br>
-                    <input name="password" placeholder="********" class="bg-[--black] outline-0">
+                    <input type="password" name="password" placeholder="********" class="bg-[--black] outline-0">
                 </label>
 
                 <label class="mb-2 text-xl">
                     Confirm Password : <br>
-                    <input name="confirm_password" placeholder="********" class="bg-[--black] outline-0">
+                    <input type="password" name="confirm_password" placeholder="********" class="bg-[--black] outline-0">
                 </label>
 
                 <label class="mb-2 text-xl">
@@ -41,6 +49,11 @@
                             {% endif %}
                         {% endfor %}
                     </select>
+                </label>
+
+                <label>
+                    Current Password : <br>
+                    <input type="password" name="currentPassword" placeholder="********" class="bg-[--black] outline-0">
                 </label>
 
                 <button type="submit"> Save Changes </button>
