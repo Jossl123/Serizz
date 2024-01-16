@@ -258,7 +258,7 @@
 				</div>
 			</div>
 		{% else %}
-			<div class="flex m-4 items-center gap-2">
+		<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2">
 				<a href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
 				<div>
 					{% for i in 1..5 %}
@@ -268,6 +268,9 @@
 							<i class="nf nf-fa-star text-[--grey]"></i>
 						{% endif %}
 					{% endfor %}
+				</div>
+				<div class="">
+					<p>{{ r.comment }}</p>
 				</div>
 			</div>
 		{% endif %}
