@@ -199,4 +199,14 @@ class DefaultController extends AbstractController
             "series" => $series
         ]);
     }
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/adminpanel', name:'app_admin_panel')]
+    public function moderateRatings(Request $request, EntityManagerInterface $entityManager): Response{
+        $ratings = $entityManager->getRepository(Rating::class)->findBy([], ['date' => 'ASC']);
+
+        return $this->render('default/adminPanel.html.twig', [
+            'ratings' => $ratings,
+        ]);
+    }
 }

@@ -21,7 +21,8 @@
 		{% endif %}
 		<a href="{{ path('app_user_index') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_user_index' %}text-[--white]{% endif %} ">Users</a>
 		{% if app.user and app.user.admin != 0 %}
-			<a href="{{ path('app_series_add') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_user_index' %}text-[--white]{% endif %} "> Add Series</a>
+			<a href="{{ path('app_series_add') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_series_add' %}text-[--white]{% endif %} "> Add Series</a>
+			<a href="{{ path('app_admin_panel') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_admin_panel' %}text-[--white]{% endif %} "> Admin Panel</a>
 		{% endif %}
 	</div>
 	<div class="z-10 flex items-center gap-2 ml-auto">

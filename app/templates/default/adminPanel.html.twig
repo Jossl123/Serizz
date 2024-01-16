@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block title %} Admin Panel {% endblock %}
+
+{% block body %}
+{% include 'header.html.twig' %}
+
+<h1>Liste des Ratings</h1>
+<div class="pt-4 text-center font-bold text-3xl">Administrator Panel</div>
+
+<div class="flex justify-center items-center h-screen">
+    <table class="max-w-md bg-white border border-gray-300">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="py-2 px-4 border-b">Date</th>
+                <th class="py-2 px-4 border-b">Grade</th>
+                <th class="py-2 px-4 border-b">Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rating in ratings|slice(0, 9) %}
+                <tr class="hover:bg-gray-50">
+                    <td class="py-2 px-4 border-b">{{ rating.date|date('Y-m-d H:i:s') }}</td>
+                    <td class="py-2 px-4 border-b">{{ rating.value }}</td>
+                    <td class="py-2 px-4 border-b">{{ rating.comment }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+{% endblock body %}
