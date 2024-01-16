@@ -6,26 +6,25 @@
 {% block body %}
 	<script>
 		function formSubmit(e) {
-			e.preventDefault(); 
-			const form = document.querySelector('form');
-			var checkboxes = document.querySelectorAll(".genre");  
-			var genres = [];
-			for(var i = 0; i < checkboxes.length; i++)  
-			{  
-				if(checkboxes[i].checked) {
-					genres.push(checkboxes[i].id);
-				}
+e.preventDefault();
+const form = document.querySelector('form');
+var checkboxes = document.querySelectorAll(".genre");
+var genres = [];
+for (var i = 0; i < checkboxes.length; i++) {
+if (checkboxes[i].checked) {
+genres.push(checkboxes[i].id);
+}
 
-			}  
+}
 
-			var input = document.createElement('input');
-			input.setAttribute('name', "genre");
-			input.setAttribute('value', genres.join("_"));
+var input = document.createElement('input');
+input.setAttribute('name', "genre");
+input.setAttribute('value', genres.join("_"));
 
-			form.appendChild(input);
+form.appendChild(input);
 
-			form.submit();
-		}
+form.submit();
+}
 	</script>
 	{% if series|length > 0 %}
 		{% include('./header.html.twig') with {'poster_picture_id': (series|first).id} %}
@@ -46,19 +45,33 @@
 						<p>Search in synopsis</p>
 					</div>
 				</div>
-				<div id="filters" class="flex flex-col gap-1 py-2 ">
+				<div
+					id="filters" class="flex flex-col gap-1 py-2 ">
 					{# <div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
-						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
+											<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
+												<i class="nf nf-fa-expand text-white cursor-pointer"></i>
+												<p>Rating</p>
+											</div>
+											<div id="rate_range" class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': rating, 'hidden': !rating }">
+												<div class="flex h-2 bg-[--grey] rounded w-auto relative">
+													<input value="" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+													<input class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+												</div>
+											</div>
+										</div> #}
+					<div x-data="{date:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
+						<div @click="date = !date" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
 							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
-							<p>Rating</p>
+							<p>Date</p>
 						</div>
-						<div id="rate_range" class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': rating, 'hidden': !rating }">
+						<div id="rate_range" class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': date, 'hidden': !date }">
 							<div class="flex h-2 bg-[--grey] rounded w-auto relative">
-								<input value="" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
-								<input class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<span id="date-range-span" class="absolute bg-indigo-500 h-full w-full rounded"></span>
+								<input id="date-min" value="0" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<input id="data-max" value="{{ "now"|date("Y")}}" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
 							</div>
 						</div>
-					</div> #}
+					</div>
 					<div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
 						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
 							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
@@ -134,4 +147,28 @@
 			-moz-appearance: none;
 		}
 	</style>
+	<script>
+		var dateRange = document.getElementById('date-range-span');
+		var dateMin = document.getElementById('date-min');
+		var dateMax = document.getElementById('data-max');
+		var dateMinValue = dateMin.value;
+		var dateMaxValue = dateMax.value;	
+		var dateRangeWidth = dateRange.offsetWidth;
+		dateMin.oninput = function () {
+			if (parseInt(dateMin.value) >= parseInt(dateMax.value)){
+				dateMax.value = dateMin.value
+			}
+			var dateRangeValue = dateRangeWidth / (dateMaxValue - dateMinValue);
+			dateRange.style.width = dateRangeValue * (dateMax.value - dateMin.value) + "px";
+			dateRange.style.left = dateMin.value * dateRangeValue + "px";
+		}
+		dateMax.oninput = function () {
+			if (parseInt(dateMax.value) <= parseInt(dateMin.value)){
+				dateMin.value = dateMax.value
+			}
+			var dateRangeValue = dateRangeWidth / (dateMaxValue - dateMinValue);
+			dateRange.style.width = dateRangeValue * (dateMax.value - dateMin.value) + "px";
+			dateRange.style.left = dateMin.value * dateRangeValue + "px";
+		}
+	</script>
 {% endblock %}
