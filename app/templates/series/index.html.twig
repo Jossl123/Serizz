@@ -67,8 +67,8 @@ form.submit();
 						<div id="rate_range" class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': date, 'hidden': !date }">
 							<div class="flex h-2 bg-[--grey] rounded w-auto relative">
 								<span id="date-range-span" class="absolute bg-indigo-500 h-full w-full rounded"></span>
-								<input id="date-min" value="0" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
-								<input id="data-max" value="{{ "now"|date("Y")}}" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<input min="1964"max="{{ "now"|date("Y")}}"  id="date-min" value="1964" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<input min="1964" max="{{ "now"|date("Y")}}"  id="data-max" value="{{ "now"|date("Y")}}" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
 							</div>
 						</div>
 					</div>
@@ -154,13 +154,14 @@ form.submit();
 		var dateMinValue = dateMin.value;
 		var dateMaxValue = dateMax.value;	
 		var dateRangeWidth = dateRange.offsetWidth;
+		var diff = dateMaxValue - dateMinValue
 		dateMin.oninput = function () {
 			if (parseInt(dateMin.value) >= parseInt(dateMax.value)){
 				dateMax.value = dateMin.value
 			}
 			var dateRangeValue = dateRangeWidth / (dateMaxValue - dateMinValue);
 			dateRange.style.width = dateRangeValue * (dateMax.value - dateMin.value) + "px";
-			dateRange.style.left = dateMin.value * dateRangeValue + "px";
+			dateRange.style.left = (dateMin.value - dateMinValue) * dateRangeValue + "px";
 		}
 		dateMax.oninput = function () {
 			if (parseInt(dateMax.value) <= parseInt(dateMin.value)){
@@ -168,7 +169,7 @@ form.submit();
 			}
 			var dateRangeValue = dateRangeWidth / (dateMaxValue - dateMinValue);
 			dateRange.style.width = dateRangeValue * (dateMax.value - dateMin.value) + "px";
-			dateRange.style.left = dateMin.value * dateRangeValue + "px";
+			dateRange.style.left =  (dateMin.value - dateMinValue) * dateRangeValue + "px";
 		}
 	</script>
 {% endblock %}
