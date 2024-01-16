@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[Route('/series')]
 class SeriesController extends AbstractController
 {
-    #[Route('/', name: 'app_series_index', methods: ['GET'])]
+    #[Route('/', name: 'app_series_index', methods: ['GET', 'POST'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $NbG = 0;
@@ -168,7 +168,7 @@ class SeriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_series_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
     public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         /** @var \App\Entity\User */
