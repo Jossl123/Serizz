@@ -179,6 +179,7 @@ class SeriesController extends AbstractController
             $entityManager->flush();
         } else {
             $user->addEpisode($episode);
+
             $entityManager->flush();
             $current_season = $episode->getSeason();
             if ($see_all) {
