@@ -151,7 +151,7 @@ class SeriesController extends AbstractController
         
         $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
 
-        $seriesNb = $userSeries->count([]);
+        $seriesNb = count($seriesCompleted);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
         }
