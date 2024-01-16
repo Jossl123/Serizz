@@ -149,7 +149,6 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_embody', methods: ['GET'])]
     public function embody(User $user): Response
     {
-        //TODO
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);

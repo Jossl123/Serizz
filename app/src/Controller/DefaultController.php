@@ -41,12 +41,18 @@ class DefaultController extends AbstractController
             ->getRepository(User::class);
         $ratingRepo = $entityManager
             ->getRepository(Rating::class);
+            
+        $search = $entityManager->createQueryBuilder();
+        $search->select('COUNT( e.id)')
+            ->from('\App\Entity\Episode', 'e')
+            ->join('e.user', 'u');  
+        $episode_watched = $search->getQuery()->getResult()[0][1];
 
         if (!$this->isGranted('ROLE_USER')) {
             return $this->render('default/showcase.html.twig', [
                 "hall_of_fame" => $hallOfFameSeries,
                 "user_nb" => $usersRepo->count([]),
-                "watched_episodes" => $usersRepo->count([]) * 13, //TODO
+                "watched_episodes" => $episode_watched, 
             ]);
         }
         /** @var \App\Entity\User */
