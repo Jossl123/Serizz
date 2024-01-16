@@ -46,32 +46,40 @@ class GenerateFakeViewsCommand extends Command
         $series = $this->em->getRepository('App\Entity\Series');
         $users = $this->em->getRepository('App\Entity\User');
 
+        $flush_cd = 20;
         foreach($series->findAll() as $serie) {
+            $output->writeln($serie->getId());
             foreach($users->findAll() as $user) {
-                $rand = rand()&63;
-                if ($rand > 60) {
-                    /**$seasons = $serie->getSeasons();
-                    $season = $seasons->
-                    file_put_contents("brub.txt", "heyo");
-                    $eps = $season->getEpisodes();
-                    $ep = end($eps);
-                    $this->markAsSeen($user, $ep, $this->em, true);*/
-                } elseif ($rand > 5) {
+                $rand = rand()&127;
+                if ($rand > 126) {
                     $seasons = $serie->getSeasons();
                     if (!empty($seasons)) {
                         $season = $seasons->last();
                         if ($season) {
                             $eps = $season->getEpisodes();
-                            $output->writeln(count($eps));
                             $ep = $eps->last();
+                            $this->markAsSeen($user, $ep, $this->em, true);
+                        }
+                    }
+                } elseif ($rand > 60) {
+                    $seasons = $serie->getSeasons();
+                    if (!empty($seasons)) {
+                        $season = $seasons->get(rand(0, $seasons->count()-1));
+                        if ($season) {
+                            $eps = $season->getEpisodes();
+                            $ep = $eps->get(rand(0, $eps->count()-1));
+                            if ($ep)
                             $this->markAsSeen($user, $ep, $this->em, true);
                         }
                     }
                 }
             }
+            $flush_cd--;
+            if (!$flush_cd) {
+                $flush_cd = 20;
+                $this->em->flush();
+            }
         }
-
-        $this->em->flush();
 
     }
 
