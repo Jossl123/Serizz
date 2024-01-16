@@ -53,7 +53,7 @@ function formSubmit(e) {
     }
 
     var input = document.createElement("input");
-    input.setAttribute("name", "genre");
+    input.setAttribute("name", "genres");
     input.setAttribute("value", genres.join("_"));
 
     form.appendChild(input);
