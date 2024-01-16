@@ -197,7 +197,11 @@ class UserController extends AbstractController
         $passwordConfirm = $request->request->get('passwordConfirm');
         $currentPassword = $request->request->get('currentPassword');
 
-        $isPasswordValid = $passwordHasher->isPasswordValid($user, $currentPassword);
+        if ($currentPassword != null) {
+            $isPasswordValid = $passwordHasher->isPasswordValid($user, $currentPassword);
+        } else {
+            $isPasswordValid = false;
+        }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($currentPassword != null && $isPasswordValid) {
