@@ -156,8 +156,7 @@ class DefaultController extends AbstractController
             }
 
             $series->setAwards($content['Awards']);
-            $series->setYoutubeTrailer("https://www.youtube.com\
-            /embed/o9CeEHUG1sU?controls=0&autoplay=1&mute=1&&showinfo=0autohide%3D2&playlist=o9CeEHUG1sU");
+            $series->setYoutubeTrailer("https://www.youtube.com/embed/o9CeEHUG1sU?controls=0&autoplay=1&mute=1&&showinfo=0autohide%3D2&playlist=o9CeEHUG1sU");
             $entityManager->persist($series);
 
             if (isset($content['totalSeasons'])) {
