@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Country;
 use App\Entity\Rating;
 use App\Entity\Series;
 use App\Entity\User;
@@ -182,5 +183,40 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/settings', name: 'app_user_settings', methods: ['GET', 'POST'])]
+    public function settings(User $user, EntityManagerInterface $entityManager, Request $request): Response {
+        $countries = $entityManager
+            ->getRepository(Country::class)
+            ->findAll();
+
+        $name = $request->request->get('name');
+        $country = $request->request->get('country');
+        $password = $request->request->get('password');
+        $passwordConfirm = $request->request->get('passwordConfirm');
+
+        foreach ($countries as $c) {
+            if ($c->getName() == $country) {
+                $user->setCountry($c);
+                $entityManager->flush();
+            }
+        }
+
+        if ($name != null && $name != $user->getName()) {
+            $user->setName($name);
+            $entityManager->flush();
+        }
+        if ($password != null && $passwordConfirm != null) {
+            if ($password == $passwordConfirm) {
+                $user->setPassword($password);
+                $entityManager->flush();
+            }
+        }
+
+        return $this->render('user/_userEdit.html.twig', [
+            'user' => $user,
+            'countries' => $countries
+        ]);
     }
 }
