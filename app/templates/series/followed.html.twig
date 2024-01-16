@@ -10,40 +10,38 @@
 		{% include('./header.html.twig') %}
 	{% endif %}
 	<div class="2xl:px-64 xl:px-32 md:px-10 w-full scrollable">
+		<div class="m-5">
+			<a href="{{ path('app_series_show_followed') }}" class="p-2 bg-[--grey]  text-white rounded m-2">Your followed series</a>
+			<a href="{{ path('app_series_show_completed') }}" class="p-2 bg-[--grey] hover:text-white text-[--white] rounded m-2">Your completed series</a>
+		</div>
 		<h1 class="text-3xl font-bold  xl:pt-10 xl:pl-0 pt-4 pl-32 ">Your followed series</h1>
 		{% if (series|first) != null %}
 			{% include('./pagination.html.twig') with {'app_path': "app_series_show_followed", "pagesNb": pagesNb} %}
 			<div class="md:grid flex gap-4 md:grid-cols-5 md:grid-rows-2 md:overflow-hidden overflow-auto ">
 				{% for series in series %}
-					<div class="flex flex-col md:px-0 px-5 ">
-						<div class="relative w-[10rem] h-64 group overflow-hidden rounded">
-							<a href="{{ path('app_series_show', {'id': series.id}) }}">
-								<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
-							</a>
-							{% include('./follow.html.twig') with {'serie': series} %}
+					{% if series not in completed %}
+						<div class="flex flex-col md:px-0 px-5 ">
+							<div class="relative w-[10rem] h-64 group overflow-hidden rounded">
+								<a href="{{ path('app_series_show', {'id': series.id}) }}">
+									<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+								</a>
+								{% include('./follow.html.twig') with {'serie': series} %}
+							</div>
+							<div class="p-2 ">
+								<h1 class="text-white font-bold ">{{ series.title }}</h1>
+								{# <p>{{ series.plot }}</p>  #}
+								<p>{{ series.yearStart }}</p>
+							</div>
 						</div>
-						<div class="p-2 ">
-							<h1 class="text-white font-bold ">{{ series.title }}</h1>
-							{# <p>{{ series.plot }}</p>  #}
-							<p>{{ series.yearStart }}</p>
-						</div>
-					</div>
+					{% endif %}
 				{% else %}
 					<div>
 						<p>no records found</p>
 					</div>
 				{% endfor %}
 			</div>
-		<h1 class="text-3xl font-bold p-2 m-5">Series you've completed</h1>
-		<div class="flex flex-wrap px-32">
-				{% for serie in completed %}
-                    <div class="flex gap-0 flex relative group overflow-hidden w-1/5 m-4">
-						<a href="{{ path('app_series_show', {'id': serie.id}) }}" >
-							<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="w-auto h-full object-cover max-w-48 ">
-						</a>
-                        {% include('./follow.html.twig') with {'serie': serie} %}
-                    </div>
-				{% endfor %}
+			{% include('./pagination.html.twig') with {'app_path': "app_series_show_followed", "pagesNb": pagesNb} %}
+
 		{% else %}
 			<h2 class="text-xl font-bold p-2 m-3">You do not follow any series</h2>
 		{% endif %}
