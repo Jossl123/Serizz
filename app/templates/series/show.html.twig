@@ -129,7 +129,7 @@
 								<i class="absolute nf nf-fa-star text-yellow-500" style="-webkit-mask: linear-gradient(to right, rgba(0,0,0,1) {{fillstar}}%, rgba(0,0,0,0) {{fillstar}}%);"></i>
 							</div>
 						{% endfor %}
-						<p class="text-[--grey]">{{ ratings|length }}</p>
+						<a class="px-1 text-[--grey] font-bold transition-all ease-in-out duration-200 hover:text-white" href="#post_your_rating">{{ ratings|length }} rates</a>
 					</div>
 				</div>
 				<p class="md:w-1/2 px-2 py-5 text-base">
@@ -217,17 +217,17 @@
 					<div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
 						{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
 						<div class="mb-4 ">
-							{{ form_row(ratingForm.value, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md text-[--grey]'}}) }}
+							{{ form_row(ratingForm.value, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white', 'value':"", 'placeholder':"your rate"}}) }}
 							{{ form_errors(ratingForm.value) }}
 						</div>
 
 						<div class="mb-4">
-							{{ form_row(ratingForm.comment, {'attr': {'class': 'w-full px-3 py-2 border border-gray-300 rounded-md text-[--grey]'}}) }}
+							{{ form_row(ratingForm.comment, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white]'}}) }}
 							{{ form_errors(ratingForm.comment) }}
 						</div>
 
-						<button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">
-							Noter la série
+						<button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
+							Post rate
 						</button>
 
 						{% for success in app.flashes('success') %}
