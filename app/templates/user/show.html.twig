@@ -90,11 +90,12 @@
                         <a href="{{ path('app_series_show', {'id': fs.id}) }}"><img class=" rounded-lg" alt="poster" src="{{ path('app_series_poster', {'id': fs.id}) }}"></a>
                         {% for r in ratings %}
                             {% if fs.getId() == r.series %}
-                                <div class="absolute m-2 transition duration-300 -translate-x-full p-2 group-hover:translate-x-0">
-                                    <p class="bg-[--grey] mb-1 rounded-lg w-fit p-1 text-2xl"> {{ r.value }} / 10 </p>
-                                    <p class="text-2xl w-fit resize-none block p-1 rounded-lg border bg-gray-700 border-gray-600 text-white max-w-xl">
+                                <div class="absolute m-2 p-2 text-balance">
+                                    <p class="bg-[--grey] mb-1 rounded-lg w-fit p-1 text-lg"> {{ r.value }} / 10 </p>
+                                    <p class="text-xs truncate text-wrap text-sm resize-none block p-1 rounded-lg border bg-gray-700 border-gray-600 text-white max-w-36">
                                         {{ r.comment }}
                                     </p>
+                                    <a href="{{ path('app_series_show', {'id': r.series}) }}#{{ r.user.id }}" class="bg-indigo-500 block text-white mb-1 m-2 rounded-lg w-fit p-1 text-lg">See full rating</a>
                                 </div>
                             {% endif %}
                         {% endfor %}
