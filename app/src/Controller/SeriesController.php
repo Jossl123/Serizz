@@ -35,16 +35,14 @@ class SeriesController extends AbstractController
                 ->from('\App\Entity\Series','s');
 
                 if (isset($_GET['init'])) {
-                    if (isset($_GET['synopsis'])) {
-                        $search->andwhere('s.plot LIKE :syn')
-                        ->setParameter('syn', '%'.$_GET['init'].'%');
-                    }else{
-                        $search->andwhere('s.title LIKE :init')
-                        ->setParameter('init', '%'.$_GET['init'].'%');
-                    }
+                    $search->andwhere('s.title LIKE :init')
+                    ->setParameter('init', '%'.$_GET['init'].'%');
+                    
                 }
-
-
+                if (isset($_GET['syno'])) {
+                    $search->andwhere('s.plot LIKE :syn')
+                    ->setParameter('syn', '%'.$_GET['syno'].'%');
+                }
                 if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
                     $search->andwhere('s.yearStart >= :ys')
                     ->setParameter('ys', $_GET['Syear'])
