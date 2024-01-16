@@ -19,7 +19,7 @@
 		{% set offset = (diff*2)|abs %}
 		{% set size = max((1-(diff|abs)/(pages_to_show)), 0)%}
 		{% if size > 0.39 %}
-			<a href="{{ path(app_path, app.request.query.all| merge({'page': i+1, 'id': id})) }}" class="absolute {% if diff < 0 %}-{% endif %}translate-x-[{{offset}}rem] scale-[{{size}}] px-1 w-6 flex justify-center items-center {% if i == page %} rounded bg-cyan-600 text-white {% endif %}">{{ i + 1}}</a>
+			<a href="{{ path(app_path, app.request.query.all| merge({'page': i+1, 'id': id})) }}" class="absolute {% if diff < 0 %}-{% endif %}translate-x-[{{offset}}rem] scale-[{{size}}] px-1 w-6 flex justify-center items-center {% if i == page %} rounded bg-indigo-500 text-white {% endif %}">{{ i + 1}}</a>
 		{% endif %}
 	{% endfor %}
 

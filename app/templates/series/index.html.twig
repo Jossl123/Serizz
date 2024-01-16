@@ -64,8 +64,10 @@ form.submit();
 							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
 							<p>Date</p>
 						</div>
-						<div id="rate_range" class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': date, 'hidden': !date }">
+						<div id="rate_range" class="p-2 py-8 bg-divide-[--grey] rounded-b" :class="{ 'block': date, 'hidden': !date }">
 							<div class="flex h-2 bg-[--grey] rounded w-auto relative">
+								<span id="date-text-min" class="-translate-x-1/4 absolute top-4 bg-indigo-500 text-white rounded text-xs p-1">1964</span>
+								<span id="date-text-max" class="translate-x-1/4 absolute -top-8 right-0 bg-indigo-500 text-white rounded text-xs p-1">2024</span>
 								<span id="date-range-span" class="absolute bg-indigo-500 h-full w-full rounded"></span>
 								<input min="1964"max="{{ "now"|date("Y")}}"  id="date-min" value="1964" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
 								<input min="1964" max="{{ "now"|date("Y")}}"  id="data-max" value="{{ "now"|date("Y")}}" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
@@ -151,6 +153,9 @@ form.submit();
 		var dateRange = document.getElementById('date-range-span');
 		var dateMin = document.getElementById('date-min');
 		var dateMax = document.getElementById('data-max');
+		var dateTextMin = document.getElementById('date-text-min');
+		var dateTextMax = document.getElementById('date-text-max');
+
 		var dateMinValue = dateMin.value;
 		var dateMaxValue = dateMax.value;	
 		var dateRangeWidth = dateRange.offsetWidth;
@@ -162,6 +167,13 @@ form.submit();
 			var dateRangeValue = dateRangeWidth / (dateMaxValue - dateMinValue);
 			dateRange.style.width = dateRangeValue * (dateMax.value - dateMin.value) + "px";
 			dateRange.style.left = (dateMin.value - dateMinValue) * dateRangeValue + "px";
+
+			dateTextMin.style.left = (dateMin.value - dateMinValue) * dateRangeValue + "px";
+			dateTextMin.innerHTML = dateMin.value;
+			dateTextMax.style.right =((dateMaxValue-dateMax.value) * dateRangeValue) + "px";
+			dateTextMax.innerHTML = dateMax.value;
+
+
 		}
 		dateMax.oninput = function () {
 			if (parseInt(dateMax.value) <= parseInt(dateMin.value)){
@@ -170,6 +182,12 @@ form.submit();
 			var dateRangeValue = dateRangeWidth / (dateMaxValue - dateMinValue);
 			dateRange.style.width = dateRangeValue * (dateMax.value - dateMin.value) + "px";
 			dateRange.style.left =  (dateMin.value - dateMinValue) * dateRangeValue + "px";
+
+			dateTextMin.style.left = (dateMin.value - dateMinValue) * dateRangeValue + "px";
+			dateTextMin.innerHTML = dateMin.value;
+			dateTextMax.style.right =((dateMaxValue-dateMax.value) * dateRangeValue) + "px";
+			dateTextMax.innerHTML = dateMax.value;
+			
 		}
 	</script>
 {% endblock %}
