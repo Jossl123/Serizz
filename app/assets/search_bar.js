@@ -97,7 +97,6 @@ rateMax.oninput = function () {
 function updateStars() {
     var min = rateMin.value / 2;
     var max = rateMax.value / 2;
-    console.log("st")
     for (let i = 0; i < stars_grey.length; i++) {
         var start_grad_max = parseInt(Math.max(0, Math.min(max - i, 1)) * 100);
         var start_grad_min = parseInt(Math.max(0, Math.min(min - i, 1)) * 100);

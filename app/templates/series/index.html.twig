@@ -25,11 +25,11 @@
 				</div>
 				<div id="filters" class="flex flex-col gap-1 py-2 ">
 					<div x-data="{rate:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
-						<div @click="rate = !rate" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
-							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
-							<p>Rate</p>
+						<div @click="rate = !rate" class=" flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey] ">
+							<i class="nf nf-fa-filter text-white cursor-pointer  transition-all ease-in-out duration-200" :class="{ '-rotate-0': rate, '-rotate-90':!rate}"></i>
+							<p>Rating</p>
 						</div>
-						<div id="rate_range" class="  py-8 bg-divide-[--grey] rounded-b w-fit" :class="{ 'block': rate, 'hidden': !rate }">
+						<div id="rate_range" class="p-2 bg-divide-[--grey] rounded-b w-full flex justify-center" :class="{ 'block': rate, 'hidden': !rate }">
 							<div class="flex h-auto p-[4px] rounded w-auto relative gap-1">
 								{% for i in 0..4 %}
 									{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
@@ -38,14 +38,14 @@
 										<i id="rate-star-yellow-{{i}}" class="absolute nf nf-fa-star text-yellow-500"></i>
 									</div>
 								{% endfor %}
-								<input name="Syear" min="0" max="10" id="rate-min" value="0" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
-								<input name="yearE" min="0" max="10" id="rate-max" value="10" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<input name="Srate" min="0" max="10" id="rate-min" value="0" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
+								<input name="rateE" min="0" max="10" id="rate-max" value="10" class="absolute top-0 left-0 w-full h-full bg-transparent appearance-none" type="range" style="-webkit-appearance: none;">
 							</div>
 						</div>
 					</div>
 					<div x-data="{date:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
 						<div @click="date = !date" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
-							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
+							<i class="nf nf-fa-filter text-white cursor-pointer  transition-all ease-in-out duration-200" :class="{ '-rotate-0': date, '-rotate-90':!date}"></i>
 							<p>Date</p>
 						</div>
 						<div class="range p-2 py-8 bg-divide-[--grey] rounded-b" :class="{ 'block': date, 'hidden': !date }">
@@ -58,12 +58,12 @@
 							</div>
 						</div>
 					</div>
-					<div x-data="{rating:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
-						<div @click="rating = !rating" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
-							<i class="nf nf-fa-expand text-white cursor-pointer"></i>
+					<div x-data="{genre:false}" class="group shadow-[0px_1px_10px_5px_rgba(0,0,0,1)] rounded ">
+						<div @click="genre = !genre" class="flex  z-20 bg-inherit relative rounded items-center gap-2 p-2 hover:bg-[--grey]">
+							<i class="nf nf-fa-filter text-white cursor-pointer  transition-all ease-in-out duration-200" :class="{ '-rotate-0': genre, '-rotate-90':!genre}"></i>
 							<p>Genres</p>
 						</div>
-						<div class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': rating, 'hidden': !rating }">
+						<div class="p-2 py-4 bg-divide-[--grey] rounded-b" :class="{ 'block': genre, 'hidden': !genre }">
 							<div class="grid rounded grid-cols-2">
 								{% for genre in genres %}
 									<div class="flex gap-2 items-baseline leading-4 pb-1">
