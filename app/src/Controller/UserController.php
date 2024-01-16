@@ -220,13 +220,9 @@ class UserController extends AbstractController
                     }
                 }
             } else {
-                $this->addFlash('error', 'Incorrect password');
+                $this->addFlash('err', 'Incorrect password');
             }
         }
-
-
-
-
 
         return $this->render('user/_userEdit.html.twig', [
             'user' => $user,

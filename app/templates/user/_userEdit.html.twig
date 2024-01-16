@@ -11,13 +11,11 @@
             <form class="flex -translate-x-1/2 -translate-y-1/2 gap-5  flex-col bg-[--dark-blue] p-4 rounded" method="post">
                 <h1 class="text-3xl text-white text-center font-bold"> Edit Information </h1>
 
-                {% if app.flashes != [] %}
-                    {% for flash in app.flashes['error'] %}
-                        <div class="bg-red-500 text-white p-2 rounded">
-                            {{ flash }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
+                {% for flash in app.flashes['err'] %}
+                    <div class="bg-red-500 text-white text-center p-2 rounded">
+                        {{ flash }}
+                    </div>
+                {% endfor %}
 
                 <label class="mb-2 text-xl">
                     Name : <br>
@@ -51,12 +49,14 @@
                     </select>
                 </label>
 
-                <label>
+                <label class="mb-2 text-xl">
                     Current Password : <br>
                     <input type="password" name="currentPassword" placeholder="********" class="bg-[--black] outline-0">
                 </label>
 
-                <button type="submit"> Save Changes </button>
+                <button type="submit" class="bg-[--black] px-4 py-2 text-white hover:bg-black rounded transition-all ease-in-out duration-100">
+                    Save Changes
+                </button>
 
             </form>
         </div>
