@@ -129,12 +129,12 @@ class UserController extends AbstractController
             $page = 0;
         }
 
-        $series = $seriesRepo->slice($page * $limit, $limit);
+        // Cast is needed since page*limit is a float 
+        $series = $seriesRepo->slice((int)$page * $limit, $limit);
 
         $ratings = $entityManager
             ->getRepository(Rating::class)
-            ->findBy(array('user' => $user->getId()));
-
+            ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
 
         return $this->render('user/show.html.twig', [
             'user' => $user,

@@ -1,7 +1,11 @@
-{% if app.user %}
-	{% set id = app.user.id %}
+{% if app_path == "app_user_show" %}
+	{% set id = id %}
 {% else %}
-	{% set id = 0 %}
+	{% if app.user %}
+		{% set id = app.user.id %}
+	{% else %}
+		{% set id = 0 %}
+	{% endif %}
 {% endif %}
 
 <div class="flex gap-2 justify-center p-4">
@@ -26,7 +30,7 @@
 	{% if page < pagesNb-1 %}
 		{% set diff = min(pagesNb-page, (pages_to_show/2)+2) %}
 		{% set offset = (diff*2)|abs %}
-		<a class="translate-x-[{{-offset}}rem] "href="{{ path(app_path,app.request.query.all| merge( {'page': page +2, 'id': id})) }}">
+		<a class="translate-x-[{{-offset}}rem]" href="{{ path(app_path,app.request.query.all| merge( {'page': page +2, 'id': id})) }}">
 		<i class="nf nf-fa-arrow_right"></i></a>
 	{% endif %}
 </div>
