@@ -229,15 +229,15 @@
 								<div class="flex gap-1">
 									{% for i in 0..4 %}
 										<div class="flex ">
-										{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
-										<div class="relative  w-2 h-4 overflow-hidden">
-											{# <i id="rate-star-grey-{{i}}" class="absolute  nf nf-fa-star text-[--grey] "></i> #}
-											<i id="rate-star-yellow-{{i}}" class="absolute  nf nf-fa-star text-yellow-500"></i>
-										</div>
-										<div class="relative w-2 h-4 overflow-hidden">
-											{# <i id="rate-star-grey-{{i}}" class="absolute  nf nf-fa-star text-[--grey] "></i> #}
-											<i id="rate-star-yellow-{{i}}" class="absolute -translate-x-1/2 nf nf-fa-star text-yellow-500"></i>
-										</div>
+											{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
+											<div class="relative  w-2 h-4 overflow-hidden" onclick="rate_star_click(true, {{i}})">
+												<i id="rate-star-grey-left-{{i}}" class="absolute  nf nf-fa-star text-[--grey] "></i>
+												<i id="rate-star-yellow-left-{{i}}" class="absolute  nf nf-fa-star text-yellow-500"></i>
+											</div>
+											<div class="relative w-2 h-4 overflow-hidden" onclick="rate_star_click(false,{{i}})">
+												<i id="rate-star-grey-right-{{i}}" class="absolute -translate-x-1/2  nf nf-fa-star text-[--grey] "></i>
+												<i id="rate-star-yellow-right-{{i}}" class="absolute -translate-x-1/2 nf nf-fa-star text-yellow-500"></i>
+											</div>
 										</div>
 									{% endfor %}
 								</div>
@@ -292,6 +292,7 @@
 	</div>
 	<script src="{{asset("follow.js")}}"></script>
 	<script src="{{asset("panels_seasons.js")}}"></script>
+	<script src="{{asset("stars_rating.js")}}"></script>
 
 	<style>
 		.current {
