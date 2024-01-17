@@ -262,32 +262,9 @@
 					</div>
 				</div>
 			{% endif %}
-			<div class="xl:w-2/3">
-				{% for r in ratings %}
-					{% if not (app.user and r.user.id == app.user.id) %}
-						<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 ">
-							<div class="flex gap-2">
-								<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
-								<div class="flex gap-1 relative items-center">
-									{% include('./_stars.html.twig') with {'rating': r.value/2} %}
-								</div>
-								<p class="text-[--grey] font-bold">{{ r.date|ago }}
-									{# if date i further than 1 week show real date #}
-									{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
-									{% if timeDifference > 60*60*24*7 %}
-										<span>{{ r.date|date("d/m/y") }}</span>
-									{% endif %}
-								</p>
-							</div>
-							<div class="text-lg text-[--white] italic">
-								<p>{{ r.comment }}</p>
-							</div>
-						</div>
-						<hr class="m-2 border-[--grey]">
-					{% endif %}
-				{% endfor %}
+			<div class="xl:w-2/3 flex flex-col">
 				{% if ownRating %}
-					<div id="{{ ownRating.user.id }}" class="flex m-4 flex-col gap-2 ml-2 mt-4 border border-gray-300 p-4 rounded-md ">
+					<div id="{{ ownRating.user.id }}" class="flex flex-col gap-2  border border-gray-300 p-4 rounded-md ">
 						<div class="font-bold text-[--grey] flex justify-between">
 							<span>Your rating
 								{% if ownRating.checkrate == 0 %}is waiting for validation
@@ -302,7 +279,6 @@
 							</form>
 						</div>
 						<div class="flex gap-2">
-
 							<a class="text-white" href="{{path('app_user_show', {'id': ownRating.user.id })}}">{{ownRating.user.name}}</a>
 							<div class="flex gap-1 relative items-center h-full">
 								{% include('./_stars.html.twig') with {'rating': ownRating.value/2} %}
@@ -319,7 +295,42 @@
 							<p>{{ ownRating.comment| nl2br }}</p>
 						</div>
 					</div>
+					<hr class="m-2 border-[--grey]">
 				{% endif %}
+				{% for r in ratings %}
+					{% if not (app.user and r.user.id == app.user.id) %}
+						<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 ">
+							<div class="flex flex justify-between">
+								<div class="flex gap-2 ">
+									<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
+									<div class="flex gap-1 relative items-center">
+										{% include('./_stars.html.twig') with {'rating': r.value/2} %}
+									</div>
+									<p class="text-[--grey] font-bold">{{ r.date|ago }}
+										{# if date i further than 1 week show real date #}
+										{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
+										{% if timeDifference > 60*60*24*7 %}
+											<span>{{ r.date|date("d/m/y") }}</span>
+										{% endif %}
+									</p>
+								</div>
+								{% if app.user and app.user.admin != 0 %}
+								<form action="{{ path('app_rating_delete', {'id': r.id, 'serieId': series.id}) }}" method="post">
+									<input type="hidden" name="_method" value="DELETE">
+									<input type="hidden" name="serieId" value="{{ series.id }}">
+									<button type="submit" class=" font-bold p-x rounded">
+										<i class="nf nf-md-delete_off text-red-500 hover:text-red-400"></i>
+									</button>
+								</form>
+								{% endif %}
+							</div>
+							<div class="text-lg text-[--white] italic">
+								<p>{{ r.comment }}</p>
+							</div>
+						</div>
+						<hr class="m-2 border-[--grey]">
+					{% endif %}
+				{% endfor %}
 			</div>
 		</div>
 	</div>
