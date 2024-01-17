@@ -217,6 +217,7 @@
 				{% endfor %}
 			</div>
 		</div>
+		<div class="xl:w-2/3">
 		{% if app.user %}
 			{% if not userRating %}
 				<div>You've not reviewed this serie yet!</div>
@@ -246,7 +247,6 @@
 				</div>
 			{% endif %}
 		{% endif %}
-		<div class="xl:w-2/3">
 			{% for r in ratings %}
 				{% set ownRating = (app.user and r.user.id == app.user.id) %}
 				<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
