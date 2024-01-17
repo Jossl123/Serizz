@@ -72,17 +72,17 @@ class SeriesController extends AbstractController
                     $search->setParameter('genres', $tousGenres);
                     $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
                 }
-
-                $minRate = isset($_GET['Srate']) ? $_GET['Srate'] : 0;
-                $maxRate = isset($_GET['rateE']) ? $_GET['rateE'] : 5;
-                $search->join('s.ratings', 'r')
-                ->andwhere('r.checkrate = 1')
-                ->andwhere('r.value BETWEEN :min AND :max')
-                ->setParameter('min', $minRate)
-                ->setParameter('max', $maxRate)
-                ->groupBy('s.id')
-                ->orderBy('COUNT(r.id)', 'DESC');
-
+                
+                if (isset($_GET['Srate']) or isset($_GET['rateE'])){
+                    $minRate = isset($_GET['Srate']) ? $_GET['Srate'] : 0;
+                    $maxRate = isset($_GET['rateE']) ? $_GET['rateE'] : 5;
+                    $search->join('s.ratings', 'r')
+                    ->andwhere('r.checkrate = 1')
+                    ->andwhere('r.value BETWEEN :min AND :max')
+                    ->setParameter('min', $minRate)
+                    ->setParameter('max', $maxRate);
+                }
+                
                 $series_match = $search->getQuery()->getResult();
                 $seriesNb = sizeof((array)$series_match);
                 if ($page > $seriesNb / $limit) {
