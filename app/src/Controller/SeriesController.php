@@ -183,11 +183,22 @@ class SeriesController extends AbstractController
         $episode_nb = 0;
 
         $ratings = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+            ->select('r')
             ->where('r.series = :id')
             ->andWhere('r.checkrate = 1')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
+        $ownRating = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+            ->join('r.user','u')
+            ->where('r.series = :id')
+            ->andWhere('u.id = :userId')
+            ->setParameter('id', $id)
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getResult();
+        if (sizeof($ownRating) > 0)$ownRating = $ownRating[0];
+        else $ownRating = null;
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);
@@ -198,7 +209,6 @@ class SeriesController extends AbstractController
             $rating->setDate(new \DateTime());
             $entityManager->persist($rating);
             $entityManager->flush();
-            $this->addFlash('success', 'You successfully rated this serie !');
             return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
 
@@ -246,7 +256,8 @@ class SeriesController extends AbstractController
                 'percentage_serie' => $percentage_serie,
                 'ratingForm' => $form->createView(),
                 'ratings' => $ratings,
-                'ratings_displayed' => $ratings_displayed
+                'ratings_displayed' => $ratings_displayed,
+                'ownRating' => $ownRating
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
@@ -319,11 +330,13 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/{id}', name:'app_rating_delete')]
-    public function deleteRatingUser(Rating $rating, EntityManagerInterface $entityManager): Response
+    public function deleteRatingUser( Rating $rating, EntityManagerInterface $entityManager, Request $request): Response
     {
+        $serieId = $request->get('serieId');
         $entityManager->remove($rating);
         $entityManager->flush();
 
-        return new JsonResponse(array('success' => "true"));
+        return $this->redirectToRoute('app_series_show', ['id' => $serieId]);
+
     }
 }
