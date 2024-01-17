@@ -127,14 +127,7 @@
 						{% if app.user and not userRating %}
 							<a class=" p-2 font-bold block" href="#post_your_rating">Post your rating</a>
 						{% endif %}
-						    
-						{% for i in 0..4 %}
-							{% set fillstar = min(1,max(avgSeriesRates - i, 0)) * 100 %}
-							<div class="relative w-4 h-4">
-								<i class="absolute nf nf-fa-star text-[--grey] " style="-webkit-mask: linear-gradient(to right, rgba(0,0,0,0) {{fillstar}}%, rgba(0,0,0,1) {{fillstar}}%);"></i>
-								<i class="absolute nf nf-fa-star text-yellow-500" style="-webkit-mask: linear-gradient(to right, rgba(0,0,0,1) {{fillstar}}%, rgba(0,0,0,0) {{fillstar}}%);"></i>
-							</div>
-						{% endfor %}
+						{% include('./_stars.html.twig') with {'rating': avgSeriesRates} %}
 						<a class="px-1 text-[--grey] font-bold transition-all ease-in-out duration-200 hover:text-white" href="#post_your_rating">{{ ratings|length }} rates</a>
 					</div>
 				</div>
