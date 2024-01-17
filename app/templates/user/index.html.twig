@@ -80,6 +80,7 @@
                             <th class="px-6 py-3"> Register Date </th>
                             <th class="px-6 py-3"> Country </th>
                             <th class="px-6 py-3"> Admin </th>
+                            <th class="px-6 py-3"> Banned </th>
                         {% endif %}
                         <th class="px-6 py-3"> Actions </th>
                     </tr>
@@ -92,7 +93,8 @@
                         {% if ( app.user ) and ( app.user.admin != 0 ) %}
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.country }}</td>
-                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
+                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.admin == 0 %} No {% elseif user.admin == 1 %} Yes {% else %} Super Admin {% endif %}</td>
+                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.ban == 0 %} No {% else %} Yes {% endif %}</td>
                         {% endif %}
                         <td class="font-medium text-blue-600 hover:underline">
                             <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>

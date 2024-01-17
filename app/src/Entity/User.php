@@ -63,6 +63,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private $episode = array();
 
+    #[ORM\Column(name: "ban", type: "integer", length: 128, nullable: true)]
+    private $ban;
+
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followers')]
     #[ORM\JoinTable(
         name: "user_followed",
@@ -247,6 +250,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->admin;
     }
 
+    public function getBan(): ?int
+    {
+        return $this->ban;
+    }
+
+    public function setBan(?int $ban): void
+    {
+        $this->ban = $ban;
+    }
     /**
      * @return Collection<int, self>
      */

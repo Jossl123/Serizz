@@ -24,6 +24,9 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET', 'POST'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $NbG = 0;
         $page = $request->query->get('page', 1)-1;
         $search = $entityManager->createQueryBuilder();
@@ -181,6 +184,9 @@ class SeriesController extends AbstractController
     #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
     public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
+        if ($this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         /** @var \App\Entity\User */
         $user = $this->getUser();
         $serie = $entityManager->getRepository(Series::class)->find($id);
