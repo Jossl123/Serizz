@@ -24,8 +24,10 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET', 'POST'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if ($this->getUser()->getBan() == 1) {
-            return $this->redirectToRoute('app_banned');
+        if($this->getUser() != null){
+            if ($this->getUser()->getBan() == 1) {
+                return $this->redirectToRoute('app_banned');
+            }
         }
         $NbG = 0;
         $page = $request->query->get('page', 1) - 1;
