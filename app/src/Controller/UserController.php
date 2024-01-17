@@ -92,6 +92,7 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/followed', name: 'app_user_index_followed', methods: ['GET'])]
     public function index_followed(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -106,9 +107,9 @@ class UserController extends AbstractController
         $limit = 10;
 
         // Only get the users followed by the logged in user
+        // TODO
         $usersRepo = $entityManager
-            ->getRepository(User::class)
-            ->findBy(array('user' => $this->getUser()));
+            ->getRepository(User::class);
 
         if (isset($_GET['search'])) {
             $users = $usersRepo->findAll();
@@ -159,7 +160,7 @@ class UserController extends AbstractController
             $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
         }
 
-        return $this->render('user/index.html.twig', [
+        return $this->render('user/followed.html.twig', [
             'users' => $users,
             'pagesNb' => ceil($userNb / $limit),
             'page' => $page,
@@ -167,6 +168,13 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
+    #[Route('/new', name: 'app_user_update_followed', methods: ['GET', 'POST'])]
+    public function update_followed(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        //TODO
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
