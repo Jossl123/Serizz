@@ -248,28 +248,30 @@
 		{% endif %}
 		<div class="xl:w-2/3">
 			{% for r in ratings %}
-				{% set ownRating = (app.user and r.user.id == app.user.id) %}
-				<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
-					<div class="flex gap-2">
-						{% if ownRating %}
-							<div class="font-bold text-[--grey]">Your rating</div>
-						{% endif %}
-						<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
-						<div class="flex gap-1 relative items-center">
-							{% include('./_stars.html.twig') with {'rating': r.value} %}
-						</div>
-						<p class="text-[--grey] font-bold">{{ r.date|ago }}
-							{# if date i further than 1 week show real date #}
-							{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
-							{% if timeDifference > 60*60*24*7 %}
-								<span>{{ r.date|date("d/m/y") }}</span>
+				{% if r.getCheckrate == 1 %}
+					{% set ownRating = (app.user and r.user.id == app.user.id) %}
+					<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
+						<div class="flex gap-2">
+							{% if ownRating %}
+								<div class="font-bold text-[--grey]">Your rating</div>
 							{% endif %}
-						</p>
+							<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
+							<div class="flex gap-1 relative items-center">
+								{% include('./_stars.html.twig') with {'rating': r.value} %}
+							</div>
+							<p class="text-[--grey] font-bold">{{ r.date|ago }}
+								{# if date i further than 1 week show real date #}
+								{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
+								{% if timeDifference > 60*60*24*7 %}
+									<span>{{ r.date|date("d/m/y") }}</span>
+								{% endif %}
+							</p>
+						</div>
+						<div class="text-lg text-[--white] italic">
+							<p>{{ r.comment }}</p>
+						</div>
 					</div>
-					<div class="text-lg text-[--white] italic">
-						<p>{{ r.comment }}</p>
-					</div>
-				</div>
+				{% endif %}	
 				<hr class="m-2 border-[--grey]">
 			{% endfor %}
 		</div>

@@ -22,6 +22,7 @@
                 <tr class="bg-gray-700">
                     <th class="py-0.5 px-7 border-b border-r text-center">User</th>
                     <th class="py-0.5 px-4 border-b border-r text-center">Date</th>
+                    <th class="py-1.5 px-5 border-b border-r text-center">Series</th>
                     <th class="py-1.5 px-3 border-b border-r text-center">Grade</th>
                     <th class="py-1.5 px-9 border-b border-r text-center">Comment</th>
                     <th class="py-0.5 px-4 border-b text-center">Decision</th>
@@ -29,29 +30,34 @@
             </thead>
             <tbody>
                 {% for rating in ratings|slice(0, 5) %}
-                    <tr class="hover:bg-gray-100">
-                        <td class="py-0.5 px-7 border-b border-r text-center">
-                        {% for user in users%}
-                        {% if user.id == rating.user.id%} {{user.name}}
-                        {% endif %}
-                        {% endfor %}</td>
-                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
-                        <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
-                        <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
-                        <td class="py-0.5 px-4 border-b text-center">
-                            <div class="mb-4">
-                                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
-                                    ACCEPT
-                                </button>
-                            </div>
-                            <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
-                                    REJECT
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
+                    {% if rating.getCheckrate != 1 %}
+                        <tr class="hover:bg-gray-100">
+                            <td class="py-0.5 px-7 border-b border-r text-center">
+                            {% for user in users%}
+                            {% if user.id == rating.user.id%} {{user.name}}
+                            {% endif %}
+                            {% endfor %}</td>
+                            <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
+                            <th class="py-1.5 px-5 border-b border-r text-center">{{rating.series.title}}</th>
+                            <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
+                            <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
+                            <td class="py-0.5 px-4 border-b text-center">
+                                <div class="mb-4">
+                                    <form action="{{ path('admin_rating_approve', {'id': rating.id}) }}" method="post">
+                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
+                                            APPROVE
+                                        </button>
+                                    </form>
+                                </div>
+                                <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
+                                        REJECT
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -60,7 +66,8 @@
             <thead>
                 <tr class="bg-gray-700">
                     <th class="py-0.5 px-7 border-b border-r text-center">User</th>
-                    <th class="py-0.5 px-4 border-b border-r text-center">Date</th>
+                    <th class="py-0.5 px-5 border-b border-r text-center">Date</th>
+                    <th class="py-1.5 px-3 border-b border-r text-center">Series</th>
                     <th class="py-1.5 px-3 border-b border-r text-center">Grade</th>
                     <th class="py-1.5 px-9 border-b border-r text-center">Comment</th>
                     <th class="py-0.5 px-4 border-b text-center">Decision</th>
@@ -75,13 +82,17 @@
                         {% endif %}
                         {% endfor %}</td>
                         <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
+                        <th class="py-1.5 px-5 border-b border-r text-center">Series</th>
                         <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
                         <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
                         <td class="py-0.5 px-4 border-b text-center">
                             <div class="mb-4">
-                                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
-                                    ACCEPT
-                                </button>
+                                <form action="{{ path('admin_rating_approve', {'id': rating.id}) }}" method="post">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
+                                        APPROVE
+                                    </button>
+                                </form>
+
                             </div>
                             <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
                                 <input type="hidden" name="_method" value="DELETE">

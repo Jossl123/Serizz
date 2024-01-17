@@ -8,3 +8,8 @@ admin_rating_delete:
     path: '/adminpanel/{id}'
     controller: 'App\Controller\DefaultController::deleteRating'
     methods: ['DELETE', 'POST']
+
+admin_rating_approve:
+    path: '/adminpanel/{id}/approve'
+    controller: 'App\Controller\DefaultController::approveRating'
+    methods: ['POST']
