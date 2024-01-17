@@ -9,6 +9,12 @@ admin_rating_delete:
     controller: 'App\Controller\DefaultController::deleteRating'
     methods: ['DELETE', 'POST']
 
+app_rating_delete:
+    path: '/{id}'
+    controller: 'App\Controller\SeriesController::deleteRatingUser'
+    methods: ['DELETE', 'POST']
+
+
 admin_rating_approve:
     path: '/adminpanel/{id}/approve'
     controller: 'App\Controller\DefaultController::approveRating'

@@ -59,6 +59,10 @@ class Series
     #[ORM\ManyToMany(targetEntity: "Country", mappedBy: "series")]
     private $country = array();
 
+    #[ORM\OneToMany(targetEntity: "Rating", mappedBy: "series")]
+    private $ratings;
+
+
     #[ORM\OneToMany(mappedBy: 'series', targetEntity: Season::class)]
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $seasons;
@@ -73,6 +77,7 @@ class Series
         $this->actor = new \Doctrine\Common\Collections\ArrayCollection();
         $this->country = new \Doctrine\Common\Collections\ArrayCollection();
         $this->seasons = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -320,6 +325,36 @@ class Series
             // set the owning side to null (unless already changed)
             if ($season->getSeries() === $this) {
                 $season->setSeries(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setSeries($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getSeries() === $this) {
+                $rating->setSeries(null);
             }
         }
 

@@ -60,7 +60,7 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
                 }
-                if (isset($_GET['genres'])){
+                if (isset($_GET['genres']) && $_GET['genres'] != ""){
                     $tousGenres = explode("_", $_GET['genres']);
                     $subsearch = $entityManager->createQueryBuilder();
                     $subsearch->select('sub_s')
@@ -69,7 +69,6 @@ class SeriesController extends AbstractController
                     ->andWhere('g.name IN (:genres)');
                     $search->setParameter('genres', $tousGenres);
                     $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
-
                 }
 
                 if (isset($_GET['grade'])) {
@@ -184,11 +183,22 @@ class SeriesController extends AbstractController
         $episode_nb = 0;
 
         $ratings = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+            ->select('r')
             ->where('r.series = :id')
             ->andWhere('r.checkrate = 1')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
+        $ownRating = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+            ->join('r.user','u')
+            ->where('r.series = :id')
+            ->andWhere('u.id = :userId')
+            ->setParameter('id', $id)
+            ->setParameter('userId', $user->getId())
+            ->getQuery()
+            ->getResult();
+        if (sizeof($ownRating) > 0)$ownRating = $ownRating[0];
+        else $ownRating = null;
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);
@@ -199,7 +209,6 @@ class SeriesController extends AbstractController
             $rating->setDate(new \DateTime());
             $entityManager->persist($rating);
             $entityManager->flush();
-            $this->addFlash('success', 'You successfully rated this serie !');
             return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
 
@@ -223,20 +232,24 @@ class SeriesController extends AbstractController
         } else {
             $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
         }
-        $ratings_displayed = array();
-        for ($i=0; $i < 5; $i++) { 
-            $lower = 2*$i+1;
-            $upper = 2*$i+2;
-            $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
-                ->select('COUNT(r.id)')
-                ->where('r.series = :series_id')
-                ->andWhere('r.value BETWEEN :lower AND :upper')
-                ->setParameter('series_id', $id)
-                ->setParameter('lower', $lower)
-                ->setParameter('upper', $upper)
-                ->getQuery();
-                $ratings_displayed[$i] =$query->getSingleScalarResult();
+        $ratings_displayed = array(0,0,0,0,0);
+        if (sizeof($ratings)>0){
+            for ($i=0; $i < 5; $i++) { 
+                $lower = 2*$i+1;
+                $upper = 2*$i+2;
+                $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+                    ->select('COUNT(r.id)')
+                    ->where('r.series = :series_id')
+                    ->andWhere('r.value BETWEEN :lower AND :upper')
+                    ->andWhere('r.checkrate = 1')
+                    ->setParameter('series_id', $id)
+                    ->setParameter('lower', $lower)
+                    ->setParameter('upper', $upper)
+                    ->getQuery();
+                    $ratings_displayed[$i] =$query->getSingleScalarResult() / sizeof($ratings);
+            }
         }
+        dump($ratings_displayed);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -244,7 +257,8 @@ class SeriesController extends AbstractController
                 'percentage_serie' => $percentage_serie,
                 'ratingForm' => $form->createView(),
                 'ratings' => $ratings,
-                'ratings_displayed' => $ratings_displayed
+                'ratings_displayed' => $ratings_displayed,
+                'ownRating' => $ownRating
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
@@ -314,5 +328,16 @@ class SeriesController extends AbstractController
             $entityManager->flush();
         }
         return new JsonResponse(array('success' => "true"));
+    }
+
+    #[Route('/{id}', name:'app_rating_delete')]
+    public function deleteRatingUser( Rating $rating, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $serieId = $request->get('serieId');
+        $entityManager->remove($rating);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_series_show', ['id' => $serieId]);
+
     }
 }

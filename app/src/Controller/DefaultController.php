@@ -361,7 +361,7 @@ class DefaultController extends AbstractController
                                 if (in_array($a, $actors)) {
                                     $actor = $entityManager
                                         ->getRepository(Genre::class)
-                                        ->findBy(['name' => $g]);
+                                        ->findBy(['name' => $a]);
                                     $actor[0]->addSeries($s);
                                     $s->addActor($actor);
                                 } else {
