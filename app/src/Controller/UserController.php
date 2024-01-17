@@ -108,12 +108,12 @@ class UserController extends AbstractController
         $limit = 10;
 
         // Only get the users followed by the logged in user
-        // TODO
         $usersRepo = $entityManager
             ->getRepository(User::class);
 
+        $users = $usersRepo->findAllByFollowed($this->getUser());
+
         if (isset($_GET['search'])) {
-            $users = $usersRepo->findAll();
             $users_match = array();
 
             if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
@@ -149,7 +149,7 @@ class UserController extends AbstractController
             $users_match = array_slice($users_match, $page * $limit, $limit);
             $users = $users_match;
         } else {
-            $userNb = $usersRepo->count([]);
+            $userNb = count($users);
 
             if ($page > $userNb / $limit) {
                 $page = ceil($userNb / $limit);
@@ -158,7 +158,8 @@ class UserController extends AbstractController
                 $page = 0;
             }
 
-            $users = $usersRepo->findAllByFollowed($this->getUser());
+            
+            $users = array_slice($users, $page * $limit, $limit);
             //$users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
         }
 

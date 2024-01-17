@@ -69,7 +69,7 @@
                 </div>
            {% endif %}
 
-            {% include('./pagination.html.twig') with {'app_path': "app_user_index", "pagesNb": pagesNb} %}
+            {% include('./pagination.html.twig') with {'app_path': "app_user_index_followed", "pagesNb": pagesNb} %}
 
             <table class="text-sm text-center">
                 <thead class="text-xs uppercase bg-gray-700 ">
@@ -113,7 +113,7 @@
                 </tbody>
             </table>
 
-            {% include('./pagination.html.twig') with {'app_path': "app_user_index", "pagesNb": pagesNb} %}
+            {% include('./pagination.html.twig') with {'app_path': "app_user_index_followed", "pagesNb": pagesNb} %}
 
             <div class="flex flex-row">
                 {% if app.user %}
