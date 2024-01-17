@@ -285,7 +285,7 @@
 							</p>
 						</div>
 						<div class="text-lg text-[--white] italic">
-							<p>{{ r.comment }}</p>
+							<p>{{ r.comment| nl2br }}</p>
 						</div>
 					</div>
 					<hr class="m-2 border-[--grey]">
@@ -308,7 +308,7 @@
 							</p>
 						</div>
 						<div class="text-lg text-[--white] italic">
-							<p>{{ ownRating.comment }}</p>
+							<p>{{ ownRating.comment| nl2br }}</p>
 						</div>
 					</div>
 				{% endif %}
