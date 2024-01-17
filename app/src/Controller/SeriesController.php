@@ -35,16 +35,14 @@ class SeriesController extends AbstractController
                 ->from('\App\Entity\Series','s');
 
                 if (isset($_GET['init'])) {
-                    if (isset($_GET['synopsis'])) {
-                        $search->andwhere('s.plot LIKE :syn')
-                        ->setParameter('syn', '%'.$_GET['init'].'%');
-                    }else{
-                        $search->andwhere('s.title LIKE :init')
-                        ->setParameter('init', '%'.$_GET['init'].'%');
-                    }
+                    $search->andwhere('s.title LIKE :init')
+                    ->setParameter('init', '%'.$_GET['init'].'%');
+                    
                 }
-
-
+                if (isset($_GET['syno'])) {
+                    $search->andwhere('s.plot LIKE :syn')
+                    ->setParameter('syn', '%'.$_GET['syno'].'%');
+                }
                 if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
                     $search->andwhere('s.yearStart >= :ys')
                     ->setParameter('ys', $_GET['Syear'])
@@ -209,7 +207,7 @@ class SeriesController extends AbstractController
             }
             $percentage_serie += $seen;
             if ($season_episode_nb == 0) {
-                $percentages_seasons = 100;
+                $percentages_seasons[$key] = 100;
             } else {
                 $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
             }

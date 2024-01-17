@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Edit Information {% endblock %}
+
+{% block body %}
+
+{% include 'header.html.twig' %}
+
+    <div class="flex justify-center mt-4">
+        <div class="flex absolute top-1/2 left-1/2 justify-center items-center">
+            <form class="flex -translate-x-1/2 -translate-y-1/2 gap-5  flex-col bg-[--dark-blue] p-4 rounded" method="post">
+                <h1 class="text-3xl text-white text-center font-bold"> Edit Information </h1>
+
+                {% for flash in app.flashes['err'] %}
+                    <div class="bg-red-500 text-white text-center p-2 rounded">
+                        {{ flash }}
+                    </div>
+                {% endfor %}
+
+                <label class="mb-2 text-xl">
+                    Name : <br>
+                    <input name="name" placeholder="{{ user.name }}" class="bg-[--black] outline-0">
+                </label>
+
+                <label class="mb-2 text-xl">
+                    Email : <br>
+                    <input name="email" placeholder="{{ user.email }}" readonly class="bg-[--black] outline-0 cursor-not-allowed">
+                </label>
+
+                <label class="mb-2 text-xl">
+                    Password : <br>
+                    <input type="password" name="password" placeholder="********" class="bg-[--black] outline-0">
+                </label>
+
+                <label class="mb-2 text-xl">
+                    Confirm Password : <br>
+                    <input type="password" name="confirm_password" placeholder="********" class="bg-[--black] outline-0">
+                </label>
+
+                <label class="mb-2 text-xl">
+                    Country : <br>
+                    <select name="country" class="bg-[--black] outline-0">
+                        <option disabled selected> {{ user.country.name }} </option>
+                        {% for country in countries %}
+                            {% if country.name != user.country.name %}
+                                <option value="{{ country.name }}"> {{ country.name}} </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label class="mb-2 text-xl">
+                    Current Password : <br>
+                    <input type="password" name="currentPassword" placeholder="********" class="bg-[--black] outline-0">
+                </label>
+
+                <button type="submit" class="bg-[--black] px-4 py-2 text-white hover:bg-black rounded transition-all ease-in-out duration-100">
+                    Save Changes
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

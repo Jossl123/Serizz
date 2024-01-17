@@ -41,12 +41,18 @@ class DefaultController extends AbstractController
             ->getRepository(User::class);
         $ratingRepo = $entityManager
             ->getRepository(Rating::class);
+            
+        $search = $entityManager->createQueryBuilder();
+        $search->select('COUNT( e.id)')
+            ->from('\App\Entity\Episode', 'e')
+            ->join('e.user', 'u');  
+        $episode_watched = $search->getQuery()->getResult()[0][1];
 
         if (!$this->isGranted('ROLE_USER')) {
             return $this->render('default/showcase.html.twig', [
                 "hall_of_fame" => $hallOfFameSeries,
                 "user_nb" => $usersRepo->count([]),
-                "watched_episodes" => $usersRepo->count([]) * 13, //TODO
+                "watched_episodes" => $episode_watched, 
             ]);
         }
         /** @var \App\Entity\User */
@@ -97,7 +103,7 @@ class DefaultController extends AbstractController
             $contentType = $response->getHeaders()['content-type'][0];
             $content = $response->getContent();
             $content = $response->toArray();
-
+            $content["Trailer"] = "";
             if ($content['Response'] != "False") {
                 $years = explode("-", $content['Year']);
                 $genres = explode(", ", $content['Genre']);
@@ -112,6 +118,16 @@ class DefaultController extends AbstractController
                 if ($posterStatusCode == 200) {
                     $posterContentType = $posterResponse->getHeaders()['content-type'][0];
                     $posterContent = $posterResponse->getContent();
+                }
+                if (isset( $_SERVER['API_YOUTUBE_KEY'])){
+                    $API_KEY = $_SERVER['API_YOUTUBE_KEY'];
+                    $youtubeTrailerUrl = "https://www.googleapis.com/youtube/v3/search?part=snippet&key=".$API_KEY."&type=video&q=".str_replace(' ', '+', $content['Title'])."+trailer";
+                    $responsetrailer = $this->client->request('GET', $youtubeTrailerUrl);
+                    $statusCodetrailer = $responsetrailer->getStatusCode();
+                    if ($statusCodetrailer == 200){
+                        $trailer = $responsetrailer->toArray()["items"][0]["id"]["videoId"];
+                        $content["Trailer"] = $trailer;
+                    }
                 }
             }
         }
@@ -156,7 +172,11 @@ class DefaultController extends AbstractController
             }
 
             $series->setAwards($content['Awards']);
-            $series->setYoutubeTrailer("https://www.youtube.com/embed/o9CeEHUG1sU?controls=0&autoplay=1&mute=1&&showinfo=0autohide%3D2&playlist=o9CeEHUG1sU");
+            if ($content["Trailer"] != ""){
+                $series->setYoutubeTrailer("https://www.youtube.com/watch?v=".$content["Trailer"]);
+            }else{
+                $series->setYoutubeTrailer("https://www.youtube.com/watch?v=o9CeEHUG1sU");
+            }
             $entityManager->persist($series);
 
             if (isset($content['totalSeasons'])) {
@@ -172,19 +192,20 @@ class DefaultController extends AbstractController
                     $season->setNumber($i);
                     $season->setSeries($series);
                     $series->addSeason($season);
-
-                    for ($j = 0; $j < sizeof($episodeContent['Episodes']); $j++) {
-                        $episode = new Episode();
-                        if (strlen($episodeContent['Episodes'][$j]['Title']) > 128) {
-                            $episode->setTitle(substr($episodeContent['Episodes'][$j]['Title'], 0, 128));
-                        } else {
-                            $episode->setTitle($episodeContent['Episodes'][$j]['Title']);
+                    if (isset($episodeContent['Episodes'])){
+                        for ($j = 0; $j < sizeof($episodeContent['Episodes']); $j++) {
+                            $episode = new Episode();
+                            if (strlen($episodeContent['Episodes'][$j]['Title']) > 128) {
+                                $episode->setTitle(substr($episodeContent['Episodes'][$j]['Title'], 0, 128));
+                            } else {
+                                $episode->setTitle($episodeContent['Episodes'][$j]['Title']);
+                            }
+                            $episode->setNumber($episodeContent['Episodes'][$j]['Episode']);
+                            $episode->setImdb($episodeContent['Episodes'][$j]['imdbID']);
+                            $episode->setSeason($season);
+                            $season->addEpisode($episode);
+                            $entityManager->persist($episode);
                         }
-                        $episode->setNumber($episodeContent['Episodes'][$j]['Episode']);
-                        $episode->setImdb($episodeContent['Episodes'][$j]['imdbID']);
-                        $episode->setSeason($season);
-                        $season->addEpisode($episode);
-                        $entityManager->persist($episode);
                     }
                     $entityManager->persist($season);
                 }
