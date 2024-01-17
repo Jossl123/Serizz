@@ -1,4 +1,4 @@
-<header class="flex p-3 relative place-content-between relative min-[1850px]:px-64 2xl:px-32 text-white">
+<header class="flex p-3 relative place-content-between min-[1850px]:px-64 2xl:px-32 text-white">
 	{% set current_path = app.request.get('_route') %}
 	{% if app.user or current_path != "app_default"  %}
 		<div class="-z-10 absolute top-0 overflow-hidden  right-0 w-full h-full">
