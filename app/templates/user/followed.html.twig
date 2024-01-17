@@ -97,7 +97,9 @@
                         <td class="font-medium text-blue-600 hover:underline">
                             <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
                             {% if ( app.user ) %}
-                                <a href="{{ path('app_user_update_followed', {'id': user.id}) }}"> FOLLOW | </a>
+                                {% if app.user != user %}
+                                     <a href="{{ path('app_user_update_followed', {'id': user.id}) }}"> {% if user in app.user.followed %} UNFOLLOW {% else %} FOLLOW {% endif %} | </a>
+                                {% endif %}
                                 {% if app.user.admin != 0 %}
                                     <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
                                     <a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>

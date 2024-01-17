@@ -158,7 +158,7 @@ class UserController extends AbstractController
                 $page = 0;
             }
 
-            
+
             $users = array_slice($users, $page * $limit, $limit);
             //$users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
         }
@@ -177,7 +177,12 @@ class UserController extends AbstractController
     {
         $followedId = $request->query->get('id', 0);
         $userToFollow = $entityManager->getRepository(User::class)->findOneBy(array('id' => $followedId));
-        $this->getUser()->addFollowed($userToFollow);
+        $user = $this->getUser();
+        if ($user->getFollowed()->contains($userToFollow)) {
+            $user->removeFollowed($userToFollow);
+        } else if ($userToFollow != $user) {
+            $user->addFollowed($userToFollow);
+        }
         $entityManager->flush();
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
