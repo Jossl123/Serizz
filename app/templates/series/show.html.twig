@@ -200,7 +200,7 @@
 			<div class="flex flex-col-reverse ">
 				{% for index, count in ratings_displayed %}
 					{% if totalSeriesCount != 0 %}
-						{% set percentage = ((count / totalSeriesCount)* 1000)|round  / 10 /2%}
+						{% set percentage = ( count * 1000)|round / 10 %}
 					{% else %}
 						{% set percentage = 0 %}
 					{% endif %}
@@ -288,13 +288,23 @@
 				{% endfor %}
 				{% if ownRating %}
 					<div id="{{ ownRating.user.id }}" class="flex m-4 flex-col gap-2 ml-2 mt-4 border border-gray-300 p-4 rounded-md ">
-						<div class="flex gap-2">
-							<div class="font-bold text-[--grey]">Your rating
+						<div class="font-bold text-[--grey] flex justify-between">
+							<span>Your rating
 								{% if ownRating.checkrate == 0 %}is waiting for validation
 								{% endif %}
-							</div>
+							</span>
+							<form action="{{ path('app_rating_delete', {'id': ownRating.id, 'serieId': series.id}) }}" method="post">
+								<input type="hidden" name="_method" value="DELETE">
+								<input type="hidden" name="serieId" value="{{ series.id }}">
+								<button type="submit" class=" font-bold p-x rounded">
+									<i class="nf nf-md-delete_off text-red-500 hover:text-red-400"></i>
+								</button>
+							</form>
+						</div>
+						<div class="flex gap-2">
+
 							<a class="text-white" href="{{path('app_user_show', {'id': ownRating.user.id })}}">{{ownRating.user.name}}</a>
-							<div class="flex gap-1 relative items-center">
+							<div class="flex gap-1 relative items-center h-full">
 								{% include('./_stars.html.twig') with {'rating': ownRating.value/2} %}
 							</div>
 							<p class="text-[--grey] font-bold">{{ ownRating.date|ago }}
@@ -303,13 +313,6 @@
 								{% if timeDifference > 60*60*24*7 %}
 									<span>{{ ownRating.date|date("d/m/y") }}</span>
 								{% endif %}
-								<form action="{{ path('app_rating_delete', {'id': ownRating.id, 'serieId': series.id}) }}" method="post">
-									<input type="hidden" name="_method" value="DELETE">
-								    <input type="hidden" name="serieId" value="{{ series.id }}">
-									<button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
-										<i class="nf nf-md-delete_off text-red-500"></i>
-									</button>
-								</form>
 							</p>
 						</div>
 						<div class="text-lg text-[--white] italic">

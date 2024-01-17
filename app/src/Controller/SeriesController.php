@@ -249,6 +249,7 @@ class SeriesController extends AbstractController
                     $ratings_displayed[$i] =$query->getSingleScalarResult() / sizeof($ratings);
             }
         }
+        dump($ratings_displayed);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
