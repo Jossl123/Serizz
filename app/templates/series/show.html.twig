@@ -218,35 +218,51 @@
 			</div>
 		</div>
 		<div class="xl:w-2/3">
-		{% if app.user %}
-			{% if not userRating %}
-				<div>You've not reviewed this serie yet!</div>
-				<div id="post_your_rating" class="xl:absolute xl:bottom-8 xl:right-8">
-					<div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
-						{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
-						<div class="mb-4 ">
-							{{ form_row(ratingForm.value, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white', 'value':"", 'placeholder':"your rate"}}) }}
-							{{ form_errors(ratingForm.value) }}
+			{% if app.user %}
+				{% if not userRating %}
+					<div>You've not reviewed this serie yet!</div>
+					<div id="post_your_rating" class="xl:absolute xl:bottom-8 xl:right-8">
+						<div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
+
+							{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
+							<div class="mb-4 ">
+								<div class="flex gap-1">
+									{% for i in 0..4 %}
+										<div class="flex ">
+										{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
+										<div class="relative  w-2 h-4 overflow-hidden">
+											{# <i id="rate-star-grey-{{i}}" class="absolute  nf nf-fa-star text-[--grey] "></i> #}
+											<i id="rate-star-yellow-{{i}}" class="absolute  nf nf-fa-star text-yellow-500"></i>
+										</div>
+										<div class="relative w-2 h-4 overflow-hidden">
+											{# <i id="rate-star-grey-{{i}}" class="absolute  nf nf-fa-star text-[--grey] "></i> #}
+											<i id="rate-star-yellow-{{i}}" class="absolute -translate-x-1/2 nf nf-fa-star text-yellow-500"></i>
+										</div>
+										</div>
+									{% endfor %}
+								</div>
+								{{ form_row(ratingForm.value, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white', 'value':"", 'placeholder':"your rate"}}) }}
+								{{ form_errors(ratingForm.value) }}
+							</div>
+
+							<div class="mb-4">
+								{{ form_row(ratingForm.comment, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white]'}}) }}
+								{{ form_errors(ratingForm.comment) }}
+							</div>
+
+							<button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
+								Post rate
+							</button>
+
+							{% for success in app.flashes('success') %}
+								<p>{{ success }}</p>
+							{% endfor %}
+
+							{{ form_end(ratingForm) }}
 						</div>
-
-						<div class="mb-4">
-							{{ form_row(ratingForm.comment, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white]'}}) }}
-							{{ form_errors(ratingForm.comment) }}
-						</div>
-
-						<button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
-							Post rate
-						</button>
-
-						{% for success in app.flashes('success') %}
-							<p>{{ success }}</p>
-						{% endfor %}
-
-						{{ form_end(ratingForm) }}
 					</div>
-				</div>
+				{% endif %}
 			{% endif %}
-		{% endif %}
 			{% for r in ratings %}
 				{% set ownRating = (app.user and r.user.id == app.user.id) %}
 				<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
