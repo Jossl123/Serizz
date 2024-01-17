@@ -34,11 +34,12 @@ function rate_star_click_right_hide(i){
 
 function formSubmit(e) {
     e.preventDefault();
+    if (rating <= 0 || rating > 10) {
+        var error_div = document.querySelector("[id='error_rating_value']")
+        error_div.innerHTML = "Please add note"
+        return 
+    }
     const form = document.querySelector("form");
-    console.log(document.getElementById("series_rating_value").value)
-
     document.getElementById("series_rating_value").value = rating;
-    console.log(document.getElementById("series_rating_value").value)
     form.submit();
-    
 }

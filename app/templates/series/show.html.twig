@@ -224,23 +224,25 @@
 
 							{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
 							<div class="mb-4 ">
-								<div class="flex gap-1">
+								<div class="flex gap-6 ">
 									{% for i in 0..4 %}
-										<div class="flex ">
+										<div class="flex scale-[200%]">
 											{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
 											<div class="relative  w-2 h-4 overflow-hidden" onclick="rate_star_click(true, {{i}})">
-												<i id="rate-star-grey-left-{{i}}" class="absolute  nf nf-fa-star text-[--grey] "></i>
-												<i id="rate-star-yellow-left-{{i}}" class="absolute  nf nf-fa-star text-yellow-500"></i>
+												<i id="rate-star-grey-left-{{i}}" class="absolute  nf nf-fa-star text-[--grey] hover:text-[--white]"></i>
+												<i id="rate-star-yellow-left-{{i}}" class="absolute hidden nf nf-fa-star text-yellow-500 hover:text-yellow-300"></i>
 											</div>
 											<div class="relative w-2 h-4 overflow-hidden" onclick="rate_star_click(false,{{i}})">
-												<i id="rate-star-grey-right-{{i}}" class="absolute -translate-x-1/2  nf nf-fa-star text-[--grey] "></i>
-												<i id="rate-star-yellow-right-{{i}}" class="absolute -translate-x-1/2 nf nf-fa-star text-yellow-500"></i>
+												<i id="rate-star-grey-right-{{i}}" class="absolute -translate-x-1/2  nf nf-fa-star text-[--grey] hover:text-[--white]"></i>
+												<i id="rate-star-yellow-right-{{i}}" class="absolute hidden -translate-x-1/2 nf nf-fa-star text-yellow-500 hover:text-yellow-300"></i>
 											</div>
 										</div>
 									{% endfor %}
 								</div>
-								{{ form_row(ratingForm.value, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white', 'value':"", 'placeholder':"your rate"}}) }}
-								{{ form_errors(ratingForm.value) }}
+								<p id="error_rating_value"></p>
+								<div class="hidden">
+								{{ form_row(ratingForm.value, {'attr': {'class': 'hidden', 'value':"", 'placeholder':"your rate"}}) }}
+								{{ form_errors(ratingForm.value) }}</div>
 							</div>
 
 							<div class="mb-4">
