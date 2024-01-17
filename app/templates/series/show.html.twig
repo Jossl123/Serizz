@@ -139,7 +139,7 @@
 				<div method="get" id="seasons_episodes" class="flex justify-around flex-wrap flex-col gap-1 m-3 py-10">
 					<div class="flex gap-1" id="seasons">
 						{% for season in series.getSeasons() %}
-							<div id="season-{{ loop.index }}" class="relative rounded overflow-hidden">
+							<div id="season-{{ loop.index }}" class="season relative rounded overflow-hidden">
 								<button onclick="show_season({{loop.index}})" class="text-white p-2 ">Season
 									{{ season.getNumber() }}</button>
 
@@ -268,7 +268,13 @@
 				<div class="flex gap-1">
 					{% include('./_stars.html.twig') with {'rating': r.value} %}
 				</div>
-				{{ r.date|ago	 }}
+				{{ r.date|ago }}
+				{# if date i further than 1 week show real date #}
+				{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
+				{{timeDifference}}
+				{% if timeDifference > 60*24*7 %}
+					{{ r.date|date("d/m/y") }}
+				{% endif %}
 				<div class="">
 					<p>{{ r.comment }}</p>
 				</div>
@@ -282,6 +288,7 @@
 		Back to list</a>
 
 	<script src="{{asset("follow.js")}}"></script>
+	<script src="{{asset("panels_seasons.js")}}"></script>
 
 	<style>
 		.current {
@@ -289,15 +296,4 @@
 		}
 	</style>
 
-	<script>
-		function show_season(season){
-			{% for season in series.getSeasons() %}
-				document.getElementById("ep-season-{{ loop.index }}").style.display = "none";
-				document.getElementById("season-{{ loop.index }}").classList.remove("current");
-			{% endfor %}
-			document.getElementById("ep-season-" + season).style.display = "block";
-			document.getElementById("season-" + season).classList.add("current");
-		}
-		show_season(1)
-	</script>
 {% endblock %}
