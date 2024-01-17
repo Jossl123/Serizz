@@ -265,15 +265,10 @@
 		{% else %}
 		<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2">
 				<a href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
-				<div>
-					{% for i in 1..5 %}
-						{% if i <= r.value %}
-							<i class="nf nf-fa-star text-yellow-500"></i>
-						{% else %}
-							<i class="nf nf-fa-star text-[--grey]"></i>
-						{% endif %}
-					{% endfor %}
+				<div class="flex gap-1">
+					{% include('./_stars.html.twig') with {'rating': r.value} %}
 				</div>
+				{{ r.date|ago	 }}
 				<div class="">
 					<p>{{ r.comment }}</p>
 				</div>
