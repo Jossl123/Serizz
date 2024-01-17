@@ -9,6 +9,7 @@ use App\Entity\Rating;
 use App\Form\SeriesRatingType;
 use App\Form\SeriesType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\OrderBy;
 use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +61,7 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
                 }
+
                 if (isset($_GET['genres']) && $_GET['genres'] != ""){
                     $tousGenres = explode("_", $_GET['genres']);
                     $subsearch = $entityManager->createQueryBuilder();
@@ -71,12 +73,16 @@ class SeriesController extends AbstractController
                     $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
                 }
 
-                if (isset($_GET['grade'])) {
-                    $search->join()
-                    ->andwhere('s.yearStart >= :ys')
-                    ->setParameter('ys', $_GET['Syear'])
-                    ->orderBy('s.yearStart', 'ASC');
-                }
+                $minRate = isset($_GET['Srate']) ? $_GET['Srate'] : 0;
+                $maxRate = isset($_GET['rateE']) ? $_GET['rateE'] : 5;
+                $search->join('s.ratings', 'r')
+                ->andwhere('r.checkrate = 1')
+                ->andwhere('r.value BETWEEN :min AND :max')
+                ->setParameter('min', $minRate)
+                ->setParameter('max', $maxRate)
+                ->groupBy('s.id')
+                ->orderBy('COUNT(r.id)', 'DESC');
+
                 $series_match = $search->getQuery()->getResult();
                 $seriesNb = sizeof((array)$series_match);
                 if ($page > $seriesNb / $limit) {
