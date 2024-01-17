@@ -35,6 +35,10 @@ class DefaultController extends AbstractController
         if ($user && $user->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
         }
+
+        if ($user) {
+            dump($user->getLinkHour());
+        }
         // Getting the four most followed series
         $seriesRepo = $entityManager
             ->getRepository(Series::class);

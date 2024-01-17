@@ -76,6 +76,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followed')]
     private Collection $followers;
+
+    #[ORM\Column(name: "link_hour", type: "datetime", nullable: true)]
+    private $linkHour;
+
     /**
      * Constructor
      */
@@ -306,6 +310,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->followers->removeElement($follower)) {
             $follower->removeFollowed($this);
         }
+
+        return $this;
+    }
+
+    public function getLinkHour(): ?\DateTimeInterface
+    {
+        return $this->linkHour;
+    }
+
+    public function setLinkHour(?\DateTimeInterface $linkHour): static
+    {
+        $this->linkHour = $linkHour;
 
         return $this;
     }
