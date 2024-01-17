@@ -60,7 +60,7 @@ class SeriesController extends AbstractController
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
                 }
-                if (isset($_GET['genres'])){
+                if (isset($_GET['genres']) && $_GET['genres'] != ""){
                     $tousGenres = explode("_", $_GET['genres']);
                     $subsearch = $entityManager->createQueryBuilder();
                     $subsearch->select('sub_s')
@@ -69,7 +69,6 @@ class SeriesController extends AbstractController
                     ->andWhere('g.name IN (:genres)');
                     $search->setParameter('genres', $tousGenres);
                     $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
-
                 }
 
                 if (isset($_GET['grade'])) {
@@ -223,19 +222,22 @@ class SeriesController extends AbstractController
         } else {
             $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
         }
-        $ratings_displayed = array();
-        for ($i=0; $i < 5; $i++) { 
-            $lower = 2*$i+1;
-            $upper = 2*$i+2;
-            $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
-                ->select('COUNT(r.id)')
-                ->where('r.series = :series_id')
-                ->andWhere('r.value BETWEEN :lower AND :upper')
-                ->setParameter('series_id', $id)
-                ->setParameter('lower', $lower)
-                ->setParameter('upper', $upper)
-                ->getQuery();
-                $ratings_displayed[$i] =$query->getSingleScalarResult();
+        $ratings_displayed = array(0,0,0,0,0);
+        if (sizeof($ratings)>0){
+            for ($i=0; $i < 5; $i++) { 
+                $lower = 2*$i+1;
+                $upper = 2*$i+2;
+                $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+                    ->select('COUNT(r.id)')
+                    ->where('r.series = :series_id')
+                    ->andWhere('r.value BETWEEN :lower AND :upper')
+                    ->andWhere('r.checkrate = 1')
+                    ->setParameter('series_id', $id)
+                    ->setParameter('lower', $lower)
+                    ->setParameter('upper', $upper)
+                    ->getQuery();
+                    $ratings_displayed[$i] =$query->getSingleScalarResult() / sizeof($ratings);
+            }
         }
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
