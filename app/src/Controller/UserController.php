@@ -30,6 +30,10 @@ class UserController extends AbstractController
         $searchForAdmin = $request->query->get('admin', false);
         $searchForSuperAdmin = $request->query->get('superAdmin', false);
 
+        if ($this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
+
         $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
 
         $limit = 10;
@@ -211,6 +215,9 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
+        if ($this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $seriesRepo = $user->getSeries();
         $page = $request->query->get('page', 1) - 1;
         $limit = 10;
@@ -253,6 +260,9 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        if ($this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -334,5 +344,30 @@ class UserController extends AbstractController
             'user' => $user,
             'countries' => $countries
         ]);
+    }
+
+    #[Route('/{id}/ban', name: 'app_user_ban', methods: ['GET'])]
+    public function ban($id, EntityManagerInterface $entityManager): Response {
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->find($id);
+
+        $user->setBan(1);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/unban', name: 'app_user_unban', methods: ['GET'])]
+    public function unban($id, EntityManagerInterface $entityManager): Response {
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->find($id);
+
+        $user->setBan(0);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+
     }
 }

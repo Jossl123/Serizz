@@ -15,7 +15,6 @@ class SeriesRepository extends EntityRepository
             ->orderBy('COUNT(u.id)', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()->getResult();
-        dump($qb->getQuery());
         return $hallOfFameSeries;
     }
 

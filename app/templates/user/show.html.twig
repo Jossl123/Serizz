@@ -67,8 +67,17 @@
                         Embody
                     </a>
                     <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
-                    Edit
-                </a>
+                        Edit
+                    </a>
+                    {% if user.ban == 0 %}
+                        <a href="{{ path('app_user_ban', {'id': user.id}) }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                            Ban User
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_user_unban', {'id': user.id}) }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                            Unban User
+                        </a>
+                    {% endif %}
                 {{ include('user/_delete_form.html.twig') }}
                 {% endif %}
             {% endif %}

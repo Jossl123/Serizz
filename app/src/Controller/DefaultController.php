@@ -31,6 +31,10 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'app_default')]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if ($user && $user->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         // Getting the four most followed series
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
@@ -496,6 +500,11 @@ class DefaultController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_admin_panel');
+    }
+
+    #[Route('/banned', name:'app_banned')]
+    public function banned():Response {
+        return $this->render('default/_banned.html.twig');
     }
 
 }

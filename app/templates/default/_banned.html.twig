@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Banned :( {% endblock %}
+
+{% block body %}
+
+    <div class="flex flex-col h-screen w-screen text-center items-center bg-red-800">
+        <p class="text-white font-bold text-5xl">Oops! You've been banned ! :(</p>
+        <a href="{{ path('app_logout') }}" class="mt-6 bg-white text-red-500 font-bold rounded-md p-2">Logout</a>
+    </div>
+
+{% endblock %}
