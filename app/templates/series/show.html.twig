@@ -264,31 +264,55 @@
 					</div>
 				{% endif %}
 			{% endif %}
-			{% for r in ratings %}
-				{% set ownRating = (app.user and r.user.id == app.user.id) %}
-				<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
-					<div class="flex gap-2">
-						{% if ownRating %}
-							<div class="font-bold text-[--grey]">Your rating</div>
-						{% endif %}
-						<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
-						<div class="flex gap-1 relative items-center">
-							{% include('./_stars.html.twig') with {'rating': r.value/2} %}
+			<div class="flex flex-col-reverse">
+				{% set ownRating = null %}
+				{% for r in ratings %}
+					{% if (app.user and r.user.id == app.user.id) %}
+						{% set ownRating = r %}
+					{% else %}
+					<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2">
+						<div class="flex gap-2">
+							<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
+							<div class="flex gap-1 relative items-center">
+								{% include('./_stars.html.twig') with {'rating': r.value/2} %}
+							</div>
+							<p class="text-[--grey] font-bold">{{ r.date|ago }}
+								{# if date i further than 1 week show real date #}
+								{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
+								{% if timeDifference > 60*60*24*7 %}
+									<span>{{ r.date|date("d/m/y") }}</span>
+								{% endif %}
+							</p>
 						</div>
-						<p class="text-[--grey] font-bold">{{ r.date|ago }}
-							{# if date i further than 1 week show real date #}
-							{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
-							{% if timeDifference > 60*60*24*7 %}
-								<span>{{ r.date|date("d/m/y") }}</span>
-							{% endif %}
-						</p>
+						<div class="text-lg text-[--white] italic">
+							<p>{{ r.comment }}</p>
+						</div>
 					</div>
-					<div class="text-lg text-[--white] italic">
-						<p>{{ r.comment }}</p>
+					<hr class="m-2 border-[--grey]">
+					{% endif %}
+				{% endfor %}
+				{% if ownRating  %}
+					<div id="{{ ownRating.user.id }}" class="flex m-4 flex-col gap-2 ml-2 mt-4 border border-gray-300 p-4 rounded-md ">
+						<div class="flex gap-2">
+							<div class="font-bold text-[--grey]">Your rating</div>
+							<a class="text-white" href="{{path('app_user_show', {'id': ownRating.user.id })}}">{{ownRating.user.name}}</a>
+							<div class="flex gap-1 relative items-center">
+								{% include('./_stars.html.twig') with {'rating': ownRating.value/2} %}
+							</div>
+							<p class="text-[--grey] font-bold">{{ ownRating.date|ago }}
+								{# if date i further than 1 week show real date #}
+								{% set timeDifference = ("now"|date("U") - ownRating.date|date("U")) %}
+								{% if timeDifference > 60*60*24*7 %}
+									<span>{{ ownRating.date|date("d/m/y") }}</span>
+								{% endif %}
+							</p>
+						</div>
+						<div class="text-lg text-[--white] italic">
+							<p>{{ ownRating.comment }}</p>
+						</div>
 					</div>
-				</div>
-				<hr class="m-2 border-[--grey]">
-			{% endfor %}
+				{% endif %}
+			</div>
 		</div>
 	</div>
 	<script src="{{asset("follow.js")}}"></script>
