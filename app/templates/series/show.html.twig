@@ -271,8 +271,7 @@
 				{{ r.date|ago }}
 				{# if date i further than 1 week show real date #}
 				{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
-				{{timeDifference}}
-				{% if timeDifference > 60*24*7 %}
+				{% if timeDifference > 60*60*24*7 %}
 					{{ r.date|date("d/m/y") }}
 				{% endif %}
 				<div class="">
