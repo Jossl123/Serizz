@@ -22,6 +22,7 @@ class GenerateFakeRatingsCommand extends Command
         $moy = $input->getArgument('moy');
         $et = $input->getArgument('et');
         $nb = $input->getArgument('nb');
+        $nb = is_null($nb) ? 100 : $nb;
 
         RatingFactory::setMoyEt(is_null($moy) ? 2.5 : $moy, is_null($et) ? 0.75 : $et);
         $time = floor(microtime(true) * 1000);
@@ -35,7 +36,7 @@ class GenerateFakeRatingsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('nb', InputArgument::REQUIRED, 'nb times')
+            ->addArgument('nb', InputArgument::OPTIONAL, 'nb times')
             ->addArgument('moy', InputArgument::OPTIONAL, 'gaussian\'s average')
             ->addArgument('et', InputArgument::OPTIONAL, 'gaussian\'s standard deviation')
         ;
