@@ -192,6 +192,7 @@ class SeriesController extends AbstractController
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);
+        $rating -> setCheckrate(0);
         $form = $this->createForm(SeriesRatingType::class, $rating);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
