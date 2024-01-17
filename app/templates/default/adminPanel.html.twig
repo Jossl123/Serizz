@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+{% block title %} Admin Panel {% endblock %}
+
+{% block body %}
+{% include 'header.html.twig' %}
+
+    <div class="pt-5 text-center relative my-2.5 h-fit w-fit m-auto">
+                <span class="text-2xl md:text-3xl font-bold">
+                    Administrator Panel
+                </span>
+        <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
+    </div>
+
+<div class="mb-auto">
+        {% include('./pagination.html.twig') with {'app_path': "app_admin_panel", "pagesNb": pagesNb} %}
+    </div>
+
+<div class="flex flex-col items-center h-2/3">
+    <div class="flex">
+        <table class="max-w-md bg-white border border-gray-300">
+            <thead>
+                <tr class="bg-gray-700">
+                    <th class="py-0.5 px-7 border-b border-r text-center">User</th>
+                    <th class="py-0.5 px-4 border-b border-r text-center">Date</th>
+                    <th class="py-1.5 px-5 border-b border-r text-center">Series</th>
+                    <th class="py-1.5 px-3 border-b border-r text-center">Grade</th>
+                    <th class="py-1.5 px-9 border-b border-r text-center">Comment</th>
+                    <th class="py-0.5 px-4 border-b text-center">Decision</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings|slice(0, 5) %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-0.5 px-7 border-b border-r text-center">
+                        {% for user in users%}
+                        {% if user.id == rating.user.id%} {{user.name}}
+                        {% endif %}
+                        {% endfor %}</td>
+                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
+                        <th class="py-1.5 px-5 border-b border-r text-center">
+                        {% for s in series %}
+                        {% if s.id == rating.series %}
+                        {{ s.title }}
+                        {% endif %}
+                        {% endfor %}
+                        </th>
+                        <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
+                        <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
+                        <td class="py-0.5 px-4 border-b text-center">
+                            <div class="mb-4">
+                                <form action="{{ path('admin_rating_approve', {'id': rating.id}) }}" method="post">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
+                                        APPROVE
+                                    </button>
+                                </form>
+                            </div>
+                            <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
+                                    REJECT
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="max-w-md bg-white border border-gray-300 ml-4">
+            <thead>
+                <tr class="bg-gray-700">
+                    <th class="py-0.5 px-7 border-b border-r text-center">User</th>
+                    <th class="py-0.5 px-5 border-b border-r text-center">Date</th>
+                    <th class="py-1.5 px-3 border-b border-r text-center">Series</th>
+                    <th class="py-1.5 px-3 border-b border-r text-center">Grade</th>
+                    <th class="py-1.5 px-9 border-b border-r text-center">Comment</th>
+                    <th class="py-0.5 px-4 border-b text-center">Decision</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings|slice(5, 5) %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="py-0.5 px-7 border-b border-r text-center">
+                        {% for user in users%}
+                        {% if user.id == rating.user.id%} {{user.name}}
+                        {% endif %}
+                        {% endfor %}</td>
+                        <td class="py-0.5 px-4 border-b border-r text-center">{{ rating.date|date('j M Y H:i:s') }}</td>
+                        <th class="py-1.5 px-5 border-b border-r text-center">
+                        {% for s in series %}
+                        {% if s.id == rating.series %}
+                        {{ s.title }}
+                        {% endif %}
+                        {% endfor %}
+                        </th>
+                        <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
+                        <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
+                        <td class="py-0.5 px-4 border-b text-center">
+                            <div class="mb-4">
+                                <form action="{{ path('admin_rating_approve', {'id': rating.id}) }}" method="post">
+                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
+                                        APPROVE
+                                    </button>
+                                </form>
+
+                            </div>
+                            <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
+                                    REJECT
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+    
+    <div class="mt-auto">
+        {% include('./pagination.html.twig') with {'app_path': "app_admin_panel", "pagesNb": pagesNb} %}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock body %}

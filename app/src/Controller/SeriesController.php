@@ -183,7 +183,12 @@ class SeriesController extends AbstractController
         $percentage_serie = 0;
         $episode_nb = 0;
 
-        $ratings = $entityManager->getRepository(Rating::class)->findBy(array("series" => $id));
+        $ratings = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+            ->where('r.series = :id')
+            ->andWhere('r.checkrate = 1')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
         $rating = new Rating();
         $rating -> setUser($user);
         $rating -> setSeries($serie);

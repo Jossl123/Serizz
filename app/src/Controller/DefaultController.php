@@ -442,4 +442,60 @@ class DefaultController extends AbstractController
         }
         $entityManager -> flush();
     }
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/adminpanel', name:'app_admin_panel')]
+    public function moderateRatings(Request $request, EntityManagerInterface $entityManager): Response{
+        $ratings = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+        ->where('r.checkrate = 0')
+        ->orderBy("r.date")
+        ->getQuery()
+        ->getResult();
+
+        $series = $entityManager->getRepository(Series::class)->findAll();
+
+        $users = $entityManager->getRepository(User::class)->findAll();
+        $limit = 10;
+        $page = $request->query->get('page', 1)-1;
+        $ratingsNb = count($ratings);
+        if ($page > $ratingsNb / $limit) {
+            $page = ceil($ratingsNb / $limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
+        $ratings = array_slice($ratings, $page * $limit, $limit);
+
+        return $this->render('default/adminPanel.html.twig', [
+            'ratings' => $ratings,
+            'series' => $series,
+            'pagesNb' => ceil($ratingsNb / $limit),
+            'page' => $page,
+            'users' => $users
+        ]);
+    }
+
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/adminpanel/{id}', name:'admin_rating_delete')]
+    public function deleteRating(Rating $rating, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($rating);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_admin_panel');
+    }
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/adminpanel/{id}', name:'admin_rating_approve')]
+    public function approveRating(Rating $rating, EntityManagerInterface $entityManager): Response
+    {
+        $rating->setCheckRate(1);
+
+        $entityManager->persist($rating);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_admin_panel');
+    }
+
 }

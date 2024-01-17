@@ -259,22 +259,23 @@
 								<p>{{ success }}</p>
 							{% endfor %}
 
-							{{ form_end(ratingForm) }}
-						</div>
+						{{ form_end(ratingForm) }}
 					</div>
-				{% endif %}
+				</div>
 			{% endif %}
-			<div class="flex flex-col-reverse">
-				{% set ownRating = null %}
-				{% for r in ratings %}
-					{% if (app.user and r.user.id == app.user.id) %}
-						{% set ownRating = r %}
-					{% else %}
-					<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2">
+		{% endif %}
+		<div class="xl:w-2/3">
+			{% for r in ratings %}
+				{% if r.getCheckrate == 1 %}
+					{% set ownRating = (app.user and r.user.id == app.user.id) %}
+					<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
 						<div class="flex gap-2">
+							{% if ownRating %}
+								<div class="font-bold text-[--grey]">Your rating</div>
+							{% endif %}
 							<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
 							<div class="flex gap-1 relative items-center">
-								{% include('./_stars.html.twig') with {'rating': r.value/2} %}
+								{% include('./_stars.html.twig') with {'rating': r.value} %}
 							</div>
 							<p class="text-[--grey] font-bold">{{ r.date|ago }}
 								{# if date i further than 1 week show real date #}
@@ -285,34 +286,12 @@
 							</p>
 						</div>
 						<div class="text-lg text-[--white] italic">
-							<p>{{ r.comment| nl2br }}</p>
+							<p>{{ r.comment }}</p>
 						</div>
 					</div>
-					<hr class="m-2 border-[--grey]">
-					{% endif %}
-				{% endfor %}
-				{% if ownRating  %}
-					<div id="{{ ownRating.user.id }}" class="flex m-4 flex-col gap-2 ml-2 mt-4 border border-gray-300 p-4 rounded-md ">
-						<div class="flex gap-2">
-							<div class="font-bold text-[--grey]">Your rating</div>
-							<a class="text-white" href="{{path('app_user_show', {'id': ownRating.user.id })}}">{{ownRating.user.name}}</a>
-							<div class="flex gap-1 relative items-center">
-								{% include('./_stars.html.twig') with {'rating': ownRating.value/2} %}
-							</div>
-							<p class="text-[--grey] font-bold">{{ ownRating.date|ago }}
-								{# if date i further than 1 week show real date #}
-								{% set timeDifference = ("now"|date("U") - ownRating.date|date("U")) %}
-								{% if timeDifference > 60*60*24*7 %}
-									<span>{{ ownRating.date|date("d/m/y") }}</span>
-								{% endif %}
-							</p>
-						</div>
-						<div class="text-lg text-[--white] italic">
-							<p>{{ ownRating.comment| nl2br }}</p>
-						</div>
-					</div>
-				{% endif %}
-			</div>
+				{% endif %}	
+				<hr class="m-2 border-[--grey]">
+			{% endfor %}
 		</div>
 	</div>
 	<script src="{{asset("follow.js")}}"></script>
