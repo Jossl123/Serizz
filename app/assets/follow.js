@@ -8,7 +8,41 @@ function follow(url_to_fetch){
 }
 
 
-function mark_as_seen(url_to_fetch, first=false) {
+function mark_as_seen(e, url_to_fetch, first=false) {
+    e.preventDefault();
+    var conf = document.createElement("div")
+    var yes = document.createElement("button")
+    yes.textContent = "Yes";
+    var no = document.createElement("button")
+    no.textContent = "No";
+    conf.appendChild(yes)
+    conf.appendChild(no)
+    
+    conf.classList = ['absolute z-[100] bg-[--grey]']
+    conf.appendChild(no);
+    conf.style.left = e.clientX + 'px';
+    conf.style.top = e.clientY + 'px';
+    
+    document.body.appendChild(conf);
+    yes.addEventListener('click', function () {
+        console.log("see")
+        document.body.removeChild(conf);
+    });
+
+    no.addEventListener('click', function () {
+        conf.style.display = 'none';
+        document.body.removeChild(conf);
+        
+    });
+
+    document.addEventListener('click', function hideConfirmation(e2) {
+        if (e != e2 && !conf.contains(e2.target)) {
+            conf.style.display = 'none';
+            document.body.removeChild(conf);
+        }
+    });
+
+
     var see_all = document.getElementById("see_all").children[0]
     if (first && see_all.classList.contains("nf-fa-check"))return
     var ep_id = url_to_fetch.split("=")[1]
