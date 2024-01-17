@@ -55,62 +55,41 @@ form.submit();
 							{{ content.Title }}</p>
 					</div>
 
-					<div class="flex flex-col w-1/4 text-left sm:divide-y sm:divide-[--grey]">
-						<dl>
-							<dt class="text-2xl text-[--grey]">
-								Title :
-							</dt>
-							<dd class="mt-2 text-xl">
-								{{ content.Title }}</dd>
-						</dl>
-						<dl class="mt-2">
-							<dt class="text-2xl text-[--grey]">
-								Year of parution :
-							</dt>
-							<dd class="mt-2 text-xl">
-								{{ content.Year }}</dd>
-						</dl>
-						<dl class="mt-2">
-							<dt class="text-2xl text-[--grey]">
-								Genre :
-							</dt>
-							<dd class="mt-2 text-xl">
-								{{ content.Genre }}</dd>
-						</dl>
-						<dl class="mt-2">
-							<dt class="text-xl text-[--grey]">
-								Plot :
-							</dt>
-							<dd class="mt-2 text-xl">
-								{{ content.Plot }}</dd>
-						</dl>
-						<dl class="mt-2">
-							<dt class="text-xl text-[--grey]">
-								Trailer :
-							</dt>
-							{% if content.Trailer == "" %}No trailer found
-							{% else %}
-								<dd class="mt-2 text-xl">
-									{{ content.Trailer }}</dd>
-							{% endif %}
-						</dl>
-					</div>
-				</div>
-				{% if series != null %}
-					<h2 class="text-xl mt-2 ">
-						This series is already in the database.
-					</h2>
-				{% else %}
-					<form method="post">
-						<button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
-					</form>
-				{% endif %}
-			{% else %}
-				<h2>
-					No series found with this title.
-				</h2>
-			{% endif %}
-		{% endif %}
+                    <div class="flex flex-col w-1/4 text-left sm:divide-y sm:divide-[--grey]">
+                        <dl>
+                            <dt class="text-2xl text-[--grey]"> Title : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Title }}</dd>
+                        </dl>
+                        <dl class="mt-2">
+                            <dt class="text-2xl text-[--grey]"> Year of parution : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Year }}</dd>
+                        </dl>
+                        <dl class="mt-2">
+                            <dt class="text-2xl text-[--grey]"> Genre : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Genre }}</dd>
+                        </dl>
+                        <dl class="mt-2">
+                            <dt class="text-xl text-[--grey]"> Plot : </dt>
+                            <dd class="mt-2 text-xl"> {{ content.Plot }}</dd>
+                        </dl>
+                    </div>
+                </div>
+                {% if series != null %}
+                    <h2 class="text-xl mt-2 "> This series is already in the database. </h2>
+                    <form method="post">
+                        <button type="submit" name="update" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+                            Update
+                        </button>
+                    </form>
+                {% else %}
+                    <form method="post">
+                        <button type="submit" name="add" value="{{ content.imdbID }}" class="w-fit mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">Add</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <h2> No series found with this title. </h2>
+            {% endif %}
+        {% endif %}
 
 	</div>
 
