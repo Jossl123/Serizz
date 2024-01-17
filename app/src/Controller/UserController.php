@@ -23,6 +23,7 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        dump($this->getUser());
         $page = $request->query->get('page', 1) - 1;
         $search = $request->query->get('search', "");
         $searchForUser = $request->query->get('user', false);
@@ -157,7 +158,8 @@ class UserController extends AbstractController
                 $page = 0;
             }
 
-            $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
+            $users = $usersRepo->findAllByFollowed($this->getUser());
+            //$users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
         }
 
         return $this->render('user/followed.html.twig', [
@@ -172,7 +174,10 @@ class UserController extends AbstractController
     #[Route('/new', name: 'app_user_update_followed', methods: ['GET', 'POST'])]
     public function update_followed(Request $request, EntityManagerInterface $entityManager): Response
     {
-        //TODO
+        $followedId = $request->query->get('id', 0);
+        $userToFollow = $entityManager->getRepository(User::class)->findOneBy(array('id' => $followedId));
+        $this->getUser()->addFollowed($userToFollow);
+        $entityManager->flush();
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
@@ -277,7 +282,8 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/settings', name: 'app_user_settings', methods: ['GET', 'POST'])]
-    public function settings(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher): Response {
+    public function settings(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    {
         $countries = $entityManager
             ->getRepository(Country::class)
             ->findAll();
