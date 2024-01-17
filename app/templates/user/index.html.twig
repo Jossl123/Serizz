@@ -81,6 +81,7 @@
                             <th class="px-6 py-3"> Country </th>
                             <th class="px-6 py-3"> Admin </th>
                             <th class="px-6 py-3"> Banned </th>
+                            <th class="px-6 py-3"> Connected since </th>
                         {% endif %}
                         <th class="px-6 py-3"> Actions </th>
                     </tr>
@@ -95,6 +96,7 @@
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.country }}</td>
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.admin == 0 %} No {% elseif user.admin == 1 %} Yes {% else %} Super Admin {% endif %}</td>
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.ban == 0 %} No {% else %} Yes {% endif %}</td>
+                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.linkHour != null %} {{ user.linkHour ? user.linkHour|date('Y-m-d H:i:s') : ''}} {% else %} User disconnected {% endif %}</td>
                         {% endif %}
                         <td class="font-medium text-blue-600 hover:underline">
                             <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
