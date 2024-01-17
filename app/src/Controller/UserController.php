@@ -23,6 +23,7 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        dump($this->getUser());
         $page = $request->query->get('page', 1) - 1;
         $search = $request->query->get('search', "");
         $searchForUser = $request->query->get('user', false);
@@ -90,6 +91,100 @@ class UserController extends AbstractController
             'page' => $page,
             'search' => $search
         ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/followed', name: 'app_user_index_followed', methods: ['GET'])]
+    public function index_followed(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $page = $request->query->get('page', 1) - 1;
+        $search = $request->query->get('search', "");
+        $searchForUser = $request->query->get('user', false);
+        $searchForAdmin = $request->query->get('admin', false);
+        $searchForSuperAdmin = $request->query->get('superAdmin', false);
+
+        $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
+
+        $limit = 10;
+
+        // Only get the users followed by the logged in user
+        $usersRepo = $entityManager
+            ->getRepository(User::class);
+
+        $users = $usersRepo->findAllByFollowed($this->getUser());
+
+        if (isset($_GET['search'])) {
+            $users_match = array();
+
+            if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
+                foreach ($users as $user) {
+                    $userRole = $user->getRoles();
+                    foreach ($searchArray as $search) {
+                        for ($i = 0; $i < sizeof($userRole); $i++) {
+                            if ($search == $userRole[$i]) {
+                                $users_match[] = $user;
+                            }
+                        }
+                    }
+                }
+
+                $userNb = sizeof($users_match);
+            } else {
+                foreach ($users as $user) {
+                    if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
+                        $users_match[] = $user;
+                    }
+                }
+
+                $userNb = sizeof($users_match);
+
+                if ($page > $userNb / $limit) {
+                    $page = ceil($userNb / $limit);
+                }
+                if ($page < 0) {
+                    $page = 0;
+                }
+            }
+
+            $users_match = array_slice($users_match, $page * $limit, $limit);
+            $users = $users_match;
+        } else {
+            $userNb = count($users);
+
+            if ($page > $userNb / $limit) {
+                $page = ceil($userNb / $limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
+
+
+            $users = array_slice($users, $page * $limit, $limit);
+            //$users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
+        }
+
+        return $this->render('user/followed.html.twig', [
+            'users' => $users,
+            'pagesNb' => ceil($userNb / $limit),
+            'page' => $page,
+            'search' => $search
+        ]);
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/new', name: 'app_user_update_followed', methods: ['GET', 'POST'])]
+    public function update_followed(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $followedId = $request->query->get('id', 0);
+        $userToFollow = $entityManager->getRepository(User::class)->findOneBy(array('id' => $followedId));
+        $user = $this->getUser();
+        if ($user->getFollowed()->contains($userToFollow)) {
+            $user->removeFollowed($userToFollow);
+        } else if ($userToFollow != $user) {
+            $user->addFollowed($userToFollow);
+        }
+        $entityManager->flush();
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -193,7 +288,8 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/settings', name: 'app_user_settings', methods: ['GET', 'POST'])]
-    public function settings(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher): Response {
+    public function settings(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    {
         $countries = $entityManager
             ->getRepository(Country::class)
             ->findAll();

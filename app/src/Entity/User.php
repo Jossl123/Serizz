@@ -9,12 +9,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+
 
 #[ORM\Table(name: "user", uniqueConstraints: [
     new ORM\UniqueConstraint(name: "UNIQ_8D93D649E7927C74", columns: ["email"]),
     new ORM\UniqueConstraint(name: "IDX_8D93D649F92F3E70", columns: ["country_id"]),
 ])]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -60,6 +62,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         inverseJoinColumns: [new ORM\JoinColumn(name: "episode_id", referencedColumnName: "id")]
     )]
     private $episode = array();
+
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followers')]
+    #[ORM\JoinTable(
+        name: "user_followed",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "id")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "followed_id", referencedColumnName: "id")]
+    )]
+    private Collection $followed;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followed')]
+    private Collection $followers;
     /**
      * Constructor
      */
@@ -68,6 +81,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->registerDate = new \DateTime();
         $this->series = new \Doctrine\Common\Collections\ArrayCollection();
         $this->episode = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->followed = new ArrayCollection();
+        $this->followers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -230,5 +245,56 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAdmin(): ?int
     {
         return $this->admin;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowed(): Collection
+    {
+        return $this->followed;
+    }
+
+    public function addFollowed(self $followed): static
+    {
+        if (!$this->followed->contains($followed)) {
+            $this->followed->add($followed);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowed(self $followed): static
+    {
+        $this->followed->removeElement($followed);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(self $follower): static
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+            $follower->addFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(self $follower): static
+    {
+        if ($this->followers->removeElement($follower)) {
+            $follower->removeFollowed($this);
+        }
+
+        return $this;
     }
 }
