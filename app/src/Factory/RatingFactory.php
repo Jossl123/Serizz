@@ -35,15 +35,13 @@ use DateTime;
  */
 final class RatingFactory extends ModelFactory
 {
-    private static $em;
+    private $em;
     private static $moy;
     private static $et;
 
-
-
     public function __construct(EntityManagerInterface $em)
     {
-        RatingFactory::$em = $em;
+        $this->em = $em;
         parent::__construct();
     }
 
@@ -83,7 +81,7 @@ final class RatingFactory extends ModelFactory
      */
     protected function getCorrectUser(Series $series): User
     {
-        $repo = $this::$em->getRepository('App\Entity\Rating');
+        $repo = $this->em->getRepository('App\Entity\Rating');
         $user = UserFactory::random()->object();
         $count = 0;
 

@@ -68,10 +68,9 @@ class GenerateFakeViewsCommand extends Command
     public function genViewsSub(Series $serie, User $user) {
         $rand = rand()&127;
 
-        if (rand <= 60) {
+        if ($rand <= 60) {
             return;
         }
-
         $seasons = $serie->getSeasons();
         if (!empty($seasons)) {
             $season = $rand > 125 ? $seasons->last() : $seasons->get(rand(0, $seasons->count()-1));
@@ -92,12 +91,13 @@ class GenerateFakeViewsCommand extends Command
         if ($see_all) {
             foreach ($current_season->getSeries()->getSeasons() as $season) {
                 foreach ($season->getEpisodes() as $ep) {
-                    if ($ep == $episode)break;
+                    if ($ep == $episode) {
+                        return;
+                    }
                     if (!$user->getEpisode()->contains($ep)) {
                         $user->addEpisode($ep);
                     }
                 }
-                if ($current_season == $season) break;
             }
         }
     }
