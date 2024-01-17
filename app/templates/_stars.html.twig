@@ -4,7 +4,7 @@
 {% for i in 0..4 %}
 	{% set fillstar = min(1,max(rating - i, 0)) * 100 %}
 	<div class="relative w-4 h-4">
-		{% if not rating is defined %}
+		{% if rating == 0 %}
 			<i class="absolute nf nf-fa-star text-[--grey]" style="-webkit-mask: linear-gradient(to right, rgba(0,0,0,0) {{fillstar}}%, rgba(0,0,0,1) {{fillstar}}%);"></i>
 		{% else %}
 			<i class="absolute nf nf-fa-star text-[--grey]" style="-webkit-mask: linear-gradient(to right, rgba(0,0,0,0) {{fillstar}}%, rgba(0,0,0,1) {{fillstar}}%);"></i>

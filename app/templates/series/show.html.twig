@@ -20,7 +20,7 @@
 		{% endif %}
 	{% endfor %}
 	{% if totalSeriesCount > 0 %}
-		{% set avgSeriesRates = (avgSeriesRates / totalSeriesCount *10)|round /10 %}
+		{% set avgSeriesRates = ((avgSeriesRates / totalSeriesCount *10)|round /10)/2 %}
 	{% endif %}
 
 
@@ -128,7 +128,7 @@
 							<a class=" p-2 font-bold block" href="#post_your_rating">Post your rating</a>
 						{% endif %}
 						{% include('./_stars.html.twig') with {'rating': avgSeriesRates} %}
-						<a class="px-1 text-[--grey] font-bold transition-all ease-in-out duration-200 hover:text-white" href="#post_your_rating">{{ ratings|length }}
+						<a class="px-1 text-[--grey] font-bold transition-all ease-in-out duration-200 hover:text-white" href="#ratings_zone">{{ ratings|length }}
 							rates</a>
 					</div>
 				</div>
@@ -199,47 +199,65 @@
 			</div>
 			<div class="flex flex-col-reverse ">
 				{% for index, count in ratings_displayed %}
-					{% if index != 0 %}
-						{% if totalSeriesCount != 0 %}
-							{% set percentage = ((count / totalSeriesCount)* 1000)|round  / 10 %}
-						{% else %}
-							{% set percentage = 0 %}
-						{% endif %}
-						<div class="flex items-center gap-1">
-							<div class="w-5 text-right ">{{ index }}</div>
-							<div class="nf nf-fa-star ml-1 mb-0.5"></div>
-							<div class="2xl:w-96 w-64 h-2 bg-gray-500 rounded-full ml-2">
-								<div class="h-full bg-yellow-500 rounded-full" style="width: {{ percentage }}%;"></div>
-							</div>
-							<div class="ml-2">{{ percentage }}%</div>
-						</div>
+					{% if totalSeriesCount != 0 %}
+						{% set percentage = ((count / totalSeriesCount)* 1000)|round  / 10 %}
+					{% else %}
+						{% set percentage = 0 %}
 					{% endif %}
+					<div class="flex items-center gap-1">
+						<div class="w-5 text-right ">{{ index +1}}</div>
+						<div class="nf nf-fa-star ml-1 mb-0.5"></div>
+						<div class="2xl:w-96 w-64 h-2 bg-gray-500 rounded-full ml-2">
+							<div class="h-full bg-yellow-500 rounded-full" style="width: {{ percentage }}%;"></div>
+						</div>
+						<div class="ml-2">{{ percentage }}%</div>
+					</div>
 				{% endfor %}
 			</div>
 		</div>
-		{% if app.user %}
-			{% if not userRating %}
-				<div>You've not reviewed this serie yet!</div>
-				<div class="xl:absolute xl:bottom-8 xl:right-8">
-					<div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
-						{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
-						<div class="mb-4 ">
-							{{ form_row(ratingForm.value, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white', 'value':"", 'placeholder':"your rate"}}) }}
-							{{ form_errors(ratingForm.value) }}
-						</div>
+		<div class="xl:w-2/3">
+			{% if app.user %}
+				{% if not userRating %}
+					<div>You've not reviewed this serie yet!</div>
+					<div id="post_your_rating" class="xl:absolute xl:bottom-8 xl:right-8">
+						<div class="max-w-md mx-auto p-4 bg-grey shadow-lg rounded-md">
 
-						<div class="mb-4">
-							{{ form_row(ratingForm.comment, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white]'}}) }}
-							{{ form_errors(ratingForm.comment) }}
-						</div>
+							{{ form_start(ratingForm, {'method': 'POST'}, {'attr': {'class': 'mb-4'}}) }}
+							<div class="mb-4 ">
+								<div class="flex gap-6 mb-4">
+									{% for i in 0..4 %}
+										<div class="flex scale-[200%]">
+											{% set fillstar = min(1,max(4.3 - i, 0)) * 100 %}
+											<div class="relative  w-2 h-4 overflow-hidden" onclick="rate_star_click(true, {{i}})">
+												<i id="rate-star-grey-left-{{i}}" class="absolute  nf nf-fa-star text-[--grey] hover:text-[--white]"></i>
+												<i id="rate-star-yellow-left-{{i}}" class="absolute hidden nf nf-fa-star text-yellow-500 hover:text-yellow-300"></i>
+											</div>
+											<div class="relative w-2 h-4 overflow-hidden" onclick="rate_star_click(false,{{i}})">
+												<i id="rate-star-grey-right-{{i}}" class="absolute -translate-x-1/2  nf nf-fa-star text-[--grey] hover:text-[--white]"></i>
+												<i id="rate-star-yellow-right-{{i}}" class="absolute hidden -translate-x-1/2 nf nf-fa-star text-yellow-500 hover:text-yellow-300"></i>
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+								<p id="error_rating_value"></p>
+								<div class="hidden">
+									{{ form_row(ratingForm.value, {'attr': {'class': 'hidden', 'value':"", 'placeholder':"your rate"}}) }}
+									{{ form_errors(ratingForm.value) }}
+								</div>
+							</div>
 
-						<button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
-							Post rate
-						</button>
+							<div class="mb-4">
+								{{ form_row(ratingForm.comment, {'attr': {'class': '!outline-none bg-[--dark-blue] w-full px-3 py-2 border border-[--grey] rounded-md text-white]'}}) }}
+								{{ form_errors(ratingForm.comment) }}
+							</div>
 
-						{% for success in app.flashes('success') %}
-							<p>{{ success }}</p>
-						{% endfor %}
+							<button onclick="formSubmit(event)" onsubmit="formSubmit(event)" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
+								Post rate
+							</button>
+
+							{% for success in app.flashes('success') %}
+								<p>{{ success }}</p>
+							{% endfor %}
 
 						{{ form_end(ratingForm) }}
 					</div>
@@ -248,34 +266,37 @@
 		{% endif %}
 		<div class="xl:w-2/3">
 			{% for r in ratings %}
-				{% set ownRating = (app.user and r.user.id == app.user.id) %}
-				<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
-					<div class="flex gap-2">
-						{% if ownRating %}
-							<div class="font-bold text-[--grey]">Your rating</div>
-						{% endif %}
-						<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
-						<div class="flex gap-1 relative items-center">
-							{% include('./_stars.html.twig') with {'rating': r.value} %}
-						</div>
-						<p class="text-[--grey] font-bold">{{ r.date|ago }}
-							{# if date i further than 1 week show real date #}
-							{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
-							{% if timeDifference > 60*60*24*7 %}
-								<span>{{ r.date|date("d/m/y") }}</span>
+				{% if r.getCheckrate == 1 %}
+					{% set ownRating = (app.user and r.user.id == app.user.id) %}
+					<div id="{{ r.user.id }}" class="flex m-4 flex-col gap-2 {% if ownRating %}ml-2 mt-4 border border-gray-300 p-4 rounded-md {% endif %}">
+						<div class="flex gap-2">
+							{% if ownRating %}
+								<div class="font-bold text-[--grey]">Your rating</div>
 							{% endif %}
-						</p>
+							<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
+							<div class="flex gap-1 relative items-center">
+								{% include('./_stars.html.twig') with {'rating': r.value} %}
+							</div>
+							<p class="text-[--grey] font-bold">{{ r.date|ago }}
+								{# if date i further than 1 week show real date #}
+								{% set timeDifference = ("now"|date("U") - r.date|date("U")) %}
+								{% if timeDifference > 60*60*24*7 %}
+									<span>{{ r.date|date("d/m/y") }}</span>
+								{% endif %}
+							</p>
+						</div>
+						<div class="text-lg text-[--white] italic">
+							<p>{{ r.comment }}</p>
+						</div>
 					</div>
-					<div class="text-lg text-[--white] italic">
-						<p>{{ r.comment }}</p>
-					</div>
-				</div>
+				{% endif %}	
 				<hr class="m-2 border-[--grey]">
 			{% endfor %}
 		</div>
 	</div>
 	<script src="{{asset("follow.js")}}"></script>
 	<script src="{{asset("panels_seasons.js")}}"></script>
+	<script src="{{asset("stars_rating.js")}}"></script>
 
 	<style>
 		.current {

@@ -32,6 +32,9 @@ class Rating
     #[ORM\Column(name:"date", type:"datetime", nullable:false)]
     private $date;
 
+    #[ORM\Column(name: "check_rate", type:"integer", nullable:false)]
+    private $checkrate;
+
     #[ORM\ManyToOne(targetEntity:"User")]
     #[ORM\JoinColumn(name:"user_id", referencedColumnName:"id")]
     private $user;
@@ -39,6 +42,9 @@ class Rating
     #[ORM\ManyToOne(targetEntity:"Series")]
     #[ORM\JoinColumn(name:"series_id", referencedColumnName:"id")]
     private $series;
+
+    
+    
 
 
     public function __construct()
@@ -53,12 +59,12 @@ class Rating
 
     public function getValue(): ?int
     {
-        return $this->value / 2 ;
+        return $this->value;
     }
 
     public function setValue(int $value): self
     {
-        $this->value = $value * 2;
+        $this->value = $value;
 
         return $this;
     }
@@ -107,6 +113,18 @@ class Rating
     public function setSeries(?Series $series): self
     {
         $this->series = $series;
+
+        return $this;
+    }
+
+    public function getCheckrate(): ?int
+    {
+        return $this->checkrate;
+    }
+
+    public function setCheckrate($checkrate): static
+    {
+        $this->checkrate = $checkrate;
 
         return $this;
     }
