@@ -3,3 +3,8 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+admin_rating_delete:
+    path: '/adminpanel/{id}'
+    controller: 'App\Controller\DefaultController::deleteRating'
+    methods: ['DELETE', 'POST']

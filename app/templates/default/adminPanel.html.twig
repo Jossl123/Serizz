@@ -39,8 +39,17 @@
                         <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
                         <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
                         <td class="py-0.5 px-4 border-b text-center">
-                            <div class="text-green-600"><a href="#">ACCEPT</a></div>
-                            <div class="text-red-600"><a href="#">REJECT</a></div>
+                            <div class="mb-4">
+                                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
+                                    ACCEPT
+                                </button>
+                            </div>
+                            <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
+                                    REJECT
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}
@@ -69,8 +78,17 @@
                         <td class="py-1.5 px-3 border-b border-r text-center">{{ rating.value }}</td>
                         <td class="py-1.5 px-9 border-b border-r text-center h-16 overflow-y-auto">{{ rating.comment }}</td>
                         <td class="py-0.5 px-4 border-b text-center">
-                            <div class="text-green-600"><a href="#">ACCEPT</a></div>
-                            <div class="text-red-600"><a href="#">REJECT</a></div>
+                            <div class="mb-4">
+                                <button class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded">
+                                    ACCEPT
+                                </button>
+                            </div>
+                            <form action="{{ path('admin_rating_delete', {'id': rating.id}) }}" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded">
+                                    REJECT
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}

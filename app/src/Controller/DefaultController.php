@@ -244,4 +244,16 @@ class DefaultController extends AbstractController
             'users' => $users
         ]);
     }
+
+
+    #[IsGranted("ROLE_ADMIN")]
+    #[Route('/adminpanel/{id}', name:'admin_rating_delete')]
+    public function deleteRating(Rating $rating, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($rating);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_admin_panel');
+    }
+
 }
