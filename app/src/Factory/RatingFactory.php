@@ -70,7 +70,7 @@ final class RatingFactory extends ModelFactory
         return [
             'comment' => self::faker()->text(100),
             'date' => DateTime::createFromFormat('m/d/Y h:i:s a', date('m/d/Y h:i:s a')),
-            'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)) % 11),
+            'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)))%11,
             'user' => $user,
             'series' => $series
         ];
