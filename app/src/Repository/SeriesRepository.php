@@ -45,9 +45,6 @@ class SeriesRepository extends EntityRepository
         return $dql->getResult();
     }
 
-    /**
-     * Returns the series that a user has completed.
-     */
     public function findAllByRatingBetween($min, $max)
     {
         $dql = $this->getEntityManager()->createQuery('
