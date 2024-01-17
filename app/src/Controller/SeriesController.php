@@ -83,16 +83,16 @@ class SeriesController extends AbstractController
                     ->andwhere('r.value BETWEEN :min AND :max')
                     ->setParameter('min', $minRate)
                     ->setParameter('max', $maxRate);
-            }
+                }
 
-            $series_match = $search->getQuery()->getResult();
-            $seriesNb = sizeof((array)$series_match);
-            if ($page > $seriesNb / $limit) {
-                $page = ceil($seriesNb / $limit);
-            }
-            if ($page < 0) {
-                $page = 0;
-            }
+                $series_match = $search->getQuery()->getResult();
+                $seriesNb = sizeof((array)$series_match);
+                if ($page > $seriesNb / $limit) {
+                    $page = ceil($seriesNb / $limit);
+                }
+                if ($page < 0) {
+                    $page = 0;
+                }
 
             $series_match = array_slice((array)$series_match, $page * $limit, $limit);
             $series = (array)$series_match;
@@ -214,6 +214,22 @@ class SeriesController extends AbstractController
         } else {
             $ownRating = null;
         }
+        $sortedRatings = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+            ->select('r')
+            ->where('r.series = :id')
+            ->andWhere('r.checkrate = 1');
+        if (isset($_GET["by_rate"])){
+            $low = $_GET["by_rate"]*2;
+            $high = $low + 1;
+            $sortedRatings = $sortedRatings->andWhere('r.value BETWEEN :low AND :high')
+                ->setParameter('low', $low)
+                ->setParameter('high', $high);
+        }
+        $sortedRatings = $sortedRatings
+            ->orderBy('r.date', 'DESC')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
         $rating = new Rating();
         $rating->setUser($user);
         $rating->setSeries($serie);
@@ -270,7 +286,7 @@ class SeriesController extends AbstractController
                 'percentages_seasons' => $percentages_seasons,
                 'percentage_serie' => $percentage_serie,
                 'ratingForm' => $form->createView(),
-                'ratings' => $ratings,
+                'ratings' => $sortedRatings,
                 'ratings_displayed' => $ratings_displayed,
                 'ownRating' => $ownRating
             ]);
