@@ -49,31 +49,11 @@ class GenerateFakeViewsCommand extends Command
         $flush_cd = 20;
         foreach($series->findAll() as $serie) {
             $output->writeln($serie->getId());
+
             foreach($users->findAll() as $user) {
-                $rand = rand()&127;
-                if ($rand > 126) {
-                    $seasons = $serie->getSeasons();
-                    if (!empty($seasons)) {
-                        $season = $seasons->last();
-                        if ($season) {
-                            $eps = $season->getEpisodes();
-                            $ep = $eps->last();
-                            $this->markAsSeen($user, $ep, $this->em, true);
-                        }
-                    }
-                } elseif ($rand > 60) {
-                    $seasons = $serie->getSeasons();
-                    if (!empty($seasons)) {
-                        $season = $seasons->get(rand(0, $seasons->count()-1));
-                        if ($season) {
-                            $eps = $season->getEpisodes();
-                            $ep = $eps->get(rand(0, $eps->count()-1));
-                            if ($ep)
-                            $this->markAsSeen($user, $ep, $this->em, true);
-                        }
-                    }
-                }
+                $this->genViewsSub($serie, $user);
             }
+
             $flush_cd--;
             if (!$flush_cd) {
                 $flush_cd = 20;
@@ -81,6 +61,28 @@ class GenerateFakeViewsCommand extends Command
             }
         }
 
+        $this->em->flush();
+
+    }
+
+    public function genViewsSub(Series $serie, User $user) {
+        $rand = rand()&127;
+
+        if (rand <= 60) {
+            return;
+        }
+
+        $seasons = $serie->getSeasons();
+        if (!empty($seasons)) {
+            $season = $rand > 125 ? $seasons->last() : $seasons->get(rand(0, $seasons->count()-1));
+            if ($season) {
+                $eps = $season->getEpisodes();
+                $ep = $rand > 125 ? $eps->last() : $eps->get(rand(0, $eps->count()-1));
+                if ($ep) {
+                    $this->markAsSeen($user, $ep, $this->em, true);
+                }
+            }
+        }
     }
 
     protected function markAsSeen(User $user, Episode $episode, EntityManagerInterface $entityManager, bool $see_all) {
@@ -100,5 +102,3 @@ class GenerateFakeViewsCommand extends Command
         }
     }
 }
-
-// 2410678ms
