@@ -317,4 +317,13 @@ class SeriesController extends AbstractController
         }
         return new JsonResponse(array('success' => "true"));
     }
+
+    #[Route('/{id}', name:'app_rating_delete')]
+    public function deleteRatingUser(Rating $rating, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($rating);
+        $entityManager->flush();
+
+        return new JsonResponse(array('success' => "true"));
+    }
 }
