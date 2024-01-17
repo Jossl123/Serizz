@@ -28,72 +28,71 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('app_banned');
         }
         $NbG = 0;
-        $page = $request->query->get('page', 1)-1;
+        $page = $request->query->get('page', 1) - 1;
         $search = $entityManager->createQueryBuilder();
         $limit = 10;
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'GET'){
-                $search->select('s')
-                ->from('\App\Entity\Series','s');
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $search->select('s')
+                ->from('\App\Entity\Series', 's');
 
-                if (isset($_GET['init'])) {
-                    $search->andwhere('s.title LIKE :init')
-                    ->setParameter('init', '%'.$_GET['init'].'%');
-                    
-                }
-                if (isset($_GET['syno'])) {
-                    $search->andwhere('s.plot LIKE :syn')
-                    ->setParameter('syn', '%'.$_GET['syno'].'%');
-                }
-                if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
-                    $search->andwhere('s.yearStart >= :ys')
+            if (isset($_GET['init'])) {
+                $search->andwhere('s.title LIKE :init')
+                    ->setParameter('init', '%' . $_GET['init'] . '%');
+            }
+            if (isset($_GET['syno'])) {
+                $search->andwhere('s.plot LIKE :syn')
+                    ->setParameter('syn', '%' . $_GET['syno'] . '%');
+            }
+            if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
+                $search->andwhere('s.yearStart >= :ys')
                     ->setParameter('ys', $_GET['Syear'])
                     ->orderBy('s.yearStart', 'ASC');
-                }
+            }
 
-                if (isset($_GET['yearE']) and !isset($_GET['Syear'])) {
-                    $search->andwhere('s.yearEnd = :ye')
+            if (isset($_GET['yearE']) and !isset($_GET['Syear'])) {
+                $search->andwhere('s.yearEnd = :ye')
                     ->setParameter('ye', $_GET['yearE']);
-                }
+            }
 
-                if (isset($_GET['yearE']) and isset($_GET['Syear'])) {
-                    $search->andwhere('s.yearStart >= :ys')
+            if (isset($_GET['yearE']) and isset($_GET['Syear'])) {
+                $search->andwhere('s.yearStart >= :ys')
                     ->andwhere('s.yearStart <= :ye')
                     ->setParameter('ys', $_GET['Syear'])
                     ->setParameter('ye', $_GET['yearE']);
-                }
+            }
 
-                if (isset($_GET['genres']) && $_GET['genres'] != ""){
-                    $tousGenres = explode("_", $_GET['genres']);
-                    $subsearch = $entityManager->createQueryBuilder();
-                    $subsearch->select('sub_s')
-                    ->from('\App\Entity\Series','sub_s')
-                    ->join('sub_s.genre','g')
+            if (isset($_GET['genres']) && $_GET['genres'] != "") {
+                $tousGenres = explode("_", $_GET['genres']);
+                $subsearch = $entityManager->createQueryBuilder();
+                $subsearch->select('sub_s')
+                    ->from('\App\Entity\Series', 'sub_s')
+                    ->join('sub_s.genre', 'g')
                     ->andWhere('g.name IN (:genres)');
-                    $search->setParameter('genres', $tousGenres);
-                    $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
-                }
-                
-                if (isset($_GET['Srate']) or isset($_GET['rateE'])){
-                    $minRate = isset($_GET['Srate']) ? $_GET['Srate'] : 0;
-                    $maxRate = isset($_GET['rateE']) ? $_GET['rateE'] : 5;
-                    $search->join('s.ratings', 'r')
+                $search->setParameter('genres', $tousGenres);
+                $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
+            }
+
+            if (isset($_GET['Srate']) or isset($_GET['rateE'])) {
+                $minRate = isset($_GET['Srate']) ? $_GET['Srate'] : 0;
+                $maxRate = isset($_GET['rateE']) ? $_GET['rateE'] : 5;
+                $search->join('s.ratings', 'r')
                     ->andwhere('r.checkrate = 1')
                     ->andwhere('r.value BETWEEN :min AND :max')
                     ->setParameter('min', $minRate)
                     ->setParameter('max', $maxRate);
-                }
-                
-                $series_match = $search->getQuery()->getResult();
-                $seriesNb = sizeof((array)$series_match);
-                if ($page > $seriesNb / $limit) {
-                    $page = ceil($seriesNb / $limit);
-                }
-                if ($page < 0) {
-                    $page = 0;
-                }
+            }
+
+            $series_match = $search->getQuery()->getResult();
+            $seriesNb = sizeof((array)$series_match);
+            if ($page > $seriesNb / $limit) {
+                $page = ceil($seriesNb / $limit);
+            }
+            if ($page < 0) {
+                $page = 0;
+            }
 
             $series_match = array_slice((array)$series_match, $page * $limit, $limit);
             $series = (array)$series_match;
@@ -123,15 +122,15 @@ class SeriesController extends AbstractController
         /** @var \App\Entity\User */
         $user = $this->getUser();
         $userSeries = $user->getSeries();
-        $page = $request->query->get('page', 1)-1;
+        $page = $request->query->get('page', 1) - 1;
         $limit = 10;
-        
+
         // We need the series to get only the followed ones
         $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
 
         // Exclude the completed series from the followed ones
         // Would rather not do it in O(n) but it works
-        foreach($seriesCompleted as $completed){
+        foreach ($seriesCompleted as $completed) {
             $userSeries->removeElement($completed);
         }
 
@@ -159,9 +158,9 @@ class SeriesController extends AbstractController
     {
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        $page = $request->query->get('page', 1)-1;
+        $page = $request->query->get('page', 1) - 1;
         $limit = 10;
-        
+
         $seriesCompleted = $entityManager->getRepository(Series::class)->findAllByCompletedSeries($user->getId());
 
         $seriesNb = count($seriesCompleted);
@@ -201,20 +200,24 @@ class SeriesController extends AbstractController
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
-        $ownRating = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
-            ->join('r.user','u')
-            ->where('r.series = :id')
-            ->andWhere('u.id = :userId')
-            ->setParameter('id', $id)
-            ->setParameter('userId', $user->getId())
-            ->getQuery()
-            ->getResult();
-        if (sizeof($ownRating) > 0)$ownRating = $ownRating[0];
-        else $ownRating = null;
+        if ($this->getUser() != null) {
+            $ownRating = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+                ->join('r.user', 'u')
+                ->where('r.series = :id')
+                ->andWhere('u.id = :userId')
+                ->setParameter('id', $id)
+                ->setParameter('userId', $user->getId())
+                ->getQuery()
+                ->getResult();
+            if (sizeof($ownRating) > 0) $ownRating = $ownRating[0];
+            else $ownRating = null;
+        } else {
+            $ownRating = null;
+        }
         $rating = new Rating();
-        $rating -> setUser($user);
-        $rating -> setSeries($serie);
-        $rating -> setCheckrate(0);
+        $rating->setUser($user);
+        $rating->setSeries($serie);
+        $rating->setCheckrate(0);
         $form = $this->createForm(SeriesRatingType::class, $rating);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -223,7 +226,6 @@ class SeriesController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
-
 
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
@@ -244,11 +246,11 @@ class SeriesController extends AbstractController
         } else {
             $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
         }
-        $ratings_displayed = array(0,0,0,0,0);
-        if (sizeof($ratings)>0){
-            for ($i=0; $i < 5; $i++) { 
-                $lower = 2*$i+1;
-                $upper = 2*$i+2;
+        $ratings_displayed = array(0, 0, 0, 0, 0);
+        if (sizeof($ratings) > 0) {
+            for ($i = 0; $i < 5; $i++) {
+                $lower = 2 * $i + 1;
+                $upper = 2 * $i + 2;
                 $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
                     ->select('COUNT(r.id)')
                     ->where('r.series = :series_id')
@@ -258,7 +260,7 @@ class SeriesController extends AbstractController
                     ->setParameter('lower', $lower)
                     ->setParameter('upper', $upper)
                     ->getQuery();
-                    $ratings_displayed[$i] =$query->getSingleScalarResult() / sizeof($ratings);
+                $ratings_displayed[$i] = $query->getSingleScalarResult() / sizeof($ratings);
             }
         }
         dump($ratings_displayed);
@@ -297,7 +299,7 @@ class SeriesController extends AbstractController
             if ($see_all) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
-                        if ($ep == $episode)break;
+                        if ($ep == $episode) break;
                         if (!$user->getEpisode()->contains($ep)) {
                             $user->addEpisode($ep);
                             $entityManager->flush();
@@ -305,7 +307,7 @@ class SeriesController extends AbstractController
                     }
                     if ($current_season == $season) break;
                 }
-            } 
+            }
         }
 
         return new JsonResponse(array('success' => "true"));
@@ -342,14 +344,13 @@ class SeriesController extends AbstractController
         return new JsonResponse(array('success' => "true"));
     }
 
-    #[Route('/{id}', name:'app_rating_delete')]
-    public function deleteRatingUser( Rating $rating, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/{id}', name: 'app_rating_delete')]
+    public function deleteRatingUser(Rating $rating, EntityManagerInterface $entityManager, Request $request): Response
     {
         $serieId = $request->get('serieId');
         $entityManager->remove($rating);
         $entityManager->flush();
 
         return $this->redirectToRoute('app_series_show', ['id' => $serieId]);
-
     }
 }
