@@ -20,7 +20,7 @@
 		{% endif %}
 	{% endfor %}
 	{% if totalSeriesCount > 0 %}
-		{% set avgSeriesRates = (avgSeriesRates / totalSeriesCount *10)|round /10 %}
+		{% set avgSeriesRates = ((avgSeriesRates / totalSeriesCount *10)|round /10)/2 %}
 	{% endif %}
 
 
@@ -199,21 +199,19 @@
 			</div>
 			<div class="flex flex-col-reverse ">
 				{% for index, count in ratings_displayed %}
-					{% if index != 0 %}
-						{% if totalSeriesCount != 0 %}
-							{% set percentage = ((count / totalSeriesCount)* 1000)|round  / 10 %}
-						{% else %}
-							{% set percentage = 0 %}
-						{% endif %}
-						<div class="flex items-center gap-1">
-							<div class="w-5 text-right ">{{ index }}</div>
-							<div class="nf nf-fa-star ml-1 mb-0.5"></div>
-							<div class="2xl:w-96 w-64 h-2 bg-gray-500 rounded-full ml-2">
-								<div class="h-full bg-yellow-500 rounded-full" style="width: {{ percentage }}%;"></div>
-							</div>
-							<div class="ml-2">{{ percentage }}%</div>
-						</div>
+					{% if totalSeriesCount != 0 %}
+						{% set percentage = ((count / totalSeriesCount)* 1000)|round  / 10 %}
+					{% else %}
+						{% set percentage = 0 %}
 					{% endif %}
+					<div class="flex items-center gap-1">
+						<div class="w-5 text-right ">{{ index +1}}</div>
+						<div class="nf nf-fa-star ml-1 mb-0.5"></div>
+						<div class="2xl:w-96 w-64 h-2 bg-gray-500 rounded-full ml-2">
+							<div class="h-full bg-yellow-500 rounded-full" style="width: {{ percentage }}%;"></div>
+						</div>
+						<div class="ml-2">{{ percentage }}%</div>
+					</div>
 				{% endfor %}
 			</div>
 		</div>
@@ -250,7 +248,7 @@
 								{{ form_errors(ratingForm.comment) }}
 							</div>
 
-							<button type="submit" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
+							<button onclick="formSubmit(event)" onsubmit="formSubmit(event)" class="px-4 py-2 bg-indigo-500 text-white rounded-md">
 								Post rate
 							</button>
 
@@ -272,7 +270,7 @@
 						{% endif %}
 						<a class="text-white" href="{{path('app_user_show', {'id': r.user.id })}}">{{r.user.name}}</a>
 						<div class="flex gap-1 relative items-center">
-							{% include('./_stars.html.twig') with {'rating': r.value} %}
+							{% include('./_stars.html.twig') with {'rating': r.value/2} %}
 						</div>
 						<p class="text-[--grey] font-bold">{{ r.date|ago }}
 							{# if date i further than 1 week show real date #}
