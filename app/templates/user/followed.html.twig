@@ -11,7 +11,7 @@
         }
     </script>
     <div class="flex">
-
+        
         <div class="bg-[--dark-blue] py-20 w-fit left-0">
             <form class="text-center" method="get">
                 <div class="rounded-full bg-[--grey] m-2 flex px-2  py-1 items-center">
@@ -57,15 +57,10 @@
 
             <div class="relative inline-block my-2.5">
                 <span class="text-2xl md:text-3xl font-bold">
-                    My followed users
+                    User Index
                 </span>
                 <span class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-indigo-900 via-sky-800 to-blue-600 rounded-full"></span>
             </div>
-
-            <div class="m-5">
-                <a href="{{ path('app_user_index') }}" class="p-2 bg-[--grey]  text-white rounded m-2">All users</a>
-    			<a href="{{ path('app_user_index_followed') }}" class="p-2 bg-[--grey] hover:text-white text-[--white] rounded m-2">Your followed users</a>
-	    	</div>
 
             {% include('./pagination.html.twig') with {'app_path': "app_user_index", "pagesNb": pagesNb} %}
 
