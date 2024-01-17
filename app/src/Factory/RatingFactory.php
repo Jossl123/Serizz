@@ -35,15 +35,13 @@ use DateTime;
  */
 final class RatingFactory extends ModelFactory
 {
-    private static $em;
+    private $em;
     private static $moy;
     private static $et;
 
-
-
     public function __construct(EntityManagerInterface $em)
     {
-        RatingFactory::$em = $em;
+        $this->em = $em;
         parent::__construct();
     }
 
@@ -72,7 +70,7 @@ final class RatingFactory extends ModelFactory
         return [
             'comment' => self::faker()->text(100),
             'date' => DateTime::createFromFormat('m/d/Y h:i:s a', date('m/d/Y h:i:s a')),
-            'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)) % 11),
+            'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)))%11,
             'user' => $user,
             'series' => $series
         ];
@@ -83,7 +81,7 @@ final class RatingFactory extends ModelFactory
      */
     protected function getCorrectUser(Series $series): User
     {
-        $repo = $this::$em->getRepository('App\Entity\Rating');
+        $repo = $this->em->getRepository('App\Entity\Rating');
         $user = UserFactory::random()->object();
         $count = 0;
 

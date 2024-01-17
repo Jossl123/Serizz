@@ -66,3 +66,4 @@ function mark_as_seen(url_to_fetch, first=false) {
         }
     }).catch(error => console.log('error', error));
 }
+

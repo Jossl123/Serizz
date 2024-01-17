@@ -20,6 +20,7 @@ class GenerateFakeUsersCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $nb = $input->getArgument('nb');
+        $nb = is_null($nb) ? 25 : $nb;
         $time = floor(microtime(true) * 1000);
         UserFactory::createMany($nb);
         $output->writeln("successfully created " . $nb . " new users");
@@ -30,7 +31,7 @@ class GenerateFakeUsersCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('nb', InputArgument::REQUIRED, 'nb times')
+            ->addArgument('nb', InputArgument::OPTIONAL, 'nb times')
         ;
     }
 }
