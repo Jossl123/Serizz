@@ -18,6 +18,70 @@ class SeriesRepository extends EntityRepository
         return $hallOfFameSeries;
     }
 
+    public function findAllByFilters($filters, $user)
+    {
+        $search = $this->createQueryBuilder('s');
+
+        $search->select('s');
+        if (isset($filters['init'])) {
+            $search->andwhere('s.title LIKE :init')
+                ->setParameter('init', '%' . $filters['init'] . '%');
+        }
+        if (isset($filters['syno'])) {
+            $search->andwhere('s.plot LIKE :syn')
+                ->setParameter('syn', '%' . $filters['syno'] . '%');
+        }
+        if (isset($filters['Syear']) and !isset($filters['yearE'])) {
+            $search->andwhere('s.yearStart >= :ys')
+                ->setParameter('ys', $filters['Syear'])
+                ->orderBy('s.yearStart', 'ASC');
+        }
+
+        if (isset($filters['yearE']) and !isset($filters['Syear'])) {
+            $search->andwhere('s.yearEnd = :ye')
+                ->setParameter('ye', $filters['yearE']);
+        }
+
+        if (isset($filters['yearE']) and isset($filters['Syear'])) {
+            $search->andwhere('s.yearStart >= :ys')
+                ->andwhere('s.yearStart <= :ye')
+                ->setParameter('ys', $filters['Syear'])
+                ->setParameter('ye', $filters['yearE']);
+        }
+
+        if (isset($filters['genres']) && $filters['genres'] != "") {
+            $tousGenres = explode("_", $filters['genres']);
+            $subsearch = $this->createQueryBuilder('sub_s');
+            $subsearch->select('sub_s')
+                ->join('sub_s.genre', 'g')
+                ->andWhere('g.name IN (:genres)');
+            $search->setParameter('genres', $tousGenres);
+            $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
+        }
+
+        /**
+        if (isset($filters['Srate']) or isset($filters['rateE'])) {
+            $minRate = isset($filters['Srate']) ? $filters['Srate'] : 0;
+            $maxRate = isset($filters['rateE']) ? $filters['rateE'] : 5;
+            $search->join('s.ratings', 'r')
+                ->andwhere('r.checkrate = 1')
+                ->andwhere('r.value BETWEEN :min AND :max')
+                ->setParameter('min', $minRate)
+                ->setParameter('max', $maxRate);
+        }
+         */
+
+        if (isset($filters['followed-users']) && $user != null) {
+            $search->join('s.user', 'u')
+                ->join('u.followers', 'follower')
+                ->andWhere('follower = :user')
+                ->setParameter('user', $user);
+        }
+
+        return $search->getQuery()->getResult();
+    }
+
+
     /**
      * Returns the series that a user has completed.
      */

@@ -24,7 +24,7 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET', 'POST'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if($this->getUser() != null){
+        if ($this->getUser() != null) {
             if ($this->getUser()->getBan() == 1) {
                 return $this->redirectToRoute('app_banned');
             }
@@ -36,65 +36,17 @@ class SeriesController extends AbstractController
         $seriesRepo = $entityManager
             ->getRepository(Series::class);
 
+        $filters = $_GET;
+
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $search->select('s')
-                ->from('\App\Entity\Series', 's');
-
-            if (isset($_GET['init'])) {
-                $search->andwhere('s.title LIKE :init')
-                    ->setParameter('init', '%' . $_GET['init'] . '%');
+            $series_match = $seriesRepo->findAllByFilters($_GET, $this->getUser());
+            $seriesNb = sizeof((array)$series_match);
+            if ($page > $seriesNb / $limit) {
+                $page = ceil($seriesNb / $limit);
             }
-            if (isset($_GET['syno'])) {
-                $search->andwhere('s.plot LIKE :syn')
-                    ->setParameter('syn', '%' . $_GET['syno'] . '%');
+            if ($page < 0) {
+                $page = 0;
             }
-            if (isset($_GET['Syear']) and !isset($_GET['yearE'])) {
-                $search->andwhere('s.yearStart >= :ys')
-                    ->setParameter('ys', $_GET['Syear'])
-                    ->orderBy('s.yearStart', 'ASC');
-            }
-
-            if (isset($_GET['yearE']) and !isset($_GET['Syear'])) {
-                $search->andwhere('s.yearEnd = :ye')
-                    ->setParameter('ye', $_GET['yearE']);
-            }
-
-            if (isset($_GET['yearE']) and isset($_GET['Syear'])) {
-                $search->andwhere('s.yearStart >= :ys')
-                    ->andwhere('s.yearStart <= :ye')
-                    ->setParameter('ys', $_GET['Syear'])
-                    ->setParameter('ye', $_GET['yearE']);
-            }
-
-            if (isset($_GET['genres']) && $_GET['genres'] != "") {
-                $tousGenres = explode("_", $_GET['genres']);
-                $subsearch = $entityManager->createQueryBuilder();
-                $subsearch->select('sub_s')
-                    ->from('\App\Entity\Series', 'sub_s')
-                    ->join('sub_s.genre', 'g')
-                    ->andWhere('g.name IN (:genres)');
-                $search->setParameter('genres', $tousGenres);
-                $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
-            }
-
-            if (isset($_GET['Srate']) or isset($_GET['rateE'])) {
-                $minRate = isset($_GET['Srate']) ? $_GET['Srate'] : 0;
-                $maxRate = isset($_GET['rateE']) ? $_GET['rateE'] : 5;
-                $search->join('s.ratings', 'r')
-                    ->andwhere('r.checkrate = 1')
-                    ->andwhere('r.value BETWEEN :min AND :max')
-                    ->setParameter('min', $minRate)
-                    ->setParameter('max', $maxRate);
-                }
-
-                $series_match = $search->getQuery()->getResult();
-                $seriesNb = sizeof((array)$series_match);
-                if ($page > $seriesNb / $limit) {
-                    $page = ceil($seriesNb / $limit);
-                }
-                if ($page < 0) {
-                    $page = 0;
-                }
 
             $series_match = array_slice((array)$series_match, $page * $limit, $limit);
             $series = (array)$series_match;
@@ -211,8 +163,11 @@ class SeriesController extends AbstractController
                 ->setParameter('userId', $user->getId())
                 ->getQuery()
                 ->getResult();
-            if (sizeof($ownRating) > 0) $ownRating = $ownRating[0];
-            else $ownRating = null;
+            if (sizeof($ownRating) > 0) {
+                $ownRating = $ownRating[0];
+            } else {
+                $ownRating = null;
+            }
         } else {
             $ownRating = null;
         }
@@ -220,8 +175,8 @@ class SeriesController extends AbstractController
             ->select('r')
             ->where('r.series = :id')
             ->andWhere('r.checkrate = 1');
-        if (isset($_GET["by_rate"])){
-            $low = $_GET["by_rate"]*2;
+        if (isset($_GET["by_rate"])) {
+            $low = $_GET["by_rate"] * 2;
             $high = $low + 1;
             $sortedRatings = $sortedRatings->andWhere('r.value BETWEEN :low AND :high')
                 ->setParameter('low', $low)
@@ -317,13 +272,17 @@ class SeriesController extends AbstractController
             if ($see_all) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
-                        if ($ep == $episode) break;
+                        if ($ep == $episode) {
+                            break;
+                        }
                         if (!$user->getEpisode()->contains($ep)) {
                             $user->addEpisode($ep);
                             $entityManager->flush();
                         }
                     }
-                    if ($current_season == $season) break;
+                    if ($current_season == $season) {
+                        break;
+                    }
                 }
             }
         }
