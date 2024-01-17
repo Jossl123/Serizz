@@ -53,12 +53,12 @@ class Rating
 
     public function getValue(): ?int
     {
-        return $this->value / 2 ;
+        return $this->value;
     }
 
     public function setValue(int $value): self
     {
-        $this->value = $value * 2;
+        $this->value = $value;
 
         return $this;
     }

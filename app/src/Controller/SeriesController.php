@@ -217,11 +217,20 @@ class SeriesController extends AbstractController
         } else {
             $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
         }
-        $rating_5 = $entityManager->getRepository(Rating::class)->count(array("series" => $id, "value" => 10));
-        $rating_4 = $entityManager->getRepository(Rating::class)->count(array("series" => $id,"value" => 8));
-        $rating_3 = $entityManager->getRepository(Rating::class)->count(array("series" => $id, "value" => 6));
-        $rating_2 = $entityManager->getRepository(Rating::class)->count(array("series" => $id,"value" => 4));
-        $rating_1 = $entityManager->getRepository(Rating::class)->count(array("series" => $id,"value" => 2));
+        $ratings_displayed = array();
+        for ($i=0; $i < 5; $i++) { 
+            $lower = 2*$i+1;
+            $upper = 2*$i+2;
+            $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+                ->select('COUNT(r.id)')
+                ->where('r.series = :series_id')
+                ->andWhere('r.value BETWEEN :lower AND :upper')
+                ->setParameter('series_id', $id)
+                ->setParameter('lower', $lower)
+                ->setParameter('upper', $upper)
+                ->getQuery();
+                $ratings_displayed[$i] =$query->getSingleScalarResult();
+        }
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -229,7 +238,7 @@ class SeriesController extends AbstractController
                 'percentage_serie' => $percentage_serie,
                 'ratingForm' => $form->createView(),
                 'ratings' => $ratings,
-                'ratings_displayed' => [0,$rating_1,$rating_2,$rating_3,$rating_4,$rating_5]
+                'ratings_displayed' => $ratings_displayed
             ]);
         } else {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
