@@ -79,6 +79,7 @@ class DefaultController extends AbstractController
      * @throws ClientExceptionInterface
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
+     * @throws \ReflectionException
      */
     #[IsGranted("ROLE_ADMIN")]
     #[Route('/add', name:'app_series_add')]

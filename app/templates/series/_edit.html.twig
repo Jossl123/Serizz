@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Editing {{ series.title }} {% endblock %}
+
+{% block body %}
+    <div class="flex items-center flex-col">
+        <h1 class="text-2xl">Editing {{ series.title }}</h1>
+
+        <form method="post" class="flex flex-col gap-2 max-w-md mx-auto">
+            <label class="text-xl">
+                Title:<br>
+                <input type="text" name="title" value="{{ series.title }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                Plot: <br>
+                <textarea name="plot" class="border p-2 rounded-md w-full h-40 resize-none">{{ series.plot }}</textarea>
+            </label>
+            <label class="text-xl">
+                imdbID <br>
+                <input type="text" name="imdbID" value="{{ series.imdb }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                Director <br>
+                <input type="text" name="director" value="{{ series.director }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                YouTube Trailer <br>
+                <input type="text" name="youtube" value="{{ series.youtubeTrailer }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                Awards <br>
+                <input type="text" name="awards" value="{{ series.awards }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                Year Start <br>
+                <input type="text" name="yearStart" value="{{ series.yearStart }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                Year End <br>
+                <input type="text" name="yearEnd" value="{{ series.yearEnd }}" class="border p-2 rounded-md w-full">
+            </label>
+            <label class="text-xl">
+                Genres :<br>
+                <div class="flex flex-wrap gap-4">
+                    {% for genre in genres %}
+                        <div class="flex items-center">
+                            <input type="checkbox" name="{{ genre.name }}" value="{{ genre.name }}" {% if genre in seriesGenres %} checked {% endif %} class="mr-2">
+                            <span>{{ genre.name }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </label>
+            <label class="text-xl">
+                Countries :<br>
+                <div class="flex flex-wrap gap-4">
+                    {% for country in countries %}
+                        <div class="flex items-center">
+                            <input type="checkbox" name="country" value="{{ country }}" {% if seriesCountries[0] == country %} checked {% endif %} class="mr-2">
+                            <span>{{ country.name }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </label>
+            <input type="submit" value="Confirm Changes" class="bg-blue-500 text-white p-2 rounded-md cursor-pointer">
+        </form>
+    </div>
+{% endblock %}

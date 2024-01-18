@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Actor;
+use App\Entity\Country;
 use App\Entity\Episode;
 use App\Entity\Genre;
 use App\Entity\Series;
@@ -335,5 +337,67 @@ class SeriesController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_series_show', ['id' => $serieId]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_series_edit', methods: ['GET', 'POST'])]
+    #[IsGranted("ROLE_ADMIN")]
+    public function edit($id, EntityManagerInterface $entityManager, Request $request): Response {
+
+        $series = $entityManager
+            ->getRepository(Series::class)
+            ->find($id);
+
+        $genres = $entityManager
+            ->getRepository(Genre::class)
+            ->findAll();
+
+        $countries = $entityManager
+            ->getRepository(Country::class)
+            ->findAll();
+
+        $seriesGenres = $series->getGenre();
+        $seriesCountries = $series->getCountry();
+
+        $changesArray = array();
+
+        $changesArray[] = $_POST['title'] ?? "";
+        $changesArray[] = $_POST['plot'] ?? "";
+        $changesArray[] = $_POST['imdbID'] ?? "";
+        $changesArray[] = $_POST['director'] ?? "";
+        $changesArray[] = $_POST['youtube'] ?? "";
+        $changesArray[] = $_POST['awards'] ?? "";
+        $changesArray[] = $_POST['yearStart'] ?? "";
+        $changesArray[] = $_POST['yearEnd'] ?? "";
+
+        foreach($genres as $g) {
+            if(isset($_POST[$g->getName()])) {
+                $series->addGenre($g);
+            } else {
+                $series->removeGenre($g);
+            }
+        }
+
+        foreach($changesArray as $change) {
+            if($change != "") {
+                $series->setTitle($changesArray[0]);
+                $series->setPlot($changesArray[1]);
+                $series->setImdb($changesArray[2]);
+                $series->setDirector($changesArray[3]);
+                $series->setYoutubeTrailer($changesArray[4]);
+                $series->setAwards($changesArray[5]);
+                $series->setYearStart(intval($changesArray[6]));
+                $series->setYearEnd(intval($changesArray[7]));
+            }
+        }
+
+        $entityManager->flush();
+
+        return $this->render('series/_edit.html.twig', [
+            'series' => $series,
+            'seriesGenres' => $seriesGenres,
+            'seriesCountries' => $seriesCountries,
+            'genres' => $genres,
+            'countries' => $countries
+        ]);
     }
 }
