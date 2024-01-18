@@ -12,57 +12,57 @@ function mark_as_seen(e, url_to_fetch, first=false) {
     var ep_id = url_to_fetch.split("=")[1]
     var ep = document.getElementById(`ep-${ep_id}`)
     if (!ep.classList.contains("nf-fa-check")){
-    e.preventDefault();
-    var conf = document.createElement("div")
-    var label = document.createElement("button")
-    label.innerHTML = "Watch every previous episodes ?"
-    var div = document.createElement("div")
-    div.classList = ["flex justify-around"]
-    var yes = document.createElement("button")
-    yes.classList = ["p-1 rounded bg-indigo-400 "]
-    yes.textContent = "Yes";
-    var no = document.createElement("button")
-    no.classList = ["p-1 rounded bg-indigo-400 "]
-    no.textContent = "No";
-    conf.appendChild(label)
-    div.appendChild(yes)
-    div.appendChild(no)
-    conf.appendChild(div)
-    
-    conf.classList = ['absolute z-[100] bg-indigo-500 rounded p-1 text-white']
-    var scrollX = window.scrollX || window.pageXOffset;
-    var scrollY = window.scrollY || window.pageYOffset;
-    conf.style.left = (e.clientX  + scrollX) + 'px' ;
-    conf.style.top = (e.clientY + scrollY)+ 'px';
-    
-    document.body.appendChild(conf);
-
-
-
-    yes.addEventListener('click', function () {
-        watch_ep( url_to_fetch, first, true)
-        document.body.removeChild(conf);
-    });
-
-    no.addEventListener('click', function () {
-        watch_ep( url_to_fetch, first, false)
-        conf.style.display = 'none';
-        document.body.removeChild(conf);
+        e.preventDefault();
+        var conf = document.createElement("div")
+        var label = document.createElement("button")
+        label.innerHTML = "Watch every previous episodes ?"
+        var div = document.createElement("div")
+        div.classList = ["flex justify-around"]
+        var yes = document.createElement("button")
+        yes.classList = ["p-1 rounded bg-indigo-400 "]
+        yes.textContent = "Yes";
+        var no = document.createElement("button")
+        no.classList = ["p-1 rounded bg-indigo-400 "]
+        no.textContent = "No";
+        conf.appendChild(label)
+        div.appendChild(yes)
+        div.appendChild(no)
+        conf.appendChild(div)
         
-    });
+        conf.classList = ['absolute z-[100] bg-indigo-500 rounded p-1 text-white']
+        var scrollX = window.scrollX || window.pageXOffset;
+        var scrollY = window.scrollY || window.pageYOffset;
+        conf.style.left = (e.clientX  + scrollX) + 'px' ;
+        conf.style.top = (e.clientY + scrollY)+ 'px';
+        
+        document.body.appendChild(conf);
 
-    document.addEventListener('click', function hideConfirmation(e2) {
-        if (e != e2 && !conf.contains(e2.target)) {
+
+
+        yes.addEventListener('click', function () {
+            watch_ep( url_to_fetch, first, true)
+            document.body.removeChild(conf);
+        });
+
+        no.addEventListener('click', function () {
+            watch_ep( url_to_fetch, first, false)
             conf.style.display = 'none';
             document.body.removeChild(conf);
-        }
-    });
-}else{
-    watch_ep( url_to_fetch, first, true)
-}
+            
+        });
+
+        document.addEventListener('click', function hideConfirmation(e2) {
+            if (e != e2 && !conf.contains(e2.target)) {
+                conf.style.display = 'none';
+                document.body.removeChild(conf);
+            }
+        });
+    }else{
+        watch_ep( url_to_fetch, first)
+    }
 }
 
-function watch_ep( url_to_fetch, first, all){
+function watch_ep( url_to_fetch, first, all=true){
     var see_all = document.getElementById("see_all").children[0]
     if (first && see_all.classList.contains("nf-fa-check"))return
     var ep_id = url_to_fetch.split("=")[1]
