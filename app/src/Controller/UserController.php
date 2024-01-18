@@ -204,7 +204,7 @@ class UserController extends AbstractController
             $user->addFollowed($userToFollow);
         }
         $entityManager->flush();
-        return $this->redirectToRoute($request->query->get('route', 'app_user_index'), [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute($request->query->get('route', 'app_user_index'), ['id' => $followedId], Response::HTTP_SEE_OTHER);
     }
 
     #[IsGranted('ROLE_ADMIN')]
