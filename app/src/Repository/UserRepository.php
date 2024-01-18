@@ -36,7 +36,8 @@ class UserRepository extends EntityRepository
             ->where('u.id = :userId')
             ->andWhere('rating.checkrate = 1')
             ->setParameter('userId', $userId)
-            ->orderBy('rating.date', 'DESC');
+            ->orderBy('rating.date', 'DESC')
+            ->setMaxResults(15);
         
         return $qb->getQuery()->getResult();
     }

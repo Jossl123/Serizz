@@ -230,7 +230,7 @@ class SeriesController extends AbstractController
             ->andWhere('r.checkrate = 1');
         if (isset($_GET["by_rate"])) {
             $low = $_GET["by_rate"] * 2;
-            $high = $low + 1;
+            $high = $low + 2;
             $sortedRatings = $sortedRatings->andWhere('r.value BETWEEN :low AND :high')
                 ->setParameter('low', $low)
                 ->setParameter('high', $high);
@@ -408,39 +408,39 @@ class SeriesController extends AbstractController
 
         $seriesGenres = $series->getGenre();
         $seriesCountries = $series->getCountry();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-        $changesArray = array();
+            $changesArray = array();
 
-        $changesArray[] = $_POST['title'] ?? "";
-        $changesArray[] = $_POST['plot'] ?? "";
-        $changesArray[] = $_POST['imdbID'] ?? "";
-        $changesArray[] = $_POST['director'] ?? "";
-        $changesArray[] = $_POST['youtube'] ?? "";
-        $changesArray[] = $_POST['awards'] ?? "";
-        $changesArray[] = $_POST['yearStart'] ?? "";
-        $changesArray[] = $_POST['yearEnd'] ?? "";
+            $changesArray[] = $_POST['title'] ?? "";
+            $changesArray[] = $_POST['plot'] ?? "";
+            $changesArray[] = $_POST['imdbID'] ?? "";
+            $changesArray[] = $_POST['director'] ?? "";
+            $changesArray[] = $_POST['youtube'] ?? "";
+            $changesArray[] = $_POST['awards'] ?? "";
+            $changesArray[] = $_POST['yearStart'] ?? "";
+            $changesArray[] = $_POST['yearEnd'] ?? "";
 
-        foreach($genres as $g) {
-            if(isset($_POST[$g->getName()])) {
-                $series->addGenre($g);
-            } else {
-                $series->removeGenre($g);
+            foreach($genres as $g) {
+                if(isset($_POST[$g->getName()])) {
+                    $series->addGenre($g);
+                } else {
+                    $series->removeGenre($g);
+                }
+            }
+            foreach($changesArray as $change) {
+                if($change != "") {
+                    $series->setTitle($changesArray[0]);
+                    $series->setPlot($changesArray[1]);
+                    $series->setImdb($changesArray[2]);
+                    $series->setDirector($changesArray[3]);
+                    $series->setYoutubeTrailer($changesArray[4]);
+                    $series->setAwards($changesArray[5]);
+                    $series->setYearStart(intval($changesArray[6]));
+                    $series->setYearEnd(intval($changesArray[7]));
+                }
             }
         }
-
-        foreach($changesArray as $change) {
-            if($change != "") {
-                $series->setTitle($changesArray[0]);
-                $series->setPlot($changesArray[1]);
-                $series->setImdb($changesArray[2]);
-                $series->setDirector($changesArray[3]);
-                $series->setYoutubeTrailer($changesArray[4]);
-                $series->setAwards($changesArray[5]);
-                $series->setYearStart(intval($changesArray[6]));
-                $series->setYearEnd(intval($changesArray[7]));
-            }
-        }
-
         $entityManager->flush();
 
         return $this->render('series/_edit.html.twig', [

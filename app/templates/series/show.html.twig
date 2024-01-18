@@ -64,7 +64,7 @@
 						<a href="{{path('app_login')}}">Login to follow</a>
 					{% endif %}
 				</div>
-				{% if app.user.admin != 0%}
+				{% if app.user and app.user.admin != 0%}
 				<div class="flex text-white font-sm justify-around p-1">
 					<a href="{{ path('app_series_edit', { 'id': series.id}) }}" class=" p-1 rounded bg-indigo-500 text-white text-center font-bold block">
 						Edit
@@ -93,7 +93,7 @@
 					<li>
 						<h2 class="font-bold text-[--grey]">Genre</h2>
 						{% for genre in series.genre %}
-							<button class="text-[--white] bg-[--grey] rounded m-1 ">{{ genre.name }}</button>
+							<button class="text-[--white] bg-[--grey] rounded m-1 px-1">{{ genre.name }}</button>
 						{% endfor %}
 					</li>
 					<hr class="border-[--grey]">

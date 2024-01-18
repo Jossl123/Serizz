@@ -11,41 +11,41 @@
         <form method="post" class="flex flex-col gap-2 max-w-md mx-auto">
             <label class="text-xl">
                 Title:<br>
-                <input type="text" name="title" value="{{ series.title }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="title" value="{{ series.title }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 Plot: <br>
-                <textarea name="plot" class="border p-2 rounded-md w-full h-40 resize-none">{{ series.plot }}</textarea>
+                <textarea name="plot" class=" p-2 rounded-md w-full h-40 resize-none bg-[--grey]">{{ series.plot }}</textarea>
             </label>
             <label class="text-xl">
                 imdbID <br>
-                <input type="text" name="imdbID" value="{{ series.imdb }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="imdbID" value="{{ series.imdb }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 Director <br>
-                <input type="text" name="director" value="{{ series.director }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="director" value="{{ series.director }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 YouTube Trailer <br>
-                <input type="text" name="youtube" value="{{ series.youtubeTrailer }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="youtube" value="{{ series.youtubeTrailer }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 Awards <br>
-                <input type="text" name="awards" value="{{ series.awards }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="awards" value="{{ series.awards }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 Year Start <br>
-                <input type="text" name="yearStart" value="{{ series.yearStart }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="yearStart" value="{{ series.yearStart }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 Year End <br>
-                <input type="text" name="yearEnd" value="{{ series.yearEnd }}" class="border p-2 rounded-md w-full">
+                <input type="text" name="yearEnd" value="{{ series.yearEnd }}" class=" p-2 rounded-md w-full bg-[--grey]">
             </label>
             <label class="text-xl">
                 Genres :<br>
                 <div class="flex flex-wrap gap-4">
                     {% for genre in genres %}
-                        <div class="flex items-center">
+                        <div class="flex items-center rounded bg-gray-800 px-2">
                             <input type="checkbox" name="{{ genre.name }}" value="{{ genre.name }}" {% if genre in seriesGenres %} checked {% endif %} class="mr-2">
                             <span>{{ genre.name }}</span>
                         </div>

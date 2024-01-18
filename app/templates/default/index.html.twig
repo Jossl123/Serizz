@@ -17,7 +17,7 @@
 			{% include('./header.html.twig') with {'username': app.user.name} %}
 		{% endif %}
 	{% endif %}
-	<div class="sm:py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4  m-2">
+	<div class="sm:py-10 min-[1850px]:px-64 2xl:px-32 sm:px-4  m-2" id="top">
 		<div class="flex">
 			<a href="#feed" class="text-white">
 				See your feed</a>&emsp;
@@ -79,6 +79,7 @@
 					</div>
 				{% endfor %}
 			</ul>
+			<a class="p-1 bg-[--grey] rounded text-white" href="#top">Back to the top</a>
 		</div>
 	</div>
 	<style></style>
