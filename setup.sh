@@ -46,12 +46,14 @@ npm install
 echo "Do you want to start the prod now ? y/N "
 read -r answer
 
+
 if [ "$answer" == 'y' ]
 then
-    if [ -f prod.sh ]
-    then
-        /bin/bash prod.sh;
-    else
-        echo "File prod.sh missing. Check the repository ?";
-    fi
+  cd .. || { echo "Root folder does not exist. Did you correctly clone the project ? "; exit 1; }
+  if [ -f prod.sh ]
+  then
+    /bin/bash prod.sh;
+  else
+    echo "File prod.sh missing. Check the repository ?";
+  fi
 fi
