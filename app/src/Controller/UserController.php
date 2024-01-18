@@ -352,6 +352,14 @@ class UserController extends AbstractController
             ->getRepository(User::class)
             ->find($id);
 
+        $userRatings = $entityManager
+            ->getRepository(Rating::class)
+            ->findBy(array('user' => $user->getId()));
+
+        foreach ($userRatings as $rating) {
+            $entityManager->remove($rating);
+        }
+
         $user->setBan(1);
         $entityManager->flush();
 
