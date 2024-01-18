@@ -2,7 +2,7 @@
 
 {% block title %}Series index
 {% endblock %}
-
+{% set noposter = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg" %}
 {% block body %}
 	{% if series|length > 0 %}
 		{% include('./header.html.twig') with {'poster_picture_id': (series|first).id} %}
@@ -80,6 +80,14 @@
 						</div>
 					</div>
 				</div>
+				{% if app.user %}
+					<div class="py-1">
+						<div class="flex flex-col px-2  py-1 items-center">
+							<input type="checkbox" class="bg-transparent outline-none rounded" name="followed-users"/>
+							<p>Only display the series your friends follow</p>
+						</div>
+					</div>
+				{% endif %}
 			</form>
 			<div @click="open = !open" class="xl:hidden block absolute -right-6 top-8 p-2 rounded  bg-gradient-to-l from-[--grey] to-[--dark-blue] ">
 				<i class="nf  text-xl" :class="{ 'nf-md-arrow_expand_left': open, 'nf-md-arrow_expand_right': !open }"></i>
@@ -90,9 +98,13 @@
 			<div class="md:grid flex gap-4 md:grid-cols-5 md:grid-rows-2 md:overflow-hidden overflow-auto ">
 				{% for series in series %}
 					<div class="flex flex-col px-5 ">
-						<div class="relative w-[10rem] h-64 group overflow-hidden rounded">
+						<div class="relative w-[10rem] h-64 group overflow-hidden rounded ">
 							<a href="{{ path('app_series_show', {'id': series.id}) }}">
-								<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+								{%if series.poster %}
+									<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+								{% else %}
+								<img src={{noposter}} alt="No poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+								{% endif %}
 							</a>
 							{% include('./follow.html.twig') with {'serie': series} %}
 						</div>

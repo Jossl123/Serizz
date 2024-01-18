@@ -62,6 +62,9 @@ class Series
     #[ORM\OneToMany(targetEntity: "Rating", mappedBy: "series")]
     private $ratings;
 
+    #[ORM\Column(name: "rating_avg", type: "integer", nullable: false)]
+    private $rating_avg;
+
 
     #[ORM\OneToMany(mappedBy: 'series', targetEntity: Season::class)]
     #[ORM\OrderBy(['number' => 'ASC'])]
@@ -357,6 +360,18 @@ class Series
                 $rating->setSeries(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRatingAvg(): ?int
+    {
+        return $this->rating_avg;
+    }
+
+    public function setRatingAvg(int $rating_avg): static
+    {
+        $this->rating_avg = $rating_avg;
 
         return $this;
     }

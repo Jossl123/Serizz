@@ -72,7 +72,8 @@ final class RatingFactory extends ModelFactory
             'date' => DateTime::createFromFormat('m/d/Y h:i:s a', date('m/d/Y h:i:s a')),
             'value' => ((int)round(RatingFactory::gaussienne(RatingFactory::$moy, RatingFactory::$et)))%11,
             'user' => $user,
-            'series' => $series
+            'series' => $series,
+            'check_rate' => 1
         ];
     }
 

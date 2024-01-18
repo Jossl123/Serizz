@@ -29,6 +29,13 @@ class UserController extends AbstractController
         $searchForUser = $request->query->get('user', false);
         $searchForAdmin = $request->query->get('admin', false);
         $searchForSuperAdmin = $request->query->get('superAdmin', false);
+        $connectedOrder = $request->query->get('connectedOrder', "");
+
+        if ($this->getUser() != null) {
+            if ($this->getUser()->getBan() == 1) {
+                return $this->redirectToRoute('app_banned');
+            }
+        }
 
         $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
 
@@ -53,6 +60,7 @@ class UserController extends AbstractController
                 }
 
                 $userNb = sizeof($users_match);
+
             } else {
                 foreach ($users as $user) {
                     if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
@@ -83,6 +91,18 @@ class UserController extends AbstractController
             }
 
             $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
+        }
+
+        if ($connectedOrder != "") {
+            if ($connectedOrder == 'DESC') {
+                usort($users, function ($a, $b) {
+                    return $a->getLinkHour() > $b->getLinkHour();
+                });
+            } else {
+                usort($users, function ($a, $b) {
+                    return $a->getLinkHour() < $b->getLinkHour();
+                });
+            }
         }
 
         return $this->render('user/index.html.twig', [
@@ -180,7 +200,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
         if ($user->getFollowed()->contains($userToFollow)) {
             $user->removeFollowed($userToFollow);
-        } else if ($userToFollow != $user) {
+        } elseif ($userToFollow != $user) {
             $user->addFollowed($userToFollow);
         }
         $entityManager->flush();
@@ -209,35 +229,57 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
+    public function show($id, EntityManagerInterface $entityManager, Request $request): Response
     {
-        $seriesRepo = $user->getSeries();
-        $page = $request->query->get('page', 1) - 1;
-        $limit = 10;
-        $seriesNb = $seriesRepo->count([]);
 
-        if ($page > $seriesNb / $limit) {
-            $page = ceil($seriesNb / $limit);
+        if (!is_numeric($id)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        
         }
 
-        if ($page < 0) {
-            $page = 0;
+        $user = $entityManager
+        ->getRepository(User::class)
+        ->findOneBy(array('id' => $id));
+
+        if (!isset($user)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+
+        } else {
+        
+            if ($this->getUser()->getBan() == 1) {
+                return $this->redirectToRoute('app_banned');
+            }
+            $seriesRepo = $user->getSeries();
+            $page = $request->query->get('page', 1) - 1;
+            $limit = 10;
+            $seriesNb = $seriesRepo->count([]);
+
+            if ($page > $seriesNb / $limit) {
+                $page = ceil($seriesNb / $limit);
+            }
+
+            if ($page < 0) {
+                $page = 0;
+            }
+
+            // Cast is needed since page*limit is a float 
+            $series = $seriesRepo->slice((int)$page * $limit, $limit);
+
+            $ratings = $entityManager
+                ->getRepository(Rating::class)
+                ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
+
+            return $this->render('user/show.html.twig', [
+                'user' => $user,
+                'followedSeries' => $series,
+                'ratings' => $ratings,
+                'pagesNb' => ceil($seriesNb / $limit),
+                'page' => $page
+            ]);
         }
 
-        // Cast is needed since page*limit is a float 
-        $series = $seriesRepo->slice((int)$page * $limit, $limit);
-
-        $ratings = $entityManager
-            ->getRepository(Rating::class)
-            ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
-
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-            'followedSeries' => $series,
-            'ratings' => $ratings,
-            'pagesNb' => ceil($seriesNb / $limit),
-            'page' => $page
-        ]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
@@ -253,6 +295,9 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        if ($this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -334,5 +379,31 @@ class UserController extends AbstractController
             'user' => $user,
             'countries' => $countries
         ]);
+    }
+
+    #[Route('/{id}/ban', name: 'app_user_ban', methods: ['GET'])]
+    public function ban($id, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->find($id);
+
+        $user->setBan(1);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/unban', name: 'app_user_unban', methods: ['GET'])]
+    public function unban($id, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager
+            ->getRepository(User::class)
+            ->find($id);
+
+        $user->setBan(0);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
 }

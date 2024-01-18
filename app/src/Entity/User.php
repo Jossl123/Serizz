@@ -63,6 +63,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private $episode = array();
 
+    #[ORM\Column(name: "ban", type: "integer", length: 128, nullable: true)]
+    private $ban;
+
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followers')]
     #[ORM\JoinTable(
         name: "user_followed",
@@ -73,6 +76,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followed')]
     private Collection $followers;
+
+    #[ORM\Column(name: "link_hour", type: "datetime", nullable: true)]
+    private $linkHour;
+
     /**
      * Constructor
      */
@@ -247,6 +254,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->admin;
     }
 
+    public function getBan(): ?int
+    {
+        return $this->ban;
+    }
+
+    public function setBan(?int $ban): void
+    {
+        $this->ban = $ban;
+    }
     /**
      * @return Collection<int, self>
      */
@@ -294,6 +310,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->followers->removeElement($follower)) {
             $follower->removeFollowed($this);
         }
+
+        return $this;
+    }
+
+    public function getLinkHour(): ?\DateTimeInterface
+    {
+        return $this->linkHour;
+    }
+
+    public function setLinkHour(?\DateTimeInterface $linkHour): static
+    {
+        $this->linkHour = $linkHour;
 
         return $this;
     }

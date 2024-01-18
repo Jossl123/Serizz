@@ -45,6 +45,14 @@
                         </li>
                     </ul>
 
+                    <label>
+                        <select name="connectedOrder" class="bg-[--grey] rounded-full px-2 py-1 my-3">
+                            <option value=""> --- Connection Order --- </option>
+                            <option value="ASC"> Most Recent </option>
+                            <option value="DESC"> Oldest </option>
+                        </select>
+                    </label>
+
                 {% endif %}
                 <br>
                 <button class="bg-[--grey] rounded-full px-2 py-1"> Apply </button>
@@ -80,6 +88,8 @@
                             <th class="px-6 py-3"> Register Date </th>
                             <th class="px-6 py-3"> Country </th>
                             <th class="px-6 py-3"> Admin </th>
+                            <th class="px-6 py-3"> Banned </th>
+                            <th class="px-6 py-3"> Connected since </th>
                         {% endif %}
                         <th class="px-6 py-3"> Actions </th>
                     </tr>
@@ -92,17 +102,19 @@
                         {% if ( app.user ) and ( app.user.admin != 0 ) %}
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.registerDate ? user.registerDate|date('Y-m-d H:i:s') : '' }}</td>
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.country }}</td>
-                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
+                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.admin == 0 %} No {% elseif user.admin == 1 %} Yes {% else %} Super Admin {% endif %}</td>
+                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.ban == 0 %} No {% else %} Yes {% endif %}</td>
+                            <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{% if user.linkHour != null %} {{ user.linkHour ? user.linkHour|date('Y-m-d H:i:s') : ''}} {% else %} User disconnected {% endif %}</td>
                         {% endif %}
-                        <td class="font-medium text-blue-600 hover:underline">
-                            <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
+                        <td class="font-medium text-white">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="hover:underline">SHOW</a> |
                             {% if ( app.user ) %}
                                 {% if app.user != user %}
-                                    <a href="{{ path('app_user_update_followed', {'id': user.id}) }}"> {% if user in app.user.followed %} UNFOLLOW {% else %} FOLLOW {% endif %} | </a>
+                                    <a href="{{ path('app_user_update_followed', {'id': user.id}) }}" class="hover:underline"> {% if user in app.user.followed %}UNFOLLOW{% else %}FOLLOW{% endif %} </a> |
                                 {% endif %}
                                 {% if app.user.admin != 0 %}
-                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
-                                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>
+                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="hover:underline">EDIT</a> |
+                                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="hover:underline">EMBODY</a>
                                 {% endif %}
                             {% endif %}
                         </td>

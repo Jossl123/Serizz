@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
@@ -21,9 +22,12 @@ class AppAuthAuthenticator extends AbstractLoginFormAuthenticator
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'app_login';
+    private UserProviderInterface $userProvider;
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    public function __construct(private UrlGeneratorInterface $urlGenerator, UserProviderInterface $userProvider, private \Doctrine\ORM\EntityManagerInterface $entityManager)
     {
+        $this->userProvider = $userProvider;
+        $this->entityManager = $entityManager;
     }
 
     public function authenticate(Request $request): Passport
@@ -47,6 +51,14 @@ class AppAuthAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
+
+        $user = $this->entityManager
+                ->getRepository('App\Entity\User')
+                ->findOneBy(['email' => $token->getUserIdentifier()]);
+
+        $user->setLinkHour(new \DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
 
         return new RedirectResponse($this->urlGenerator->generate('app_default'));
     }
