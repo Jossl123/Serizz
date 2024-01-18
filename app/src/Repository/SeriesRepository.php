@@ -59,17 +59,17 @@ class SeriesRepository extends EntityRepository
             $search->andWhere($search->expr()->in('s.id', $subsearch->getDQL()));
         }
 
-        /**
         if (isset($filters['Srate']) or isset($filters['rateE'])) {
             $minRate = isset($filters['Srate']) ? $filters['Srate'] : 0;
-            $maxRate = isset($filters['rateE']) ? $filters['rateE'] : 5;
-            $search->join('s.ratings', 'r')
-                ->andwhere('r.checkrate = 1')
-                ->andwhere('r.value BETWEEN :min AND :max')
-                ->setParameter('min', $minRate)
-                ->setParameter('max', $maxRate);
+            $maxRate = isset($filters['rateE']) ? $filters['rateE'] : 10;
+            if ($minRate != 0 || $maxRate != 10){
+                $search->join('s.ratings', 'r')
+                    ->andwhere('r.checkrate = 1')
+                    ->andwhere('r.value BETWEEN :min AND :max')
+                    ->setParameter('min', $minRate)
+                    ->setParameter('max', $maxRate);
+            }
         }
-         */
 
         if (isset($filters['followed-users']) && $user != null) {
             $search->join('s.user', 'u')
