@@ -320,7 +320,7 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        if ($this->getUser()->getBan() == 1) {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
         }
         $form = $this->createForm(UserType::class, $user);
