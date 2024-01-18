@@ -74,6 +74,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private Collection $followed;
 
+    #[ORM\OneToMany(targetEntity: "Rating", mappedBy: 'user')]
+    private $ratings;
+
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followed')]
     private Collection $followers;
 
@@ -90,6 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->episode = new \Doctrine\Common\Collections\ArrayCollection();
         $this->followed = new ArrayCollection();
         $this->followers = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -322,6 +326,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLinkHour(?\DateTimeInterface $linkHour): static
     {
         $this->linkHour = $linkHour;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getUserId() === $this) {
+                $rating->setUserId(null);
+            }
+        }
 
         return $this;
     }
