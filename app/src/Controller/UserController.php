@@ -25,11 +25,13 @@ class UserController extends AbstractController
     {
         $page = $request->query->get('page', 1) - 1;
         $search = $request->query->get('search', "");
-        $searchForUser = $request->query->get('user', false);
-        $searchForAdmin = $request->query->get('admin', false);
-        $searchForSuperAdmin = $request->query->get('superAdmin', false);
+        $searchForUser = $request->query->get('user', "");
+        $searchForAdmin = $request->query->get('admin', "");
+        $searchForSuperAdmin = $request->query->get('superAdmin', "");
         $connectedOrder = $request->query->get('connectedOrder', "");
-
+        
+        $userRank = $searchForUser."_".$searchForAdmin."_".$searchForSuperAdmin;
+        dump($userRank);
         if ($this->getUser() && $this->getUser()->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
         }
@@ -37,71 +39,39 @@ class UserController extends AbstractController
         $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
 
         $limit = 10;
-        $usersRepo = $entityManager
-            ->getRepository(User::class);
+        $search = $entityManager->createQueryBuilder();
+        $search->select('u')
+            ->from('\App\Entity\User', 'u');
 
+        $ranks = array_diff(explode("_", $userRank),array(""));
+        if (sizeof($ranks)>0) {
+            $subsearch = $entityManager->createQueryBuilder();
+            $subsearch->select('sub_u')
+                ->from('\App\Entity\User', 'sub_u')
+                ->where('sub_u.admin IN (:ranks)');
+            $search->setParameter('ranks', $ranks);
+            $search->andWhere($search->expr()->in('u.id', $subsearch->getDQL()));
+        }
         if (isset($_GET['search'])) {
-            $users = $usersRepo->findAll();
-            $users_match = array();
-
-            if ($searchForUser || $searchForAdmin || $searchForSuperAdmin) {
-                foreach ($users as $user) {
-                    $userRole = $user->getRoles();
-                    foreach ($searchArray as $search) {
-                        for ($i = 0; $i < sizeof($userRole); $i++) {
-                            if ($search == $userRole[$i]) {
-                                $users_match[] = $user;
-                            }
-                        }
-                    }
-                }
-
-                $userNb = sizeof($users_match);
-
-            } else {
-                foreach ($users as $user) {
-                    if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
-                        $users_match[] = $user;
-                    }
-                }
-
-                $userNb = sizeof($users_match);
-
-                if ($page > $userNb / $limit) {
-                    $page = ceil($userNb / $limit);
-                }
-                if ($page < 0) {
-                    $page = 0;
-                }
-            }
-
-            $users_match = array_slice($users_match, $page * $limit, $limit);
-            $users = $users_match;
-        } else {
-            $userNb = $usersRepo->count([]);
-
-            if ($page > $userNb / $limit) {
-                $page = ceil($userNb / $limit);
-            }
-            if ($page < 0) {
-                $page = 0;
-            }
-
-            $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
+            $search->andwhere('u.email LIKE :search')
+                ->setParameter('search', '%' . $_GET['search'] . '%');
         }
-
         if ($connectedOrder != "") {
-            if ($connectedOrder == 'DESC') {
-                usort($users, function ($a, $b) {
-                    return $a->getLinkHour() > $b->getLinkHour();
-                });
-            } else {
-                usort($users, function ($a, $b) {
-                    return $a->getLinkHour() < $b->getLinkHour();
-                });
-            }
+            $search->orderBy('u.linkHour', $connectedOrder);
+        }else{
+            $search->orderBy('u.registerDate', $connectedOrder);
         }
+        $res = $search->getQuery()->getResult();
+        $userNb = sizeof($res);
 
+        if ($page > $userNb / $limit) {
+            $page = ceil($userNb / $limit);
+        }
+        if ($page < 0) {
+            $page = 0;
+        }
+        
+        $users = array_slice((array)$res, $page * $limit, $limit);
         return $this->render('user/index.html.twig', [
             'users' => $users,
             'pagesNb' => ceil($userNb / $limit),
