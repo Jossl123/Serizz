@@ -23,7 +23,6 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        dump($this->getUser());
         $page = $request->query->get('page', 1) - 1;
         $search = $request->query->get('search', "");
         $searchForUser = $request->query->get('user', false);
@@ -31,10 +30,8 @@ class UserController extends AbstractController
         $searchForSuperAdmin = $request->query->get('superAdmin', false);
         $connectedOrder = $request->query->get('connectedOrder', "");
 
-        if ($this->getUser() != null) {
-            if ($this->getUser()->getBan() == 1) {
-                return $this->redirectToRoute('app_banned');
-            }
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
         }
 
         $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
@@ -117,6 +114,9 @@ class UserController extends AbstractController
     #[Route('/followed', name: 'app_user_index_followed', methods: ['GET'])]
     public function index_followed(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $page = $request->query->get('page', 1) - 1;
         $search = $request->query->get('search', "");
         $searchForUser = $request->query->get('user', false);
@@ -195,6 +195,9 @@ class UserController extends AbstractController
     #[Route('/new', name: 'app_user_update_followed', methods: ['GET', 'POST'])]
     public function update_followed(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $followedId = $request->query->get('id', 0);
         $userToFollow = $entityManager->getRepository(User::class)->findOneBy(array('id' => $followedId));
         $user = $this->getUser();
@@ -211,6 +214,9 @@ class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -231,8 +237,27 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
-        if ($this->getUser() != null) {
-            if ($this->getUser()->getBan() == 1) {
+
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
+        if (!is_numeric($id)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        
+        }
+
+        $user = $entityManager
+        ->getRepository(User::class)
+        ->findOneBy(array('id' => $id));
+
+        if (!isset($user)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+
+        } else {
+        
+            if ($this->getUser() && $this->getUser()->getBan() == 1) {
                 return $this->redirectToRoute('app_banned');
             }
         }
