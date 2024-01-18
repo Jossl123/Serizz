@@ -229,58 +229,58 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show($id, EntityManagerInterface $entityManager, Request $request): Response
+    public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
-
-        if (!is_numeric($id)){
-
-            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
-        
-        }
-
-        $user = $entityManager
-        ->getRepository(User::class)
-        ->findOneBy(array('id' => $id));
-
-        if (!isset($user)){
-
-            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
-
-        } else {
-        
+        if ($this->getUser() != null) {
             if ($this->getUser()->getBan() == 1) {
                 return $this->redirectToRoute('app_banned');
             }
-            $seriesRepo = $user->getSeries();
-            $page = $request->query->get('page', 1) - 1;
-            $limit = 10;
-            $seriesNb = $seriesRepo->count([]);
+        }
+        $seriesRepo = $entityManager->getRepository(Series::class);
+        $userSeries = $user->getSeries();
+        $ratedSeries = $seriesRepo->findAllByRating($user);
 
-            if ($page > $seriesNb / $limit) {
-                $page = ceil($seriesNb / $limit);
-            }
-
-            if ($page < 0) {
-                $page = 0;
-            }
-
-            // Cast is needed since page*limit is a float 
-            $series = $seriesRepo->slice((int)$page * $limit, $limit);
-
-            $ratings = $entityManager
-                ->getRepository(Rating::class)
-                ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
-
-            return $this->render('user/show.html.twig', [
-                'user' => $user,
-                'followedSeries' => $series,
-                'ratings' => $ratings,
-                'pagesNb' => ceil($seriesNb / $limit),
-                'page' => $page
-            ]);
+        // Could be better optimized...
+        // Removing the rated series of the total series
+        foreach ($ratedSeries as $rated) {
+            $userSeries->removeElement($rated);
+        }
+        $series = array();
+        // Adding the rated series first, then the other series 
+        foreach ($ratedSeries as $rated) {
+            array_push($series, $rated);
+        }
+        foreach ($userSeries as $otherSeries) {
+            array_push($series, $otherSeries);
         }
 
+        $page = $request->query->get('page', 1) - 1;
+        $limit = 10;
+        $seriesNb = count($series);
+
+        if ($page > $seriesNb / $limit) {
+            $page = ceil($seriesNb / $limit);
+        }
+
+        if ($page < 0) {
+            $page = 0;
+        }
+
+        $series = array_slice($series, $page * $limit, $limit);
+
+        $ratings = $entityManager
+            ->getRepository(Rating::class)
+            ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
+
+        return $this->render('user/show.html.twig', [
+            'user' => $user,
+            'followedSeries' => $series,
+            'ratings' => $ratings,
+            'pagesNb' => ceil($seriesNb / $limit),
+            'page' => $page
+        ]);
     }
+
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_user_embody', methods: ['GET'])]
