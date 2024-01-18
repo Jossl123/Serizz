@@ -30,7 +30,7 @@ Liste et description des boutons :
     Permet d'accéder à un espace personnel où il est possible de voir les séries que l'on suit, de voir sa progression sur les séries dont certains épisodes ont été marqués comme vus ou encore de voir les séries considérées comme terminées (vues totalement).
 
 - "Users" :
-    Permet d'accéder à la liste des utilisateurs du site, depuis cette page il est possible d'obtenir des informations comme le mail, la nationalité ou encore le nom d'un utilisateur. Il est possible d'y faire une recherche par e-mail ou encore une recherche filtrée par rôle utilisateur (super administrateur, administrateur, utilisateur). Il est possible d'accéder à la liste des utilisateurs suivis en cliquant sur le bouton "Your followed users".
+    Permet d'accéder à la liste des utilisateurs du site, depuis cette page il est possible d'obtenir des informations comme le mail, la nationalité ou encore le nom d'un utilisateur. Il est possible d'y faire une recherche par e-mail ou encore une recherche filtrée par rôle utilisateur (super administrateur, administrateur, utilisateur). Il est possible d'accéder à la liste des utilisateurs suivis en cliquant sur le bouton "Your followed users". De plus, l'utilisateur peut en suivre un autre, consulter la page d'un autre depuis les boutons disponibles à droite.
 
 - "Settings" :
     Cet onglet sert à la modification des informations personnelles indiquées sur votre compte, tout y est modifiable.
@@ -38,9 +38,9 @@ Liste et description des boutons :
 - Menu burger :
     Dans le menu burger en haut à droite de l'application se situent les options pour s'enregistrer, se connecter ou se déconnecter.
 
-#### - Catégories administrateur et diverses fonctionnalités :
+#### - Catégories administrateur et diverses fonctionnalités
 
-##### Catégories :
+##### Catégories
 
 - "Add Series" :
     Sur cette page, l'administrateur peut envoyer des requêtes à la base de données OMDB (Open Moovie Database) directement grâce à la barre de recherche sur la page, il peut ajouter une série à la base de données du site.
@@ -48,11 +48,13 @@ Liste et description des boutons :
 - "Admin Panel" :
     Permet à l'administrateur d'avoir accès à un tableau où sont stockés les avis qui n'ont pas encore été approuvés. L'administrateur peut choisir individuellement d'accepter ou de refuser un avis, ce qui respectivement le fait apparaître aux yeux de tous sur la page de la série en question ou le supprime directement de la base de données.
 
-##### Fonctionnalités : 
+##### Fonctionnalités
 
-- Embody : 
+- Embody :
     L'administrateur peut depuis la liste des utilisateurs prendre la possession de n'importe quel compte (sauf super-administrateur), il a donc la vision d'un utilisateur lambda du site et peut tester des fonctionnalités depuis ce compte.
 
 - Modifications de séries :
     L'administrateur peut modifier lui-même à la main des informations d'une série directement depuis la page de celle-ci.
 
+- Bannissement :
+    Un administrateur peut choisir de bannir un compte du site depuis la page d'un utilisateur, ce qui restreint totalement l'accès de celui-ci.
