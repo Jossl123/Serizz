@@ -72,6 +72,15 @@
 			</dl>
 			<div class="flex flex-col gap-1 mt-2">
 				{% if app.user %}
+					{% if app.user != user %}
+						<a href="{{ path('app_user_update_followed', {'id': user.id, 'route': 'app_user_show'}) }}" class="p-1 flex justify-center font-medium text-white rounded-lg bg-indigo-500 hover:bg-indigo-400">
+						{% if user not in app.user.followed %}
+							Follow
+						{% else %}
+							Unfollow
+						{% endif %}
+					{% endif %}
+					</a>
 					{% if app.user.admin != 0 %}
 						<a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="p-1 flex justify-center font-medium text-white rounded-lg bg-indigo-500 hover:bg-indigo-400">
 							Embody
