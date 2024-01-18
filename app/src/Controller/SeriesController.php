@@ -300,8 +300,8 @@ class SeriesController extends AbstractController
     public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
-        $see_all = boolval($request->query->get('all', 'false'));
-        $all_prev = boolval($request->query->get('all_prev', 'true'));
+        $see_all = $request->query->get('all', 'false') === 'true'? true: false;
+        $all_prev = $request->query->get('all_prev', 'true') === 'true'? true: false;
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
         /** @var \App\Entity\User */
         $user = $this->getUser();
@@ -331,7 +331,7 @@ class SeriesController extends AbstractController
             }
         }
 
-        return new JsonResponse(array('success' => "true"));
+        return new JsonResponse(array('success' => "true", "see" => $see_all, "fe"=>$request->query->get('all', 'false')));
     }
 
 

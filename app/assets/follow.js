@@ -68,25 +68,33 @@ function watch_ep( url_to_fetch, first, all=true){
     var ep_id = url_to_fetch.split("=")[1]
     if (!all)url_to_fetch +="&all_prev=false"
     if(first)url_to_fetch+="&all=true"
-    console.log(url_to_fetch, first, all)
     fetch(url_to_fetch).then(response => response.json()).then(result => {
         if (!result.success) {
             return
         }
         var progress_bar_serie = document.getElementById("progress_bar_serie");
         var ep = document.getElementById(`ep-${ep_id}`)
-
-        ep.classList.toggle("nf-fa-check")
-        ep.classList.toggle("nf-md-eye_off")
-        if (ep.classList.contains("nf-fa-check")) {
-            if (all){
-                var i = 0
-                var all_episodes = document.querySelectorAll("#seasons_episodes .nf")
-                while (i < all_episodes.length && all_episodes[i] != ep){
-                    all_episodes[i].classList.add("nf-fa-check")
-                    all_episodes[i].classList.remove("nf-md-eye_off")
-                    i++
-                };
+        if (first){
+            var i = 0
+            var all_episodes = document.querySelectorAll("#seasons_episodes .nf")
+            while (i < all_episodes.length ){
+                all_episodes[i].classList.add("nf-fa-check")
+                all_episodes[i].classList.remove("nf-md-eye_off")
+                i++
+            };
+        }else{
+            ep.classList.toggle("nf-fa-check")
+            ep.classList.toggle("nf-md-eye_off")
+            if (ep.classList.contains("nf-fa-check")) {
+                if (all){
+                    var i = 0
+                    var all_episodes = document.querySelectorAll("#seasons_episodes .nf")
+                    while (i < all_episodes.length && all_episodes[i] != ep){
+                        all_episodes[i].classList.add("nf-fa-check")
+                        all_episodes[i].classList.remove("nf-md-eye_off")
+                        i++
+                    };
+                }
             }
         }
 

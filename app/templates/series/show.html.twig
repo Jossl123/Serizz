@@ -51,9 +51,9 @@
 								{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
 								<button id="see_all" onclick="watch_ep('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
 									{% if percentage_serie == 100 %}
-										<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
+										<i id="see-all-ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
 									{% else %}
-										<i id="ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
+										<i id="see-all-ep-{{episode.getId()}}" class="nf nf-md-eye_off"></i>
 									{% endif %}
 								</button>
 							{% endif %}
