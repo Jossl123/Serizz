@@ -5,6 +5,8 @@
 {% block body %}
     <div class="flex items-center flex-col">
         <h1 class="text-2xl">Editing {{ series.title }}</h1>
+        <a href="{{ path('app_series_show', { 'id': series.id }) }}" class="text-blue-500 font-bold no-underline">Back to Series</a>
+
 
         <form method="post" class="flex flex-col gap-2 max-w-md mx-auto">
             <label class="text-xl">
@@ -63,5 +65,6 @@
             </label>
             <input type="submit" value="Confirm Changes" class="bg-blue-500 text-white p-2 rounded-md cursor-pointer">
         </form>
+        <a href="{{ path('app_series_show', { 'id': series.id }) }}" class="text-blue-500 font-bold no-underline">Back to Series</a>
     </div>
 {% endblock %}
