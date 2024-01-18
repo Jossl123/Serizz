@@ -142,7 +142,7 @@ class DefaultController extends AbstractController
         }
 
         if (isset($_POST['update'])) {
-            $this->update($content, $series, $content['imdbID'],  $entityManager);
+            $this->update($content, $content['imdbID'], $entityManager);
         }
 
         if (isset($_POST['add'])) {
@@ -261,7 +261,7 @@ class DefaultController extends AbstractController
      * @throws \ReflectionException
      * @throws TransportExceptionInterface
      */
-    public function update($content, $series, $id, $entityManager): void
+    public function update($content, $id, $entityManager): void
     {
         $valuesToCheckEasy = array(
             "Title",
@@ -385,6 +385,35 @@ class DefaultController extends AbstractController
     #[Route('/banned', name:'app_banned')]
     public function banned():Response {
         return $this->render('default/_banned.html.twig');
+    }
+
+    /**
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \ReflectionException
+     */
+    #[Route('/{id}/update', name:'app_default_update')]
+    public function runUpdate($id, EntityManagerInterface $entityManager): Response {
+        $series = $entityManager
+            ->getRepository(Series::class)
+            ->findOneBy(['id' => $id]);
+
+        $url = "http://www.omdbapi.com/?apikey=3c7a370d&type=series&";
+        $url .= "t=" . $series->getTitle();
+
+        $response = $this->client->request('GET', $url);
+        $statusCode = $response->getStatusCode();
+        $contentType = $response->getHeaders()['content-type'][0];
+        $content = $response->getContent();
+        $content = $response->toArray();
+        $content["Trailer"] = "";
+
+        $this->update($content, $content['imdbID'], $entityManager);
+
+        return $this->redirectToRoute('app_series_show', ['id' => $id]);
     }
 
 }

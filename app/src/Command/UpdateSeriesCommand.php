@@ -76,7 +76,7 @@ class UpdateSeriesCommand extends Command
         $response = $this->client->request('GET', $url);
         $content = $response->toArray();
 
-        $this->defaultC->update($content, $series, $serie->getImdb(), $this->em);
+        $this->defaultC->update($content, $serie->getImdb(), $this->em);
     }
 
     protected function configure(): void
