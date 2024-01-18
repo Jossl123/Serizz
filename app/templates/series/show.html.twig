@@ -64,7 +64,7 @@
 						<a href="{{path('app_login')}}">Login to follow</a>
 					{% endif %}
 				</div>
-				{% if app.user.admin != 0%}
+				{% if app.user and app.user.admin != 0%}
 				<div class="flex text-white font-sm justify-around p-1">
 					<a href="{{ path('app_series_edit', { 'id': series.id}) }}" class=" p-1 rounded bg-indigo-500 text-white text-center font-bold block">
 						Edit

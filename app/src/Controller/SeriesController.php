@@ -230,7 +230,7 @@ class SeriesController extends AbstractController
             ->andWhere('r.checkrate = 1');
         if (isset($_GET["by_rate"])) {
             $low = $_GET["by_rate"] * 2;
-            $high = $low + 1;
+            $high = $low + 2;
             $sortedRatings = $sortedRatings->andWhere('r.value BETWEEN :low AND :high')
                 ->setParameter('low', $low)
                 ->setParameter('high', $high);
