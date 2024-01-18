@@ -15,6 +15,7 @@ You can check the installed version and whether it installed correctly by typing
 
 You are also going to need **composer**, a package manager for PHP.
 To check if it is already installed, and/or it's version you can use `composer -v`. If it isn't, install it by following the instructions [[https://getcomposer.org/download/|here]].
+Along with composer you need to be able to use **npm**. To check if it is already installed, and/or it's version you can use `npm -v`. If it isn't, install it by following the instructions [[https://www.npmjs.com/get-npm|here]].
 
 You are free to download it manually from the link provided above if you wish to do so.
 
