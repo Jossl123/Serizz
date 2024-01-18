@@ -236,7 +236,6 @@ class SeriesController extends AbstractController
                 $ratings_displayed[$i] = $query->getSingleScalarResult() / sizeof($ratings);
             }
         }
-        dump($ratings_displayed);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -257,7 +256,8 @@ class SeriesController extends AbstractController
     public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
-        $see_all = $request->query->get('all', true);
+        $see_all = boolval($request->query->get('all', 'true'));
+        dump($see_all);
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
         /** @var \App\Entity\User */
         $user = $this->getUser();
@@ -287,7 +287,7 @@ class SeriesController extends AbstractController
             }
         }
 
-        return new JsonResponse(array('success' => "true"));
+        return new JsonResponse(array('success' => "true", 'see'=> $see_all));
     }
 
 
