@@ -23,6 +23,11 @@
 		{% set avgSeriesRates = ((avgSeriesRates / totalSeriesCount *10)|round /10)/2 %}
 	{% endif %}
 
+	<div id="confirmation" class="bg-[--grey] z-[100] absolute hidden">
+		Have you watched previous episodes ?
+		<button>yes</button>
+		<button>no</button>
+	</div>
 
 	<iframe class="xl:hidden block absolute w-[100vw] h-[56vw] -translate-y-[20%] -z-[1000]" id="trailer" allow="autoplay" src="https://youtube.com/embed/{{url}}?controls=0&autoplay=1&mute=1&modestbranding=1&showinfo=0&rel=0&loop=1&cc_load_policy=1&showinfo=0autohide=2&playlist={{url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" style="-webkit-mask-image: linear-gradient(0deg, transparent 0,#030516 100%)"></iframe>
 	<div x-data="{ following: {{ (app.user and app.user.getSeries().contains(series)) ? 'true' : 'false'}} }" class="flex sm:px-12 px-4 xl:py-12 pt-64 relative sm:flex-row flex-col">
@@ -40,7 +45,7 @@
 						{% if series.getSeasons()|length > 0  %}
 							{% if (series.getSeasons()|last).getEpisodes()|length > 0%}
 								{% set episode = (series.getSeasons()|last).getEpisodes()|last %}
-								<button id="see_all" onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
+								<button id="see_all" onclick="watch_ep('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}'	, true )">
 									{% if percentage_serie == 100 %}
 										<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
 									{% else %}
@@ -155,7 +160,7 @@
 							{% for episode in season.getEpisodes() %}
 								<div>
 									{% if is_granted('ROLE_USER') %}
-										<button onclick="mark_as_seen('{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
+										<button onclick="mark_as_seen(event, '{{ path('app_series_update', {'id': series.getId(), 'update': episode.getId()}) }}')">
 											{% if app.user.getEpisode().contains(episode) %}
 												<i id="ep-{{episode.getId()}}" class="nf nf-fa-check"></i>
 											{% else %}
@@ -288,7 +293,7 @@
 							</p>
 						</div>
 						<div class="text-lg text-[--white] italic">
-							<p>{{ ownRating.comment| nl2br }}</p>
+							<p style="overflow-wrap: anywhere">{{ ownRating.comment| nl2br }}</p>
 						</div>
 					</div>
 					<hr class="m-2 border-[--grey]">
@@ -321,7 +326,7 @@
 								{% endif %}
 							</div>
 							<div class="text-lg text-[--white] italic">
-								<p>{{ r.comment }}</p>
+								<p style="overflow-wrap: anywhere">{{ r.comment }}</p>
 							</div>
 						</div>
 						<hr class="m-2 border-[--grey]">

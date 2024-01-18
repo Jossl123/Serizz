@@ -236,7 +236,6 @@ class SeriesController extends AbstractController
                 $ratings_displayed[$i] = $query->getSingleScalarResult() / sizeof($ratings);
             }
         }
-        dump($ratings_displayed);
         if (isset($serie)) {
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
@@ -257,11 +256,12 @@ class SeriesController extends AbstractController
     public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
-        $see_all = $request->query->get('all', true);
+        $see_all = boolval($request->query->get('all', 'false'));
+        $all_prev = boolval($request->query->get('all_prev', 'true'));
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        if ($user->getEpisode()->contains($episode)) {
+        if ($user->getEpisode()->contains($episode) && !$see_all) {
             $user->removeEpisode($episode);
             $entityManager->flush();
         } else {
@@ -269,7 +269,7 @@ class SeriesController extends AbstractController
             $user->addSeries($episode->getSeason()->getSeries());
             $entityManager->flush();
             $current_season = $episode->getSeason();
-            if ($see_all) {
+            if ($all_prev) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
                         if ($ep == $episode) {
