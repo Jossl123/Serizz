@@ -29,6 +29,7 @@ class UserController extends AbstractController
         $searchForUser = $request->query->get('user', false);
         $searchForAdmin = $request->query->get('admin', false);
         $searchForSuperAdmin = $request->query->get('superAdmin', false);
+        $connectedOrder = $request->query->get('connectedOrder', "");
 
         if ($this->getUser()->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
@@ -57,6 +58,7 @@ class UserController extends AbstractController
                 }
 
                 $userNb = sizeof($users_match);
+
             } else {
                 foreach ($users as $user) {
                     if (str_contains(strtoupper($user->getEmail()), strtoupper($search))) {
@@ -87,6 +89,18 @@ class UserController extends AbstractController
             }
 
             $users = $usersRepo->findBy(array(), ['registerDate' => 'DESC'], $limit, $page * $limit);
+        }
+
+        if ($connectedOrder != "") {
+            if ($connectedOrder == 'DESC') {
+                usort($users, function ($a, $b) {
+                    return $a->getLinkHour() > $b->getLinkHour();
+                });
+            } else {
+                usort($users, function ($a, $b) {
+                    return $a->getLinkHour() < $b->getLinkHour();
+                });
+            }
         }
 
         return $this->render('user/index.html.twig', [
