@@ -31,13 +31,10 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'app_default')]
     public function index(EntityManagerInterface $entityManager): Response
     {
+        /** @var \App\Entity\User */
         $user = $this->getUser();
         if ($user && $user->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
-        }
-
-        if ($user) {
-            dump($user->getLinkHour());
         }
         // Getting the four most followed series
         $seriesRepo = $entityManager
@@ -47,8 +44,7 @@ class DefaultController extends AbstractController
 
         $usersRepo = $entityManager
             ->getRepository(User::class);
-        $ratingRepo = $entityManager
-            ->getRepository(Rating::class);
+
             
         $search = $entityManager->createQueryBuilder();
         $search->select('COUNT( e.id)')
@@ -63,13 +59,13 @@ class DefaultController extends AbstractController
                 "watched_episodes" => $episode_watched, 
             ]);
         }
-        /** @var \App\Entity\User */
-        $user = $this->getUser();
         $followed_series = $user->getSeries();
+        $feed=$usersRepo->findAllUpdatesFromFriends($user->getId());
 
         return $this->render('default/index.html.twig', [
             "hall_of_fame" => $hallOfFameSeries,
-            "recently_seen" => $followed_series
+            "recently_seen" => $followed_series,
+            "feed"=>$feed
         ]);
     }
 
