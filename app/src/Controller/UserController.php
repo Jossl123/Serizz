@@ -228,22 +228,21 @@ class UserController extends AbstractController
 
         // Could be better optimized...
         // Removing the rated series of the total series
-        foreach($ratedSeries as $rated){
+        foreach ($ratedSeries as $rated) {
             $userSeries->removeElement($rated);
         }
         $series = array();
         // Adding the rated series first, then the other series 
-        foreach($ratedSeries as $rated){
+        foreach ($ratedSeries as $rated) {
             array_push($series, $rated);
         }
-        foreach($userSeries as $otherSeries){
+        foreach ($userSeries as $otherSeries) {
             array_push($series, $otherSeries);
         }
 
         $page = $request->query->get('page', 1) - 1;
         $limit = 10;
         $seriesNb = count($series);
-        dump($seriesNb);
 
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
@@ -253,16 +252,11 @@ class UserController extends AbstractController
             $page = 0;
         }
 
-        dump($page < 0);
-        dump($page > $seriesNb / $limit);
-        
         $series = array_slice($series, $page * $limit, $limit);
 
         $ratings = $entityManager
             ->getRepository(Rating::class)
             ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
-
-        dump($series);
 
         return $this->render('user/show.html.twig', [
             'user' => $user,
