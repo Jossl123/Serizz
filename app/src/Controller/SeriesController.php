@@ -70,7 +70,7 @@ class SeriesController extends AbstractController
         $resPercentages = [];
         foreach ($series as $se) {
             $seriesId = $se->getId();
-            if ($percentages[$seriesId]["total_ep"] > 0){
+            if (isset($percentages[$seriesId]) && $percentages[$seriesId]["total_ep"] > 0){
                 $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
             }
             else{
@@ -118,7 +118,7 @@ class SeriesController extends AbstractController
         $resPercentages = [];
         foreach ($series as $se) {
             $seriesId = $se->getId();
-            if ($percentages[$seriesId]["total_ep"] > 0){
+            if (isset($percentages[$seriesId]) && $percentages[$seriesId]["total_ep"] > 0){
                 $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
             }
             else{
@@ -157,7 +157,7 @@ class SeriesController extends AbstractController
         $resPercentages = [];
         foreach ($seriesCompleted as $se) {
             $seriesId = $se->getId();
-            if ($percentages[$seriesId]["total_ep"] > 0){
+            if (isset($percentages[$seriesId]) && $percentages[$seriesId]["total_ep"] > 0){
                 $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
             }
             else{
@@ -244,43 +244,43 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
         if (isset($serie)) {
-        foreach ($serie->getSeasons() as $key => $season) {
-            $seen =  0;
-            $season_episode_nb = $season->getEpisodes()->count();
-            $episode_nb += $season_episode_nb;
-            foreach ($season->getEpisodes() as $ep_id => $episode) {
-                $seen += $episode->getUser()->contains($user);
+            foreach ($serie->getSeasons() as $key => $season) {
+                $seen =  0;
+                $season_episode_nb = $season->getEpisodes()->count();
+                $episode_nb += $season_episode_nb;
+                foreach ($season->getEpisodes() as $ep_id => $episode) {
+                    $seen += $episode->getUser()->contains($user);
+                }
+                $percentage_serie += $seen;
+                if ($season_episode_nb == 0) {
+                    $percentages_seasons[$key] = 100;
+                } else {
+                    $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
+                }
             }
-            $percentage_serie += $seen;
-            if ($season_episode_nb == 0) {
-                $percentages_seasons[$key] = 100;
+            if ($episode_nb == 0) {
+                $percentage_serie = 100;
             } else {
-                $percentages_seasons[$key] = (int)($seen / $season_episode_nb * 100);
+                $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
             }
-        }
-        if ($episode_nb == 0) {
-            $percentage_serie = 100;
-        } else {
-            $percentage_serie = (int)($percentage_serie / $episode_nb * 100);
-        }
-        $ratings_displayed = array(0, 0, 0, 0, 0);
-        if (sizeof($ratings) > 0) {
-            for ($i = 0; $i < 5; $i++) {
-                $lower = 2 * $i + 1;
-                $upper = 2 * $i + 2;
-                $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
-                    ->select('COUNT(r.id)')
-                    ->where('r.series = :series_id')
-                    ->andWhere('r.value BETWEEN :lower AND :upper')
-                    ->andWhere('r.checkrate = 1')
-                    ->setParameter('series_id', $id)
-                    ->setParameter('lower', $lower)
-                    ->setParameter('upper', $upper)
-                    ->getQuery();
-                $ratings_displayed[$i] = $query->getSingleScalarResult() / sizeof($ratings);
+            $ratings_displayed = array(0, 0, 0, 0, 0);
+            if (sizeof($ratings) > 0) {
+                for ($i = 0; $i < 5; $i++) {
+                    $lower = 2 * $i + 1;
+                    $upper = 2 * $i + 2;
+                    $query = $entityManager->getRepository(Rating::class)->createQueryBuilder('r')
+                        ->select('COUNT(r.id)')
+                        ->where('r.series = :series_id')
+                        ->andWhere('r.value BETWEEN :lower AND :upper')
+                        ->andWhere('r.checkrate = 1')
+                        ->setParameter('series_id', $id)
+                        ->setParameter('lower', $lower)
+                        ->setParameter('upper', $upper)
+                        ->getQuery();
+                    $ratings_displayed[$i] = $query->getSingleScalarResult() / sizeof($ratings);
+                }
             }
-        }
-        
+            
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
                 'percentages_seasons' => $percentages_seasons,
