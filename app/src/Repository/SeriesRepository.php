@@ -6,6 +6,13 @@ use Doctrine\ORM\EntityRepository;
 
 class SeriesRepository extends EntityRepository
 {
+
+    /**
+     * Finds the most followed series, with a limit.
+     * 
+     * @param int $limit The maximum number of series
+     * @return DoctrineCollection The series collection
+     */
     public function findAllByMostFollowed($limit)
     {
         $qb = $this->createQueryBuilder('s');
@@ -19,7 +26,10 @@ class SeriesRepository extends EntityRepository
     }
 
     /**
-     * Returns all the series a user has posted a rating on
+     * Finds all the series a user has posted a rating on.
+     * 
+     * @param App::User The user for whom we want to get the series with a rating
+     * @return DoctrineCollection The series collection
      */
     public function findAllByRating($user){
         $qb = $this->createQueryBuilder('s');
@@ -32,6 +42,13 @@ class SeriesRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Finds all the series with search filters.
+     * 
+     * @param array $filters The search filters
+     * @param App::User $user The user (used if we want to get the series that his followed users follow)
+     * @return DoctrineCollection The series collection
+     */
     public function findAllByFilters($filters, $user)
     {
         $search = $this->createQueryBuilder('s');
@@ -95,9 +112,11 @@ class SeriesRepository extends EntityRepository
         return $search->getQuery()->getResult();
     }
 
-
     /**
      * Returns the series that a user has completed.
+     * 
+     * @param int $userId The id of the user
+     * @return DoctrineCollection The completed series
      */
     public function findAllByCompletedSeries($userId)
     {
@@ -122,6 +141,13 @@ class SeriesRepository extends EntityRepository
         return $dql->getResult();
     }
 
+    /**
+     * Returns the series that are between two rating values.
+     * 
+     * @param float $min THe minimum rating value
+     * @param float $max THe maximum rating value
+     * @return DoctrineCollection The series collection
+     */
     public function findAllByRatingBetween($min, $max)
     {
         $dql = $this->getEntityManager()->createQuery('
