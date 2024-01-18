@@ -96,22 +96,24 @@
 		<div class="xl:px-10 w-full scrollable">
 			{% include('./pagination.html.twig') with {'app_path': "app_series_index", "pagesNb": pagesNb} %}
 			<div class="md:grid flex gap-4 md:grid-cols-5 md:grid-rows-2 md:overflow-hidden overflow-auto ">
-				{% for series in series %}
+				{% for serie in series %}
 					<div class="flex flex-col px-5 ">
 						<div class="relative w-[10rem] h-64 group overflow-hidden rounded ">
-							<a href="{{ path('app_series_show', {'id': series.id}) }}">
-								{%if series.poster %}
-									<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+							<a href="{{ path('app_series_show', {'id': serie.id}) }}">
+								{% if serie.poster %}
+									<img src="{{ path('app_series_poster', {'id': serie.id}) }}" alt="Series poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
 								{% else %}
-								<img src={{noposter}} alt="No poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
+									<img src={{noposter}} alt="No poster" class="shadow-sm w-full h-full object-cover max-w-48 ">
 								{% endif %}
+								{% include ('./percentage.html.twig') with {'percent': percentages[serie.id]*100, 'name': "progress_bar_serie_"} %}
 							</a>
-							{% include('./follow.html.twig') with {'serie': series} %}
+
+							{% include('./follow.html.twig') with {'serie': serie} %}
 						</div>
 						<div class="p-2 ">
-							<h1 class="text-white font-bold ">{{ series.title }}</h1>
+							<h1 class="text-white font-bold ">{{ serie.title }}</h1>
 							{# <p>{{ series.plot }}</p>  #}
-							<p>{{ series.yearStart }}</p>
+							<p>{{ serie.yearStart }}</p>
 						</div>
 					</div>
 				{% else %}

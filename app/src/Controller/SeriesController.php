@@ -63,8 +63,34 @@ class SeriesController extends AbstractController
 
             $series = $seriesRepo->findBy(array(), null, $limit, $page * $limit);
         }
+        /** @var \App\Entity\User */
+        $user = $this->getUser();
+        $dql = $entityManager->createQuery('
+            SELECT s.id, 
+                COUNT(DISTINCT e.id) as total_ep, 
+                SUM(CASE WHEN u.id = :userId THEN 1 ELSE 0 END) as seen_ep
+            FROM App:Series s
+            JOIN s.seasons se
+            JOIN se.episodes e
+            LEFT JOIN e.user u
+            index by s.id
+            GROUP BY s.id
+        ');
+        $dql->setParameter('userId', $user->getId());
+        $percentages = $dql->getResult();
+        $resPercentages = [];
+        foreach ($series as $se) {
+            $seriesId = $se->getId();
+            if ($percentages[$seriesId]["total_ep"] > 0){
+                $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
+            }
+            else{
+                $resPercentages[$seriesId] = 0;
+            }
+        }
         return $this->render('series/index.html.twig', [
             'series' => $series,
+            'percentages' => $resPercentages,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
             'init' => $search,
