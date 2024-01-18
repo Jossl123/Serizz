@@ -135,10 +135,16 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
-    public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
+    public function show($id, EntityManagerInterface $entityManager, Request $request): Response
     {
         if ($this->getUser()->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
+        }
+
+        if (!is_numeric($id)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        
         }
         /** @var \App\Entity\User */
         $user = $this->getUser();
@@ -199,7 +205,7 @@ class SeriesController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('app_series_show', ['id' => $id]);
         }
-
+        if (isset($serie)) {
         foreach ($serie->getSeasons() as $key => $season) {
             $seen =  0;
             $season_episode_nb = $season->getEpisodes()->count();
@@ -236,7 +242,7 @@ class SeriesController extends AbstractController
                 $ratings_displayed[$i] = $query->getSingleScalarResult() / sizeof($ratings);
             }
         }
-        if (isset($serie)) {
+        
             return $this->render('series/show.html.twig', [
                 'series' => $serie,
                 'percentages_seasons' => $percentages_seasons,

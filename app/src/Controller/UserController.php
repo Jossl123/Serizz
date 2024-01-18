@@ -227,38 +227,57 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
+    public function show($id, EntityManagerInterface $entityManager, Request $request): Response
     {
-        if ($this->getUser()->getBan() == 1) {
-            return $this->redirectToRoute('app_banned');
-        }
-        $seriesRepo = $user->getSeries();
-        $page = $request->query->get('page', 1) - 1;
-        $limit = 10;
-        $seriesNb = $seriesRepo->count([]);
 
-        if ($page > $seriesNb / $limit) {
-            $page = ceil($seriesNb / $limit);
+        if (!is_numeric($id)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+        
         }
 
-        if ($page < 0) {
-            $page = 0;
+        $user = $entityManager
+        ->getRepository(User::class)
+        ->findOneBy(array('id' => $id));
+
+        if (!isset($user)){
+
+            return $this->render('bundles/TwigBundle/Exception/error404.html.twig');
+
+        } else {
+        
+            if ($this->getUser()->getBan() == 1) {
+                return $this->redirectToRoute('app_banned');
+            }
+            $seriesRepo = $user->getSeries();
+            $page = $request->query->get('page', 1) - 1;
+            $limit = 10;
+            $seriesNb = $seriesRepo->count([]);
+
+            if ($page > $seriesNb / $limit) {
+                $page = ceil($seriesNb / $limit);
+            }
+
+            if ($page < 0) {
+                $page = 0;
+            }
+
+            // Cast is needed since page*limit is a float 
+            $series = $seriesRepo->slice((int)$page * $limit, $limit);
+
+            $ratings = $entityManager
+                ->getRepository(Rating::class)
+                ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
+
+            return $this->render('user/show.html.twig', [
+                'user' => $user,
+                'followedSeries' => $series,
+                'ratings' => $ratings,
+                'pagesNb' => ceil($seriesNb / $limit),
+                'page' => $page
+            ]);
         }
 
-        // Cast is needed since page*limit is a float 
-        $series = $seriesRepo->slice((int)$page * $limit, $limit);
-
-        $ratings = $entityManager
-            ->getRepository(Rating::class)
-            ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
-
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-            'followedSeries' => $series,
-            'ratings' => $ratings,
-            'pagesNb' => ceil($seriesNb / $limit),
-            'page' => $page
-        ]);
     }
 
     #[IsGranted('ROLE_ADMIN')]
