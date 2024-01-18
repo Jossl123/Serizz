@@ -35,9 +35,9 @@
 			<div class="m-3 w-64 ">
 				<div class="relative">
 					{% if series.poster %}
-							<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full ">
+						<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full ">
 					{% else %}
-							<img src="{{ noposter }}" alt="Series poster" class="w-full ">
+						<img src="{{ noposter }}" alt="Series poster" class="w-full ">
 					{% endif %}
 					{% include ('./percentage.html.twig') with {'percent': percentage_serie, 'name': "progress_bar_serie"} %}
 				</div>
@@ -64,6 +64,16 @@
 						<a href="{{path('app_login')}}">Login to follow</a>
 					{% endif %}
 				</div>
+				{% if app.user.admin != 0%}
+				<div class="flex text-white font-sm justify-around p-1">
+					<a href="{{ path('app_series_edit', { 'id': series.id}) }}" class=" p-1 rounded bg-indigo-500 text-white text-center font-bold block">
+						Edit
+					</a>
+					<a href="{{ path('app_default_update', { 'id': series.id}) }}" class="p-1 text-white bg-indigo-500 rounded  text-center font-bold block">
+						Update
+					</a>
+					</div>
+				{% endif %}
 			</div>
 			<div class="m-3">
 				<ul class="max-w-96">
@@ -196,15 +206,9 @@
 		<i class="nf nf-md-keyboard_backspace"></i>
 		Back to list
 	</a>
-	<a href="{{ path('app_series_edit', { 'id': series.id}) }}" class="text-[--white] text-center text-2xl font-bold block">
-		Edit
-	</a>
-	<a href="{{ path('app_default_update', { 'id': series.id}) }}" class="text-[--white] text-center text-2xl font-bold block">
-		Update
-	</a>
 	<div class="text-white bg-gray p-4 flex xl:flex-row flex-col" id="ratings_zone">
 		<div class="xl:w-1/3">
-			<a href="{{path('app_series_show',{'id': series.id})}}#ratings_zone"  class="text-4xl flex items-center w-full">
+			<a href="{{path('app_series_show',{'id': series.id})}}#ratings_zone" class="text-4xl flex items-center w-full">
 				{{ series.getRatingAvg()/2 }}/5
 				<div class="nf nf-fa-star text-3xl ml-1"></div>
 			</a>
@@ -326,13 +330,13 @@
 									</p>
 								</div>
 								{% if app.user and app.user.admin != 0 %}
-								<form action="{{ path('app_rating_delete', {'id': r.id, 'serieId': series.id}) }}" method="post">
-									<input type="hidden" name="_method" value="DELETE">
-									<input type="hidden" name="serieId" value="{{ series.id }}">
-									<button type="submit" class=" font-bold p-x rounded">
-										<i class="nf nf-md-delete_off text-red-500 hover:text-red-400"></i>
-									</button>
-								</form>
+									<form action="{{ path('app_rating_delete', {'id': r.id, 'serieId': series.id}) }}" method="post">
+										<input type="hidden" name="_method" value="DELETE">
+										<input type="hidden" name="serieId" value="{{ series.id }}">
+										<button type="submit" class=" font-bold p-x rounded">
+											<i class="nf nf-md-delete_off text-red-500 hover:text-red-400"></i>
+										</button>
+									</form>
 								{% endif %}
 							</div>
 							<div class="text-lg text-[--white] italic">

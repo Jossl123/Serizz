@@ -64,14 +64,14 @@
 
 </style>
 
-    <div class="flex flex-row">
+    <div class="flex flex-col gap-1 ">
 
-        <a href="{{ path('app_user_index') }}" class="mx-2.5 mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+        <a href="{{ path('app_user_index') }}" class="text-xl  inline-flex items-center justify-center p-1 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
             Back to list
         </a>
 
 
-        <button class="mt-6 text-xl inline-flex items-center justify-center p-5 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
+        <button class="text-xl inline-flex items-center text-white justify-center p-1 font-medium text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 text-gray-400 bg-gray-800 hover:bg-gray-700 hover:text-white">
             {{ button_label|default('Save') }}
         </button>
 
