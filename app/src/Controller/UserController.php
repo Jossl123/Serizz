@@ -235,7 +235,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
+    public function show(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
 
         if ($this->getUser() && $this->getUser()->getBan() == 1) {
