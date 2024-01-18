@@ -25,7 +25,6 @@
 		{% endif %}
 		{% if app.user %}
 			<a href="{{ path('app_user_settings', { 'id': app.user.id }) }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_user_settings' %}text-[--white]{% endif %} "> Settings </a>
-			<a href="{{ path('app_series_add') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_series_add' %}text-[--white]{% endif %} "> Add Series</a>
 			<a href="{{ path('app_admin_panel') }}" class="flex items-center z-10 font-bold text-2xl  hover:text-white	 {% if current_path != 'app_admin_panel' %}text-[--white]{% endif %} "> Admin Panel</a>
 		{% endif %}
 	</div>
