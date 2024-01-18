@@ -66,7 +66,9 @@ function watch_ep( url_to_fetch, first, all=true){
     var see_all = document.getElementById("see_all").children[0]
     if (first && see_all.classList.contains("nf-fa-check"))return
     var ep_id = url_to_fetch.split("=")[1]
-    if (!all)url_to_fetch +="&all=false"
+    if (!all)url_to_fetch +="&all_prev=false"
+    if(first)url_to_fetch+="&all=true"
+    console.log(url_to_fetch, first, all)
     fetch(url_to_fetch).then(response => response.json()).then(result => {
         if (!result.success) {
             return

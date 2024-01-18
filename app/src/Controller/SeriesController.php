@@ -256,12 +256,12 @@ class SeriesController extends AbstractController
     public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
         $to_update = $request->query->get('update', 0);
-        $see_all = boolval($request->query->get('all', 'true'));
-        dump($see_all);
+        $see_all = boolval($request->query->get('all', 'false'));
+        $all_prev = boolval($request->query->get('all_prev', 'true'));
         $episode = $entityManager->getRepository(Episode::class)->findOneBy(['id' => $to_update]);
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        if ($user->getEpisode()->contains($episode)) {
+        if ($user->getEpisode()->contains($episode) && !$see_all) {
             $user->removeEpisode($episode);
             $entityManager->flush();
         } else {
@@ -269,7 +269,7 @@ class SeriesController extends AbstractController
             $user->addSeries($episode->getSeason()->getSeries());
             $entityManager->flush();
             $current_season = $episode->getSeason();
-            if ($see_all) {
+            if ($all_prev) {
                 foreach ($current_season->getSeries()->getSeasons() as $season) {
                     foreach ($season->getEpisodes() as $ep) {
                         if ($ep == $episode) {
@@ -287,7 +287,7 @@ class SeriesController extends AbstractController
             }
         }
 
-        return new JsonResponse(array('success' => "true", 'see'=> $see_all));
+        return new JsonResponse(array('success' => "true"));
     }
 
 
