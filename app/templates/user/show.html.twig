@@ -8,21 +8,21 @@
 	<div class="text-xl w-full h-screen mt-12 flex flex-row">
 		<div class="w-fit left-0 overflow-hidden p-4">
 			<div class="relative inline-block my-2.5">
-                {% if app.user and app.user.id == user.id %}
-				<a href="{{ path('app_user_settings', {'id': app.user.id}) }}">
-					<i class="nf nf-cod-settings_gear"></i>
-				</a>
-                {% endif %}
 				<span class="text-2xl md:text-3xl font-bold">
 
-					{{ user.name }}'s Profile
 					{% if user.admin == 1 %}
 						<i class="nf nf-md-shield"></i>
 					{% elseif user.admin == 2 %}
 						<i class="nf nf-md-shield" style='color: #8a1616;'></i>
 						<!--Color of super admin must be replaced by tailwind class-->
 					{% endif %}
+					{{ user.name }}'s Profile
 				</span>
+				{% if app.user and app.user.id == user.id %}
+					<a href="{{ path('app_user_settings', {'id': app.user.id}) }}">
+						<i class="nf nf-cod-settings_gear"></i>
+					</a>
+				{% endif %}
 			</div>
 			<dl class="sm:divide-y sm:divide-[--grey]">
 				<div class="p-1 sm:gap-4 ">
@@ -113,14 +113,14 @@
 						</a>
 						{% for r in ratings %}
 							{% if fs.getId() == r.series %}
-								<div class="absolute top-1 left-1 text-base">
-									<div class="flex gap-2 h-8">
+								<a href="{{ path('app_series_show', {'id': r.series}) }}#{{ r.user.id }}" class="absolute top-1 left-1 text-base hover:bg-gray-600 rounded-lg border bg-gray-700 border-gray-600 text-white w-[80%] p-1">
+									<div class="flex gap-2 h-4 justify-center items-center">
 										{% include('./_stars.html.twig') with {'rating': r.value/2} %}
 									</div>
 									{% if r.comment %}
-										<a href="{{ path('app_series_show', {'id': r.series}) }}#{{ r.user.id }}" class="line-clamp-3 hover:bg-gray-600 p-1 rounded-lg border bg-gray-700 border-gray-600 text-white w-[80%] p-1">{{ r.comment }}</a>
+										<p class="line-clamp-3  p-1  p-1">{{ r.comment }}</p>
 									{% endif %}
-								</div>
+								</a>
 							{% endif %}
 						{% endfor %}
 					</div>
