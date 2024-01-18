@@ -58,8 +58,8 @@
 						<a href="{{ path('app_user_index') }}">Users</a>
 						<br>
 					{% endif %}
-					<a href="{{ path('app_user_settings', { 'id': app.user.id }) }}">
-						Settings
+					<a href="{{ path('app_user_show', { 'id': app.user.id }) }}">
+						My Account
 					</a>
 					<br>
 					<a href="{{ path('app_logout') }}">
