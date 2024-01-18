@@ -3,7 +3,7 @@
 {% block title %}
 	{{ series.title }}
 {% endblock %}
-
+{% set noposter = "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg" %}
 {% block body %}
 
 	{% include('./header.html.twig') with {'poster_picture_id': series.id} %}
@@ -29,7 +29,11 @@
 		<div class="flex flex-col sm:items-left items-center">
 			<div class="m-3 w-64 ">
 				<div class="relative">
-					<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full">
+					{%if series.poster %}
+							<img src="{{ path('app_series_poster', {'id': series.id}) }}" alt="Series poster" class="w-full ">
+					{% else %}
+							<img src="{{ noposter }}" alt="Series poster" class="w-full ">
+					{% endif %}
 					{% include ('./percentage.html.twig') with {'percent': percentage_serie, 'name': "progress_bar_serie"} %}
 				</div>
 				<div class="bg-[--grey] p-2 rounded flex justify-around">
