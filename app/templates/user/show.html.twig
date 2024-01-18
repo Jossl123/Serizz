@@ -8,7 +8,7 @@
 	<div class="text-xl w-full h-screen mt-12 flex lg:flex-row flex-col ">
 		<div class="w-fit left-0  p-4">
 			<div class="relative inline-block my-2.5">
-				<span class="text-2xl md:text-3xl font-bold">
+				<span class="text-white font-bold">
 
 					{% if user.admin == 1 %}
 						<i class="nf nf-md-shield"></i>
@@ -25,15 +25,6 @@
 				{% endif %}
 			</div>
 			<dl class="sm:divide-y sm:divide-[--grey]">
-				<div class="p-1 sm:gap-4 ">
-					<dt class="font-bold text-[--grey]">
-						User name :
-					</dt>
-					<dd>
-						<p>
-							{{ user.name }}</p>
-					</dd>
-				</div>
 				<div class="p-1 sm:gap-4 ">
 					<dt class="font-bold text-[--grey]">
 						Email :
