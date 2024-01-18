@@ -14,10 +14,10 @@ Pour pouvoir installer l'application plusieurs dépendances sont requises : tout
 Vous pouvez également vérifier l'installation et sa version à l'aide de `php -v`.
 
 Vous allez également avoir besoin de **composer** un gestionnaire de paquets PHP.
-Pour vérifier si c'est déjà installé et/ou sa version vous pouvez utiliser `composer -v`. Sinon, suivez les instructions [[https://getcomposer.org/download/|ici]] pour l'installer. 
-Vous aurez également besoin de **npm**. Pour vérifier si c'est déjà installé et/ou sa version, vous pouvez utiliser `npm -v`. Sinon, suivez les instructions [[https://www.npmjs.com/get-npm|ici]].
+Pour vérifier si c'est déjà installé et/ou sa version vous pouvez utiliser `composer -v`. Sinon, suivez les instructions [ici](https://getcomposer.org/download/) pour l'installer. 
+Vous aurez également besoin de **npm**. Pour vérifier si c'est déjà installé et/ou sa version, vous pouvez utiliser `npm -v`. Sinon, suivez les instructions [ici](https://www.npmjs.com/get-npm).
 
-Ce serait aussi utile [[https://symfony.com/download|d'installer le CLI de Symfony]].
+Ce serait aussi utile [d'installer symfony](https://symfony.com/download) 
 
 ## Préparer l'application pour déploiement
 

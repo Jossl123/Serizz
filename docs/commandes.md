@@ -44,3 +44,10 @@ et ne prend pas de paramètre.
 
 ATTENTION, cette commande peut être *extrêment longue* dès qu'il y a de nombreux utilisateurs générés par la commande 1 dans la base.
 
+## 4 : Mise à jour de séries
+
+Cette commande rajoutée tout à la fin est plutôt pétée donc je vais pas trop la décrire, c'est du non achevé uh.
+
+Anyways, le nom est :  
+``bin/console app:series-update``
+

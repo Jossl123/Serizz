@@ -1,13 +1,16 @@
 # S3.A.01-equipe2
 
 ## Install
-see [the deployment guide](deployment_guide_EN.md)
+See [the deployment guide](docs/deployment_guide_FR.md)
 
-## Charte Garphique
-go to [this page](doc_chartes_graphique_EN.md)
+## Charte Graphique
+Go to [this page](doc/doc_charte_graphique_FR.md)
 
 ## Added Symfony Commands
-you can find the list & documentation for the sumfony commands we added [there](commandes.md)
+You can find the list & documentation for the symfony commands we added [there](doc/commandes.md)
+
+## Functionalities
+You can go to [this document](doc/guide_d_utilisation_FR.md) for a *somewhat* detailed guide describing the site's various features.
 
 ## Checking the Standards
 To check for any possible violation of the standards, just run the following command from the [app](app/) folder :
