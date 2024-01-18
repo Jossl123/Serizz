@@ -65,19 +65,8 @@ class SeriesController extends AbstractController
         }
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        $dql = $entityManager->createQuery('
-            SELECT s.id, 
-                COUNT(DISTINCT e.id) as total_ep, 
-                SUM(CASE WHEN u.id = :userId THEN 1 ELSE 0 END) as seen_ep
-            FROM App:Series s
-            JOIN s.seasons se
-            JOIN se.episodes e
-            LEFT JOIN e.user u
-            index by s.id
-            GROUP BY s.id
-        ');
-        $dql->setParameter('userId', $user->getId());
-        $percentages = $dql->getResult();
+        
+        $percentages = $entityManager->getRepository(Series::class)->findAllPercentages($user->getId());
         $resPercentages = [];
         foreach ($series as $se) {
             $seriesId = $se->getId();
@@ -115,9 +104,6 @@ class SeriesController extends AbstractController
         foreach ($seriesCompleted as $completed) {
             $userSeries->removeElement($completed);
         }
-
-        dump($userSeries);
-
         $seriesNb = $userSeries->count([]);
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
@@ -128,10 +114,22 @@ class SeriesController extends AbstractController
 
         $series = $userSeries->slice($page * $limit, $limit);
 
+        $percentages = $entityManager->getRepository(Series::class)->findAllPercentages($user->getId());
+        $resPercentages = [];
+        foreach ($series as $se) {
+            $seriesId = $se->getId();
+            if ($percentages[$seriesId]["total_ep"] > 0){
+                $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
+            }
+            else{
+                $resPercentages[$seriesId] = 0;
+            }
+        }
         return $this->render('series/followed.html.twig', [
             'series' => $series,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
+            'percentages'=> $resPercentages
         ]);
     }
 
@@ -155,10 +153,22 @@ class SeriesController extends AbstractController
 
         $seriesCompleted = array_slice((array)$seriesCompleted, $page * $limit, $limit);
 
+        $percentages = $entityManager->getRepository(Series::class)->findAllPercentages($user->getId());
+        $resPercentages = [];
+        foreach ($seriesCompleted as $se) {
+            $seriesId = $se->getId();
+            if ($percentages[$seriesId]["total_ep"] > 0){
+                $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
+            }
+            else{
+                $resPercentages[$seriesId] = 0;
+            }
+        }
         return $this->render('series/completed.html.twig', [
             'completed' => $seriesCompleted,
             'pagesNb' => ceil($seriesNb / $limit),
             'page' => $page,
+            'percentages'=> $resPercentages
         ]);
     }
 

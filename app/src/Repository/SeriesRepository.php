@@ -160,4 +160,21 @@ class SeriesRepository extends EntityRepository
         $dql->setParameter('max', $max);
         return $dql->getResult();
     }
+
+    public function findAllPercentages($userId)
+    {
+        $dql = $this->getEntityManager()->createQuery('
+            SELECT s.id, 
+                COUNT(DISTINCT e.id) as total_ep, 
+                SUM(CASE WHEN u.id = :userId THEN 1 ELSE 0 END) as seen_ep
+            FROM App:Series s
+            JOIN s.seasons se
+            JOIN se.episodes e
+            LEFT JOIN e.user u
+            index by s.id
+            GROUP BY s.id
+        ');
+        $dql->setParameter('userId', $userId);
+        return $dql->getResult();
+    }
 }
