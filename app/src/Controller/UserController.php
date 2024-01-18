@@ -30,8 +30,10 @@ class UserController extends AbstractController
         $searchForAdmin = $request->query->get('admin', false);
         $searchForSuperAdmin = $request->query->get('superAdmin', false);
 
-        if ($this->getUser()->getBan() == 1) {
-            return $this->redirectToRoute('app_banned');
+        if ($this->getUser() != null) {
+            if ($this->getUser()->getBan() == 1) {
+                return $this->redirectToRoute('app_banned');
+            }
         }
 
         $searchArray = array($searchForUser, $searchForAdmin, $searchForSuperAdmin);
@@ -184,7 +186,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
         if ($user->getFollowed()->contains($userToFollow)) {
             $user->removeFollowed($userToFollow);
-        } else if ($userToFollow != $user) {
+        } elseif ($userToFollow != $user) {
             $user->addFollowed($userToFollow);
         }
         $entityManager->flush();
@@ -215,13 +217,33 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user, EntityManagerInterface $entityManager, Request $request): Response
     {
-        if ($this->getUser()->getBan() == 1) {
-            return $this->redirectToRoute('app_banned');
+        if ($this->getUser() != null) {
+            if ($this->getUser()->getBan() == 1) {
+                return $this->redirectToRoute('app_banned');
+            }
         }
-        $seriesRepo = $user->getSeries();
+        $seriesRepo = $entityManager->getRepository(Series::class);
+        $userSeries = $user->getSeries();
+        $ratedSeries = $seriesRepo->findAllByRating($user);
+
+        // Could be better optimized...
+        // Removing the rated series of the total series
+        foreach($ratedSeries as $rated){
+            $userSeries->removeElement($rated);
+        }
+        $series = array();
+        // Adding the rated series first, then the other series 
+        foreach($ratedSeries as $rated){
+            array_push($series, $rated);
+        }
+        foreach($userSeries as $otherSeries){
+            array_push($series, $otherSeries);
+        }
+
         $page = $request->query->get('page', 1) - 1;
         $limit = 10;
-        $seriesNb = $seriesRepo->count([]);
+        $seriesNb = count($series);
+        dump($seriesNb);
 
         if ($page > $seriesNb / $limit) {
             $page = ceil($seriesNb / $limit);
@@ -231,12 +253,16 @@ class UserController extends AbstractController
             $page = 0;
         }
 
-        // Cast is needed since page*limit is a float 
-        $series = $seriesRepo->slice((int)$page * $limit, $limit);
+        dump($page < 0);
+        dump($page > $seriesNb / $limit);
+        
+        $series = array_slice($series, $page * $limit, $limit);
 
         $ratings = $entityManager
             ->getRepository(Rating::class)
             ->findBy(array('user' => $user->getId()), array('date' => 'DESC'));
+
+        dump($series);
 
         return $this->render('user/show.html.twig', [
             'user' => $user,
@@ -347,18 +373,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/ban', name: 'app_user_ban', methods: ['GET'])]
-    public function ban($id, EntityManagerInterface $entityManager): Response {
+    public function ban($id, EntityManagerInterface $entityManager): Response
+    {
         $user = $entityManager
             ->getRepository(User::class)
             ->find($id);
-
-        $userRatings = $entityManager
-            ->getRepository(Rating::class)
-            ->findBy(array('user' => $user->getId()));
-
-        foreach ($userRatings as $rating) {
-            $entityManager->remove($rating);
-        }
 
         $user->setBan(1);
         $entityManager->flush();
@@ -367,7 +386,8 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/unban', name: 'app_user_unban', methods: ['GET'])]
-    public function unban($id, EntityManagerInterface $entityManager): Response {
+    public function unban($id, EntityManagerInterface $entityManager): Response
+    {
         $user = $entityManager
             ->getRepository(User::class)
             ->find($id);
@@ -376,6 +396,5 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-
     }
 }
