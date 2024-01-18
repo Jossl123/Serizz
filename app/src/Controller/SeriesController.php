@@ -26,10 +26,8 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET', 'POST'])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        if ($this->getUser() != null) {
-            if ($this->getUser()->getBan() == 1) {
-                return $this->redirectToRoute('app_banned');
-            }
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
         }
         $NbG = 0;
         $page = $request->query->get('page', 1) - 1;
@@ -65,17 +63,22 @@ class SeriesController extends AbstractController
         }
         /** @var \App\Entity\User */
         $user = $this->getUser();
-        
-        $percentages = $entityManager->getRepository(Series::class)->findAllPercentages($user->getId());
-        $resPercentages = [];
-        foreach ($series as $se) {
-            $seriesId = $se->getId();
-            if (isset($percentages[$seriesId]) && $percentages[$seriesId]["total_ep"] > 0){
-                $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
+        if ($user){
+            $percentages = $entityManager->getRepository(Series::class)->findAllPercentages($user->getId());
+            $resPercentages = [];
+            foreach ($series as $se) {
+                $seriesId = $se->getId();
+                if (isset($percentages[$seriesId]) && $percentages[$seriesId]["total_ep"] > 0){
+                    $resPercentages[$seriesId] = $percentages[$seriesId]["seen_ep"]/$percentages[$seriesId]["total_ep"];
+                }
+                else{
+                    $resPercentages[$seriesId] = 0;
+                }
             }
-            else{
-                $resPercentages[$seriesId] = 0;
-            }
+        }else{
+            $resPercentages = array_fill_keys(array_map(function ($se) {
+                return $se->getId();
+            }, $series), 0);
         }
         return $this->render('series/index.html.twig', [
             'series' => $series,
@@ -90,6 +93,9 @@ class SeriesController extends AbstractController
     #[Route('/followed', name: 'app_series_show_followed', methods: ['GET'])]
     public function showFollowed(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         /** @var \App\Entity\User */
         $user = $this->getUser();
         $userSeries = $user->getSeries();
@@ -136,6 +142,9 @@ class SeriesController extends AbstractController
     #[Route('/completed', name: 'app_series_show_completed', methods: ['GET'])]
     public function showCompleted(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         /** @var \App\Entity\User */
         $user = $this->getUser();
         $page = $request->query->get('page', 1) - 1;
@@ -175,7 +184,7 @@ class SeriesController extends AbstractController
     #[Route('/{id}', name: 'app_series_show', methods: ['GET', 'POST'])]
     public function show($id, EntityManagerInterface $entityManager, Request $request): Response
     {
-        if ($this->getUser()->getBan() == 1) {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
             return $this->redirectToRoute('app_banned');
         }
 
@@ -299,6 +308,9 @@ class SeriesController extends AbstractController
     #[IsGranted("ROLE_USER")]
     public function episodeUpdate(Request $request, EntityManagerInterface $entityManager, Series $series)
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $to_update = $request->query->get('update', 0);
         $see_all = $request->query->get('all', 'false') === 'true'? true: false;
         $all_prev = $request->query->get('all_prev', 'true') === 'true'? true: false;
@@ -347,6 +359,9 @@ class SeriesController extends AbstractController
     #[Route('/{id}/update_follow', name: 'app_series_update_followed', methods: ['GET'])]
     public function seriesUpdate(Request $request, EntityManagerInterface $entityManager, Series $series): Response
     {
+        if ($this->getUser() && $this->getUser()->getBan() == 1) {
+            return $this->redirectToRoute('app_banned');
+        }
         $to_update = $request->query->get('update', 0);
         $series = $entityManager->getRepository(Series::class)->findOneBy(['id' => $to_update]);
 
