@@ -51,7 +51,6 @@ function formSubmit(e) {
         genres.push(checkboxes[i].id);
         }
     }
-
     var input = document.createElement("input");
     input.setAttribute("name", "genres");
     input.setAttribute("value", genres.join("_"));
