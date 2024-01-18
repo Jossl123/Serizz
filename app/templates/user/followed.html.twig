@@ -94,15 +94,15 @@
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.country }}</td>
                             <td class="x-6 py-4 font-medium  whitespace-nowrap text-white">{{ user.admin }}</td>
                         {% endif %}
-                        <td class="font-medium text-blue-600 hover:underline">
-                            <a href="{{ path('app_user_show', {'id': user.id}) }}"> SHOW | </a>
+                        <td class="font-medium text-white">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="hover:underline"> SHOW | </a>
                             {% if ( app.user ) %}
                                 {% if app.user != user %}
-                                     <a href="{{ path('app_user_update_followed', {'id': user.id}) }}"> {% if user in app.user.followed %} UNFOLLOW {% else %} FOLLOW {% endif %} | </a>
+                                     <a href="{{ path('app_user_update_followed', {'id': user.id, 'route': 'app_user_index_followed'}) }}" class="hover:underline"> {% if user in app.user.followed %} UNFOLLOW {% else %} FOLLOW {% endif %} | </a>
                                 {% endif %}
                                 {% if app.user.admin != 0 %}
-                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}"> EDIT | </a>
-                                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}"> EMBODY </a>
+                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="hover:underline"> EDIT | </a>
+                                    <a href="{{ path('app_default', {'_switch_user':user.email}) }}" class="hover:underline"> EMBODY </a>
                                 {% endif %}
                             {% endif %}
                         </td>
