@@ -18,6 +18,20 @@ class SeriesRepository extends EntityRepository
         return $hallOfFameSeries;
     }
 
+    /**
+     * Returns all the series a user has posted a rating on
+     */
+    public function findAllByRating($user){
+        $qb = $this->createQueryBuilder('s');
+        $qb->select('s')
+        ->join('s.ratings', 'r')
+        ->join('r.user', 'u')
+        ->where('u = :user')
+        ->setParameter('user', $user)
+        ->orderBy('r.date', 'DESC');
+        return $qb->getQuery()->getResult();
+    }
+
     public function findAllByFilters($filters, $user)
     {
         $search = $this->createQueryBuilder('s');
