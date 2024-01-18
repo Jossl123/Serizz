@@ -106,7 +106,7 @@ class UpdateHelper {
         }
     }
     
-    public static function updateSeasons(EntityManagerInterface $entityManager, $content, $s) {
+    public static function updateSeasons(EntityManagerInterface $entityManager, $content, $s, $client) {
         $episodeUrl = "http://www.omdbapi.com/?apikey=3c7a370d&";
         $seasons = $entityManager
             ->getRepository(Season::class)
@@ -118,12 +118,12 @@ class UpdateHelper {
             $episodeUrl .= "t=" . $content['Title'];
     
             for ($i = $currentCount; $i < $omdbSeasons; $i++) {
-                subSeasonUpdate($entityManager, $i, $currentCount, $episodeUrl);
+                UpdateHelper::subSeasonUpdate($entityManager, $i, $s, $currentCount, $episodeUrl, $client);
             }
         }
     }
     
-    public static function subSeasonUpdate($entityManager, $i, $currentCount, $episodeUrl, $client) {
+    public static function subSeasonUpdate($entityManager, $i, $s, $currentCount, $episodeUrl, $client) {
         if ($i === $currentCount) {
             $episodeUrl .= "&Season=" . ($i + 1);
         } else {
