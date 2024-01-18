@@ -366,43 +366,43 @@ class UserController extends AbstractController
 
         $name = $request->request->get('name');
         $country = $request->request->get('country');
-        $password = $request->request->get('password');
-        $passwordConfirm = $request->request->get('passwordConfirm');
-        $currentPassword = $request->request->get('currentPassword');
-
-        if ($currentPassword != null) {
-            $isPasswordValid = $passwordHasher->isPasswordValid($user, $currentPassword);
-        } else {
-            $isPasswordValid = false;
-        }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if ($currentPassword != null && $isPasswordValid) {
-                foreach ($countries as $c) {
-                    if ($c->getName() == $country) {
-                        $user->setCountry($c);
-                        $entityManager->flush();
-                    }
-                }
-
-                if ($name != null && $name != $user->getName()) {
-                    $user->setName($name);
+            foreach ($countries as $c) {
+                if ($c->getName() == $country) {
+                    $user->setCountry($c);
                     $entityManager->flush();
                 }
-                if ($password != null && $passwordConfirm != null) {
-                    if ($password == $passwordConfirm) {
-                        $user->setPassword($password);
-                        $entityManager->flush();
-                    }
-                }
-            } else {
-                $this->addFlash('err', 'Incorrect password');
+            }
+
+            if ($name != null && $name != $user->getName()) {
+                $user->setName($name);
+                $entityManager->flush();
             }
         }
 
         return $this->render('user/_userEdit.html.twig', [
             'user' => $user,
             'countries' => $countries
+        ]);
+    }
+
+    #[Route('/{id}/changePassword', name: 'app_user_change_password', methods: ['GET', 'POST'])]
+    public function changepassword(User $user, EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $password = $request->request->get('password');
+        $passwordConfirm = $request->request->get('password_confirm');
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($password != null && $passwordConfirm != null && $password == $passwordConfirm) {
+                $user->setPassword($passwordHasher->hashPassword($user, $password));
+                $entityManager->flush();
+            }else{
+                $this->addFlash('err', 'Missmatching passwords');
+            }
+        }
+        return $this->render('user/_userEditPassword.html.twig', [
+            'user' => $user
         ]);
     }
 

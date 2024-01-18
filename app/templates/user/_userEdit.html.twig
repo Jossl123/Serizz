@@ -28,16 +28,6 @@
                 </label>
 
                 <label class="mb-2 text-xl">
-                    Password : <br>
-                    <input type="password" name="password" placeholder="********" class="bg-[--black] outline-0">
-                </label>
-
-                <label class="mb-2 text-xl">
-                    Confirm Password : <br>
-                    <input type="password" name="confirm_password" placeholder="********" class="bg-[--black] outline-0">
-                </label>
-
-                <label class="mb-2 text-xl">
                     Country : <br>
                     <select name="country" class="bg-[--black] outline-0">
                         <option disabled selected> {{ user.country.name }} </option>
@@ -48,12 +38,7 @@
                         {% endfor %}
                     </select>
                 </label>
-
-                <label class="mb-2 text-xl">
-                    Current Password : <br>
-                    <input type="password" name="currentPassword" placeholder="********" class="bg-[--black] outline-0">
-                </label>
-
+                <a href="{{path('app_user_change_password', {'id': app.user.id})}}">Change password</a>
                 <button type="submit" class="bg-[--black] px-4 py-2 text-white hover:bg-black rounded transition-all ease-in-out duration-100">
                     Save Changes
                 </button>
