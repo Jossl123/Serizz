@@ -196,6 +196,9 @@
 		<i class="nf nf-md-keyboard_backspace"></i>
 		Back to list
 	</a>
+	<a href="{{ path('app_series_edit', { 'id': series.id}) }}" class="text-[--white] text-center text-2xl font-bold block">
+		Edit
+	</a>
 	<div class="text-white bg-gray p-4 flex xl:flex-row flex-col" id="ratings_zone">
 		<div class="xl:w-1/3">
 			<a href="{{path('app_series_show',{'id': series.id})}}#ratings_zone"  class="text-4xl flex items-center w-full">
