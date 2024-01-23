@@ -3,7 +3,7 @@
 ## Install
 See [the deployment guide](docs/deployment_guide_FR.md)
 
-## Charte Graphique
+## Graphic charter
 Go to [this page](docs/doc_charte_graphique_FR.md)
 
 ## Added Symfony Commands
