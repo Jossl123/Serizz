@@ -1,4 +1,6 @@
-# S3.A.01-equipe2
+# Serizz
+
+![showcase page](./showcase.png)
 
 ## Install
 See [the deployment guide](docs/deployment_guide_FR.md)
