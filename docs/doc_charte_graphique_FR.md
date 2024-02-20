@@ -6,14 +6,14 @@
 
 ***
 
-###Logo :
+### Logo :
 
 Notre logo que vous pouvez voir ci-dessous a été imaginé et réalisé par l'équipe elle-même.
 Il est composé de plusieurs couleurs et de plusieurs éléments qui vont être détaillés ci-dessous.
 
-<img src="app/public/images/logo.png" alt="Texte alternatif" width="250" height="250" />
+<img src="../app/public/images/logo.png" alt="Texte alternatif" width="250" height="250" />
 
-####Description :
+#### Description :
 Les lettres sont de couleur crème avec des bordures noires et des ombres grises. Le texte est intégré dans un éclair avec des contours noirs, ce qui donne un effet dynamique et énergétique au logo, qui représente aussi l'esprit de notre entreprise. De plus des formes abstraites noires, ressemblant à des éclaboussures ou des tâches d’encre, entourent l’éclair pour accentuer l’effet dynamique.
 
 ***
